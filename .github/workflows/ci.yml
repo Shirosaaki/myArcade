@@ -145,6 +145,7 @@ jobs:
     needs: [coverage, sanitize, test]
     if: |
       github.repository != 'EpitechPromo2028/B-OOP-400-NCE-4-1-arcade-matheo.campanella'
+      && github.event_name == 'merge'
 
     steps:
       - name: Checkout repository
