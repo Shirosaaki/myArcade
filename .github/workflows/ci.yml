@@ -142,7 +142,7 @@ jobs:
   
   push_mirror:
     runs-on: ubuntu-latest
-    needs: [test]
+    needs: [coverage, sanitize, test]
     if: |
       github.repository != 'EpitechPromo2028/B-OOP-400-NCE-4-1-arcade-matheo.campanella'
 
