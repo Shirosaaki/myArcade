@@ -4,11 +4,11 @@
 ** File description:
 ** no
 */
-
 #include "LibNcurses.hpp"
 
 arcade::LibNcurses::LibNcurses()
 {
+    Init();
 }
 
 arcade::LibNcurses::~LibNcurses()
@@ -85,4 +85,10 @@ void arcade::LibNcurses::Clear()
 void arcade::LibNcurses::Nuke()
 {
     endwin();
+}
+
+
+extern "C" arcade::IGraphics *entryPoint()
+{
+    return new arcade::LibNcurses();
 }

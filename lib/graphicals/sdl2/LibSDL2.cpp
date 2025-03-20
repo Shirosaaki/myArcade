@@ -10,6 +10,7 @@
 
 arcade::LibSDL2::LibSDL2()
 {
+    Init();
 }
 
 arcade::LibSDL2::~LibSDL2()
@@ -109,4 +110,9 @@ void arcade::LibSDL2::Nuke()
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
     SDL_Quit();
+}
+
+extern "C" arcade::IGraphics *entryPoint()
+{
+    return new arcade::LibSDL2();
 }
