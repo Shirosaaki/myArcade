@@ -51,7 +51,6 @@ jobs:
       run: sudo apt-get update -q
         && sudo apt-get install lcov -q -y 
     
-    # SDL2 and ncurses
     - name: Install libs
       run: sudo apt-get update -q && sudo apt-get install libsdl2-dev -y -q
         && sudo apt-get install libncurses-dev -y -q
@@ -87,6 +86,10 @@ jobs:
 
     - name: Configure
       run: cmake --preset=ci-sanitize
+    
+    - name: install libs
+      run: sudo apt-get update -q && sudo apt-get install libsdl2-dev -y -q
+        && sudo apt-get install libncurses-dev -y -q
 
     - name: Build
       run: cmake --build build/sanitize -j 2
@@ -124,6 +127,10 @@ jobs:
         sudo update-alternatives --install
         /usr/bin/clang-tidy clang-tidy
         /usr/bin/clang-tidy-18 180
+    
+    - name: Install libs
+      run: sudo apt-get update -q && sudo apt-get install libsdl2-dev -y -q
+        && sudo apt-get install libncurses-dev -y -q
 
     - name: Setup MultiToolTask
       if: matrix.os == 'windows-2022'
