@@ -13,20 +13,35 @@ project(
 include(cmake/project-is-top-level.cmake)
 include(cmake/variables.cmake)
 
-# ---- Declare library ----
+# ---- Declare ncurses library ----
 
-add_library(
-    arcade_lib OBJECT
-    source/lib.cpp
+add_library(arcade_ncurses SHARED
+    lib/graphicals/ncurses/LibNcurses.cpp
+    lib/graphicals/ncurses/LibNcurses.hpp
 )
 
-target_include_directories(
-    arcade_lib ${warning_guard}
-    PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>"
+set_target_properties(arcade_ncurses PROPERTIES
+    OUTPUT_NAME "arcade_ncurses"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
 )
 
-target_compile_features(arcade_lib PUBLIC cxx_std_20)
+target_link_libraries(arcade_ncurses ncurses)
+
+# ---- Declare SDL2 library ----
+
+add_library(arcade_sdl2 SHARED
+    lib/graphicals/sdl2/LibSDL2.cpp
+    lib/graphicals/sdl2/LibSDL2.hpp
+)
+
+set_target_properties(arcade_sdl2 PROPERTIES
+    OUTPUT_NAME "arcade_sdl2"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+)
+
+find_package(SDL2 REQUIRED)
+target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS})
+target_link_libraries(arcade_sdl2 ${SDL2_LIBRARIES})
 
 # ---- Declare executable ----
 
@@ -37,23 +52,25 @@ set_property(TARGET arcade_exe PROPERTY OUTPUT_NAME arcade)
 
 target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
-target_link_libraries(arcade_exe PRIVATE arcade_lib)
+# Remove arcade_lib linkage
+# target_link_libraries(arcade_exe PRIVATE arcade_lib)
 
 # ---- Install rules ----
 
-if(NOT CMAKE_SKIP_INSTALL_RULES)
-  include(cmake/install-rules.cmake)
-endif()
+install(TARGETS arcade_ncurses arcade_sdl2
+    LIBRARY DESTINATION lib
+)
+
+install(TARGETS arcade_exe
+    RUNTIME DESTINATION bin
+)
 
 # ---- Developer mode ----
 
 if(NOT arcade_DEVELOPER_MODE)
   return()
 elseif(NOT PROJECT_IS_TOP_LEVEL)
-  message(
-      AUTHOR_WARNING
-      "Developer mode is intended for developers of arcade"
-  )
+  return()
 endif()
 
 include(cmake/dev-mode.cmake)
