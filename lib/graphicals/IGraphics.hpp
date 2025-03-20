@@ -11,8 +11,6 @@
     #include <string>
     #include <map>
     #include <dlfcn.h>
-    #include "ncurses/LibNcurses.hpp"
-    #include "sdl2/LibSDL2.hpp"
 
 namespace arcade {
 
