@@ -21,7 +21,7 @@
             LibSDL2();
             ~LibSDL2();
             void Init() override;
-            arcade::KeyBind getKey() override;
+            KeyBind getKey() override;
             void Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities) override;
             void PlaySound(std::string sound) override;
             void Clear() override;
