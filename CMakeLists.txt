@@ -50,10 +50,12 @@ add_executable(arcade::exe ALIAS arcade_exe)
 
 set_property(TARGET arcade_exe PROPERTY OUTPUT_NAME arcade)
 
-target_compile_features(arcade_exe PRIVATE cxx_std_20)
+# Set the runtime output directory to the root of the project
+set_target_properties(arcade_exe PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}"
+)
 
-# Remove arcade_lib linkage
-# target_link_libraries(arcade_exe PRIVATE arcade_lib)
+target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
 # ---- Install rules ----
 

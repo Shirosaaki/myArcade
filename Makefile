@@ -15,7 +15,6 @@ all: configure
 configure:
 	$(CMAKE) -S . -B $(BUILD_DIR)
 	$(CMAKE) --build $(BUILD_DIR) --config Release
-	cp $(BUILD_DIR)/arcade .
 
 clean:
 	rm -rf $(BUILD_DIR)
@@ -23,8 +22,6 @@ clean:
 fclean: clean
 	rm -rf arcade
 	rm -rf lib/*.so
-	rm -rf lib/graphicals/ncurses/*.so
-	rm -rf lib/graphicals/sdl2/*.so
 
 re: clean all
 
