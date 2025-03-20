@@ -10,10 +10,13 @@
     #include <vector>
     #include <string>
     #include <map>
+    #include <dlfcn.h>
+    #include "ncurses/LibNcurses.hpp"
+    #include "sdl2/LibSDL2.hpp"
 
 namespace arcade {
 
-    enum class TGraphics {
+    enum TGraphics {
         NCURSES,
         SDL,
         NDK,
@@ -29,17 +32,7 @@ namespace arcade {
         QT
     };
 
-    enum class TGames {
-        SNAKE,
-        MINESWEEPER,
-        NIBBLER,
-        PACMAN,
-        QIX,
-        CENTIPEDE,
-        SOLARFOX
-    };
-
-    enum class KeyBind {
+    enum KeyBind {
         ESC,
         A_KEY,
         Z_KEY,

@@ -13,7 +13,7 @@
 
 namespace arcade {
 
-    enum class TGames {
+    enum TGames {
         SNAKE,
         MINESWEEPER,
         NIBBLER,
@@ -22,7 +22,7 @@ namespace arcade {
         CENTIPEDE,
         SOLARFOX,
         SOKOBAN,
-        SPACE,
+        SPACE_IN,
         TETRIS,
         THE_SHOW
     };

@@ -15,13 +15,13 @@
     #include <SDL2/SDL_audio.h>
 
  
- namespace arcade{
+ namespace arcade {
     class LibSDL2 : public IGraphics {
         public:
             LibSDL2();
             ~LibSDL2();
             void Init() override;
-            KeyBind getKey() override;
+            arcade::KeyBind getKey() override;
             void Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities) override;
             void PlaySound(std::string sound) override;
             void Clear() override;

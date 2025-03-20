@@ -90,5 +90,6 @@ void arcade::LibNcurses::Nuke()
 
 extern "C" arcade::IGraphics *entryPoint()
 {
+    std::cout << "initialize ncurses" << std::endl;
     return new arcade::LibNcurses();
 }

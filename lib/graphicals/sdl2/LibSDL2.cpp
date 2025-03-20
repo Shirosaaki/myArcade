@@ -114,5 +114,6 @@ void arcade::LibSDL2::Nuke()
 
 extern "C" arcade::IGraphics *entryPoint()
 {
+    std::cout << "initialize sdl2" << std::endl;
     return new arcade::LibSDL2();
 }
