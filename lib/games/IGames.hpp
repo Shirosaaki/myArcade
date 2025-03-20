@@ -12,6 +12,20 @@
     #include <string>
 
 namespace arcade {
+
+    enum class TGames {
+        SNAKE,
+        MINESWEEPER,
+        NIBBLER,
+        PACMAN,
+        QIX,
+        CENTIPEDE,
+        SOLARFOX,
+        SOKOBAN,
+        SPACE,
+        TETRIS,
+        THE_SHOW
+    };
     
     class IGames {
         public:
