@@ -120,7 +120,8 @@
       "name": "ci-coverage",
       "inherits": ["coverage-linux", "dev-mode"],
       "cacheVariables": {
-        "COVERAGE_HTML_COMMAND": ""
+        "COVERAGE_HTML_COMMAND": "",
+        "CMAKE_PREFIX_PATH": "/usr/lib/x86_64-linux-gnu/cmake/SDL2;/usr/lib/x86_64-linux-gnu"
       }
     },
     {

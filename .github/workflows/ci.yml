@@ -49,7 +49,12 @@ jobs:
 
     - name: Install LCov
       run: sudo apt-get update -q
-        && sudo apt-get install lcov -q -y
+        && sudo apt-get install lcov -q -y 
+    
+    # SDL2 and ncurses
+    - name: Install libs
+      run: sudo apt-get update -q && sudo apt-get install libsdl2-dev -y -q
+        && sudo apt-get install libncurses-dev -y -q
 
     - name: Configure
       run: cmake --preset=ci-coverage
