@@ -127,7 +127,7 @@ jobs:
       if: matrix.os == 'macos-14'
       run: brew install sdl2 sfml
         && brew install ncurses
-        && brew install sfml@2.5 && brew install freetype
+        && brew install sfml && brew install freetype
 
     - name: Install libs
       if: matrix.os == 'ubuntu-24.04'
