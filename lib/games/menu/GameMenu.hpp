@@ -19,7 +19,6 @@ namespace arcade {
             virtual int getScore() override;
             virtual std::string getSound(enum arcade::TGraphics lib) override;
 
-        protected:
         private:
     };
 }

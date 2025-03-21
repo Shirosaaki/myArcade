@@ -8,7 +8,6 @@
 
 arcade::LibNcurses::LibNcurses()
 {
-    Init();
 }
 
 arcade::LibNcurses::~LibNcurses()
