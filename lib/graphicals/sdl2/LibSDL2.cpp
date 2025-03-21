@@ -4,9 +4,9 @@
 ** File description:
 ** no
 */
-
 #include "LibSDL2.hpp"
-
+#include <iostream>
+#include <filesystem>
 
 arcade::LibSDL2::LibSDL2()
 {
@@ -23,7 +23,13 @@ void arcade::LibSDL2::Init()
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         exit(84);
     }
-    this->window = SDL_CreateWindow("Arcade", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 600, SDL_WINDOW_SHOWN);
+    int imgFlags = IMG_INIT_PNG;
+    if (!(IMG_Init(imgFlags) & imgFlags)) {
+        std::cerr << "IMG_Init Error: " << IMG_GetError() << std::endl;
+        SDL_Quit();
+        exit(84);
+    }
+    this->window = SDL_CreateWindow("Arcade", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_SHOWN);
     if (this->window == nullptr) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
         SDL_Quit();
@@ -76,21 +82,32 @@ arcade::KeyBind arcade::LibSDL2::getKey()
     return KeyBind::NONE;
 }
 
-void arcade::LibSDL2::Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities)
+void arcade::LibSDL2::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
 {
     SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
     SDL_RenderClear(this->renderer);
     for (auto &entity : entities) {
-        for (auto &pos : entity.second) {
-            SDL_Rect rect = {pos.first * 20, pos.second * 20, 20, 20};
-            if (entity.first == "player")
-                SDL_SetRenderDrawColor(this->renderer, 0, 255, 0, 255);
-            else if (entity.first == "wall")
-                SDL_SetRenderDrawColor(this->renderer, 255, 0, 0, 255);
-            else if (entity.first == "food")
-                SDL_SetRenderDrawColor(this->renderer, 0, 0, 255, 255);
-            SDL_RenderFillRect(this->renderer, &rect);
+        SDL_Surface *surface = IMG_Load(entity.first.c_str());
+        if (surface == nullptr) {
+            std::cerr << "IMG_Load Error: " << SDL_GetError() << std::endl;
+            SDL_DestroyRenderer(this->renderer);
+            SDL_DestroyWindow(this->window);
+            SDL_Quit();
+            exit(84);
         }
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(this->renderer, surface);
+        if (texture == nullptr) {
+            std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
+            SDL_FreeSurface(surface);
+            SDL_DestroyRenderer(this->renderer);
+            SDL_DestroyWindow(this->window);
+            SDL_Quit();
+            exit(84);
+        }
+        SDL_FreeSurface(surface);
+        SDL_Rect rect = {entity.second.first.first, entity.second.first.second, entity.second.second.first, entity.second.second.second};
+        SDL_RenderCopy(this->renderer, texture, nullptr, &rect);
+        SDL_DestroyTexture(texture);
     }
     SDL_RenderPresent(this->renderer);
 }

@@ -26,17 +26,8 @@ namespace arcade {
         IRRLICHT,
         OPENGL,
         VULKAN,
-        QT
-    };
-
-    enum class TGames {
-        SNAKE,
-        MINESWEEPER,
-        NIBBLER,
-        PACMAN,
-        QIX,
-        CENTIPEDE,
-        SOLARFOX
+        QT,
+        NONE
     };
 
     enum class KeyBind {
@@ -58,8 +49,8 @@ namespace arcade {
         public:
             virtual ~IGraphics() = default;
             virtual void Init() = 0;
-            virtual KeyBind getKey() = 0;
-            virtual void Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities) = 0;
+            virtual arcade::KeyBind getKey() = 0;
+            virtual void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) = 0;
             virtual void PlaySound(std::string sound) = 0;
             virtual void Clear() = 0;
             virtual void Nuke() = 0;

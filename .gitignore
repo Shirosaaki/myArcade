@@ -22,3 +22,5 @@ sw.*
 .env
 .output
 docks/node_modules
+*.so
+arcade
