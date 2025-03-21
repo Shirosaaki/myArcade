@@ -58,7 +58,7 @@ set_target_properties(arcade_sfml PROPERTIES
     PREFIX ""
 )
 
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+find_package(SFML COMPONENTS graphics REQUIRED)
 target_link_libraries(arcade_sfml PRIVATE sfml-graphics sfml-window sfml-audio)
 
 # ---- Declare game menu library ----
