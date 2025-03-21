@@ -18,10 +18,17 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
 {
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
     if (lib == TGraphics::NCURSES) {
-        std::pair<std::pair<int, int>, std::pair<int, int>> entity = std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0));
-        std::pair<int, int> pos = std::make_pair(0, 0);
-        std::pair<int, int> size = std::make_pair(0, 0);
-        entities["menu"] = entity;
+        std::pair<std::pair<int, int>, std::pair<int, int>> entity = std::make_pair(std::make_pair(0, 50), std::make_pair(30, 30));
+        entities["MENU"] = entity;
+
+        std::pair<std::pair<int, int>, std::pair<int, int>> gamesBtn = std::make_pair(std::make_pair(3, 50), std::make_pair(20, 20));
+        entities["GAMES:"] = gamesBtn;
+
+        std::pair<std::pair<int, int>, std::pair<int, int>> snakeBtn = std::make_pair(std::make_pair(10, 25), std::make_pair(10, 10));
+        entities["----> SNAKE"] = snakeBtn;
+
+        std::pair<std::pair<int, int>, std::pair<int, int>> pacmanBtn = std::make_pair(std::make_pair(10, 75), std::make_pair(10, 10));
+        entities["PACMAN"] = pacmanBtn;
     } else {
         std::pair<std::pair<int, int>, std::pair<int, int>> entity;
         entity.first = std::make_pair(0, 0);
