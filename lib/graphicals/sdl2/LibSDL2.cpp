@@ -10,7 +10,6 @@
 
 arcade::LibSDL2::LibSDL2()
 {
-    Init();
 }
 
 arcade::LibSDL2::~LibSDL2()

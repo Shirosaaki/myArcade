@@ -45,6 +45,22 @@ find_package(SDL2 REQUIRED)
 target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS})
 target_link_libraries(arcade_sdl2 PRIVATE SDL2 SDL2_image)
 
+# ---- Declare SFMl library ----
+
+add_library(arcade_sfml SHARED
+    lib/graphicals/sfml/LibSfml.cpp
+    lib/graphicals/sfml/LibSfml.hpp
+)
+
+set_target_properties(arcade_sfml PROPERTIES
+    OUTPUT_NAME "arcade_sfml"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
+)
+
+find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+target_link_libraries(arcade_sfml PRIVATE sfml-graphics sfml-window sfml-audio)
+
 # ---- Declare game menu library ----
 
 add_library(arcade_menu SHARED
@@ -60,7 +76,7 @@ set_target_properties(arcade_menu PROPERTIES
 
 # ---- Declare executable ----
 
-add_executable(arcade_exe source/main.cpp)
+add_executable(arcade_exe source/main.cpp source/load_libs.cpp)
 add_executable(arcade::exe ALIAS arcade_exe)
 
 set_property(TARGET arcade_exe PROPERTY OUTPUT_NAME arcade)
@@ -74,7 +90,7 @@ target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
 # ---- Install rules ----
 
-install(TARGETS arcade_ncurses arcade_sdl2
+install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu
     LIBRARY DESTINATION lib
 )
 

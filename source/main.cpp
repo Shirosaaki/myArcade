@@ -1,11 +1,4 @@
-#include <iostream>
-#include <string>
-#include <dlfcn.h>
-#include <map>
-#include "../lib/graphicals/IGraphics.hpp"
-#include "../lib/games/IGames.hpp"
-#include <filesystem>
-#include <fstream>
+#include "my.hpp"
 
 arcade::TGraphics getLib(const std::string& lib)
 {
@@ -91,40 +84,13 @@ int main(int ac, char **av)
         std::cerr << "Invalid graphical library" << std::endl;
         return 84;
     }
-    std::map<std::string, std::pair<arcade::TGraphics, arcade::IGraphics *>> libMap;
-    arcade::IGraphics *graphics = getGraphicsLib(av[1]);
-    libMap[av[1]] = std::make_pair(lib, graphics);
-
-    for (const auto &entry : std::filesystem::directory_iterator("lib")) {
-        std::string path = entry.path();
-        if (path.find("lib/arcade_") == std::string::npos || 
-            path == av[1]) {
-            continue;
-        }
-        arcade::TGraphics lib = getLib(path);
-        if (lib == arcade::TGraphics::NONE) {
-            continue;
-        }
-        arcade::IGraphics *graphics = getGraphicsLib(path);
-        libMap[path] = std::make_pair(lib, graphics);
-    }
-    arcade::IGames *game = getGameLib("lib/arcade_menu.so");
-    std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> gameMap;
-    gameMap["lib/arcade_menu.so"] = std::make_pair(arcade::TGames::MENU, game);
-    for (const auto &entry : std::filesystem::directory_iterator("lib")) {
-        std::string path = entry.path();
-        if (path.find("lib/") == std::string::npos) {
-            continue;
-        }
-        arcade::TGames tgame = getGame(path);
-        if (tgame == arcade::TGames::NONE) {
-            continue;
-        }
-        arcade::IGames *game = getGameLib(path);
-        gameMap[path] = std::make_pair(tgame, game);
-    }
+    std::map<std::string, std::pair<arcade::TGraphics, arcade::IGraphics *>> libMap = loadGraphicalsLibs("lib", av[1]);
+    std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> gameMap = loadGamesLibs("lib");
     std::string actLib = av[1];
     std::string actGame = "lib/arcade_menu.so";
+    arcade::IGames *game = gameMap[actGame].second;
+    arcade::IGraphics *graphics = libMap[actLib].second;
+    graphics->Init();
 
     while (1) {
         auto entities = game->GetDisplay(lib);
@@ -133,7 +99,7 @@ int main(int ac, char **av)
         if (key == arcade::KeyBind::ESC) {
             graphics->Nuke();
             break;
-        } if (key == arcade::KeyBind::Z_KEY) {
+        } else if (key == arcade::KeyBind::Z_KEY) {
             auto it = libMap.find(actLib);
             if (it != libMap.end()) {
                 ++it;
@@ -145,7 +111,18 @@ int main(int ac, char **av)
                 graphics->Init();
                 lib = it->second.first;
             }
-
+        } else if (key == arcade::KeyBind::A_KEY) {
+            auto it = libMap.find(actLib);
+            if (it != libMap.end()) {
+                if (it == libMap.begin())
+                    it = libMap.end();
+                --it;
+                actLib = it->first;
+                graphics->Nuke();
+                graphics = it->second.second;
+                graphics->Init();
+                lib = it->second.first;
+            }
         }
     }
 }
