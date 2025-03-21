@@ -23,6 +23,7 @@ add_library(arcade_ncurses SHARED
 set_target_properties(arcade_ncurses PROPERTIES
     OUTPUT_NAME "arcade_ncurses"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
 )
 
 target_link_libraries(arcade_ncurses ncurses)
@@ -37,11 +38,25 @@ add_library(arcade_sdl2 SHARED
 set_target_properties(arcade_sdl2 PROPERTIES
     OUTPUT_NAME "arcade_sdl2"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
 )
 
 find_package(SDL2 REQUIRED)
 target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS})
-target_link_libraries(arcade_sdl2 ${SDL2_LIBRARIES})
+target_link_libraries(arcade_sdl2 PRIVATE SDL2 SDL2_image)
+
+# ---- Declare game menu library ----
+
+add_library(arcade_menu SHARED
+    lib/games/menu/GameMenu.cpp
+    lib/games/menu/GameMenu.hpp
+)
+
+set_target_properties(arcade_menu PROPERTIES
+    OUTPUT_NAME "arcade_menu"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
+)
 
 # ---- Declare executable ----
 

@@ -13,7 +13,7 @@
     #include <SDL2/SDL_render.h>
     #include <SDL2/SDL_events.h>
     #include <SDL2/SDL_audio.h>
-
+    #include <SDL2/SDL_image.h>
  
  namespace arcade {
     class LibSDL2 : public IGraphics {
@@ -21,13 +21,12 @@
             LibSDL2();
             ~LibSDL2();
             void Init() override;
-            KeyBind getKey() override;
-            void Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities) override;
+            arcade::KeyBind getKey() override;
+            void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) override;
             void PlaySound(std::string sound) override;
             void Clear() override;
             void Nuke() override;
 
-        protected:
         private:
             SDL_Window *window;
             SDL_Renderer *renderer;

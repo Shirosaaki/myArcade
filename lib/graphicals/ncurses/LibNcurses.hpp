@@ -16,8 +16,8 @@ namespace arcade {
             LibNcurses();
             ~LibNcurses();
             void Init() override;
-            KeyBind getKey() override;
-            void Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities) override;
+            arcade::KeyBind getKey() override;
+            void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) override;
             void PlaySound(std::string sound) override;
             void Clear() override;
             void Nuke() override;

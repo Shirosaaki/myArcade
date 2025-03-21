@@ -10,6 +10,7 @@
     #include <vector>
     #include <map>
     #include <string>
+    #include "../graphicals/IGraphics.hpp"
 
 namespace arcade {
 
@@ -22,15 +23,17 @@ namespace arcade {
         CENTIPEDE,
         SOLARFOX,
         SOKOBAN,
-        SPACE_IN,
+        SPACE_INVADER,
         TETRIS,
-        THE_SHOW
+        THE_SHOW,
+        MENU,
+        NONE
     };
     
     class IGames {
         public:
             virtual ~IGames() = default;
-            virtual std::map<std::string, std::vector<std::pair<int, int>>> GetDisplay(enum TGraphics lib) = 0;
+            virtual std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum TGraphics lib) = 0;
             virtual void setKey(enum KeyBind key) = 0;
             virtual int getScore() = 0;
             virtual std::string getSound(enum TGraphics lib) = 0;

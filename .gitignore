@@ -23,3 +23,4 @@ sw.*
 .output
 docks/node_modules
 *.so
+arcade

@@ -27,10 +27,11 @@ namespace arcade {
         IRRLICHT,
         OPENGL,
         VULKAN,
-        QT
+        QT,
+        NONE
     };
 
-    enum KeyBind {
+    enum class KeyBind {
         ESC,
         A_KEY,
         Z_KEY,
@@ -49,8 +50,8 @@ namespace arcade {
         public:
             virtual ~IGraphics() = default;
             virtual void Init() = 0;
-            virtual KeyBind getKey() = 0;
-            virtual void Display(std::map<std::string, std::vector<std::pair<int, int>>> &entities) = 0;
+            virtual arcade::KeyBind getKey() = 0;
+            virtual void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) = 0;
             virtual void PlaySound(std::string sound) = 0;
             virtual void Clear() = 0;
             virtual void Nuke() = 0;
