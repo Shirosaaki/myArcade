@@ -14,7 +14,7 @@
 
 namespace arcade {
 
-    enum TGames {
+    enum class TGames {
         SNAKE,
         MINESWEEPER,
         NIBBLER,

@@ -14,7 +14,7 @@
 
 namespace arcade {
 
-    enum TGraphics {
+    enum class TGraphics {
         NCURSES,
         SDL,
         NDK,
