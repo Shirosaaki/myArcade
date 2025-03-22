@@ -24,18 +24,18 @@ arcade::TGraphics getLib(const std::string& lib)
 arcade::TGames getGame(const std::string& lib)
 {
     static const std::map<std::string, arcade::TGames> gameMap = {
-        {"lib/snake.so", arcade::TGames::SNAKE},
-        {"lib/minesweeper.so", arcade::TGames::MINESWEEPER},
-        {"lib/nibbler.so", arcade::TGames::NIBBLER},
-        {"lib/pacman.so", arcade::TGames::PACMAN},
-        {"lib/qix.so", arcade::TGames::QIX},
-        {"lib/centipede.so", arcade::TGames::CENTIPEDE},
-        {"lib/solarfox.so", arcade::TGames::SOLARFOX},
-        {"lib/sokoban.so", arcade::TGames::SOKOBAN},
-        {"lib/space_invader.so", arcade::TGames::SPACE_INVADER},
-        {"lib/tetris.so", arcade::TGames::TETRIS},
-        {"lib/the_show.so", arcade::TGames::THE_SHOW},
-        {"lib/menu.so", arcade::TGames::MENU}
+        {"lib/arcade_snake.so", arcade::TGames::SNAKE},
+        {"lib/arcade_minesweeper.so", arcade::TGames::MINESWEEPER},
+        {"lib/arcade_nibbler.so", arcade::TGames::NIBBLER},
+        {"lib/arcade_pacman.so", arcade::TGames::PACMAN},
+        {"lib/arcade_qix.so", arcade::TGames::QIX},
+        {"lib/arcade_centipede.so", arcade::TGames::CENTIPEDE},
+        {"lib/arcade_solarfox.so", arcade::TGames::SOLARFOX},
+        {"lib/arcade_sokoban.so", arcade::TGames::SOKOBAN},
+        {"lib/arcade_space_invader.so", arcade::TGames::SPACE_INVADER},
+        {"lib/arcade_tetris.so", arcade::TGames::TETRIS},
+        {"lib/arcade_the_show.so", arcade::TGames::THE_SHOW},
+        {"lib/arcade_menu.so", arcade::TGames::MENU}
     };
     auto it = gameMap.find(lib);
     return (it != gameMap.end()) ? it->second : arcade::TGames::NONE;
@@ -123,6 +123,7 @@ int main(int ac, char **av)
                 graphics->Init();
                 lib = it->second.first;
             }
-        }
+        } else
+            game->setKey(key);
     }
 }

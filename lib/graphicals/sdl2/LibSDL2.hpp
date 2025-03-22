@@ -14,6 +14,8 @@
     #include <SDL2/SDL_events.h>
     #include <SDL2/SDL_audio.h>
     #include <SDL2/SDL_image.h>
+    #include <SDL2/SDL_ttf.h>
+    #include <unordered_map>
  
  namespace arcade {
     class LibSDL2 : public IGraphics {
@@ -27,9 +29,17 @@
             void Clear() override;
             void Nuke() override;
 
+        protected:
+            void DisplayText(const std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entity);
+            void DisplayImage(const std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entity);
+
         private:
             SDL_Window *window;
             SDL_Renderer *renderer;
+            TTF_Font *font;
+            SDL_Texture *texture;
+            SDL_Rect rect;
+            std::unordered_map<std::string, SDL_Texture*> textureCache;
     };
 }
 

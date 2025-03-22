@@ -8,6 +8,8 @@
     #define GAME_MENU_HPP_
     #include <iostream>
     #include "../IGames.hpp"
+    #include <map>
+    #include <filesystem>
 
 namespace arcade {
     class GameMenu : public IGames {
@@ -18,8 +20,13 @@ namespace arcade {
             virtual void setKey(enum arcade::KeyBind key) override;
             virtual int getScore() override;
             virtual std::string getSound(enum arcade::TGraphics lib) override;
-
+        protected:
+            std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> loadGamesLibs(const std::string &path);
+            arcade::TGames getGame(const std::string& lib);
+            arcade::IGames *getGameLib(const std::string& lib);
         private:
+            int cursor = 1;
+            int nbGames = 2;
     };
 }
 

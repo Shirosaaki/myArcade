@@ -42,8 +42,10 @@ set_target_properties(arcade_sdl2 PROPERTIES
 )
 
 find_package(SDL2 REQUIRED)
-target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS})
-target_link_libraries(arcade_sdl2 PRIVATE SDL2 SDL2_image)
+find_package(SDL2_image REQUIRED)
+find_package(SDL2_ttf REQUIRED)
+target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
+target_link_libraries(arcade_sdl2 PRIVATE SDL2 SDL2_image SDL2_ttf)
 
 # ---- Declare SFMl library ----
 
@@ -70,6 +72,32 @@ add_library(arcade_menu SHARED
 
 set_target_properties(arcade_menu PROPERTIES
     OUTPUT_NAME "arcade_menu"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
+)
+
+# ---- Declare pacman library ----
+
+add_library(arcade_pacman SHARED
+    lib/games/pacman/GamePacman.cpp
+    lib/games/pacman/GamePacman.hpp
+)
+
+set_target_properties(arcade_pacman PROPERTIES
+    OUTPUT_NAME "arcade_pacman"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
+)
+
+# ---- Declare snake library ----
+
+add_library(arcade_snake SHARED
+    lib/games/snake/GameSnake.cpp
+    lib/games/snake/GameSnake.hpp
+)
+
+set_target_properties(arcade_snake PROPERTIES
+    OUTPUT_NAME "arcade_snake"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
     PREFIX ""
 )

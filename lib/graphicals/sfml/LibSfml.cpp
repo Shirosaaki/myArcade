@@ -54,6 +54,7 @@ void arcade::LibSfml::Display(std::map<std::string, std::pair<std::pair<int, int
 {
     this->window->clear();
     for (auto &entity : entities) {
+        continue;
         sf::Texture texture;
         sf::Sprite sprite;
         if (!texture.loadFromFile(entity.first)) {
