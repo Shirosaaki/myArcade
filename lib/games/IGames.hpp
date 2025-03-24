@@ -37,6 +37,7 @@ namespace arcade {
             virtual void setKey(enum KeyBind key) = 0;
             virtual int getScore() = 0;
             virtual std::string getSound(enum TGraphics lib) = 0;
+            virtual std::string getActGame() = 0;
 
         private:
     };

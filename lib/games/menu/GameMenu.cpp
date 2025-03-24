@@ -8,6 +8,7 @@
 
 arcade::GameMenu::GameMenu()
 {
+    this->actGame = "lib/arcade_menu.so";
 }
 
 arcade::GameMenu::~GameMenu()
@@ -73,17 +74,19 @@ arcade::TGames arcade::GameMenu::getGame(const std::string& lib)
 std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameMenu::GetDisplay(enum TGraphics lib)
 {
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
+    this->gameMap = loadGamesLibs("lib/");
     if (lib == TGraphics::NCURSES) {
         std::pair<std::pair<int, int>, std::pair<int, int>> entity = std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6));
         entities["MENU"] = entity;
-        std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> gameMap = loadGamesLibs("lib/");
         int i = 3;
-        for (const auto &game : gameMap) {
-            std::pair<std::pair<int, int>, std::pair<int, int>> entity = std::make_pair(std::make_pair(i, 0), std::make_pair(6, 6));
-            if (i / 3 == cursor)
+        for (const auto &game : this->gameMap) {
+            entity = std::make_pair(std::make_pair(i, 0), std::make_pair(6, 6));
+            if (i / 2 == cursor) {
                 entity.second = std::make_pair(1, 1);
+                this->actGame = game.first;
+            }
             entities[game.first] = entity;
-            i += 3;
+            i += 2;
         }
         nbGames = gameMap.size();
     } else {
@@ -125,6 +128,11 @@ std::string arcade::GameMenu::getSound(enum TGraphics lib)
 {
     (void)lib;
     return "";
+}
+
+std::string arcade::GameMenu::getActGame()
+{
+    return this->actGame;
 }
 
 extern "C" arcade::IGames *entryPoint()

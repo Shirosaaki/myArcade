@@ -14,10 +14,11 @@ namespace arcade {
         public:
             GameSnake();
             ~GameSnake();
-            virtual std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum arcade::TGraphics lib) override;
-            virtual void setKey(enum arcade::KeyBind key) override;
-            virtual int getScore() override;
-            virtual std::string getSound(enum arcade::TGraphics lib) override;
+            std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum arcade::TGraphics lib) override;
+            void setKey(enum arcade::KeyBind key) override;
+            int getScore() override;
+            std::string getSound(enum arcade::TGraphics lib) override;
+            std::string getActGame() override { return "lib/arcade_snake.so"; }
     };
 }
 

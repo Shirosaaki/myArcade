@@ -16,17 +16,22 @@ namespace arcade {
         public:
             GameMenu();
             ~GameMenu();
-            virtual std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum arcade::TGraphics lib) override;
-            virtual void setKey(enum arcade::KeyBind key) override;
-            virtual int getScore() override;
-            virtual std::string getSound(enum arcade::TGraphics lib) override;
+            std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum arcade::TGraphics lib) override;
+            void setKey(enum arcade::KeyBind key) override;
+            int getScore() override;
+            std::string getSound(enum arcade::TGraphics lib) override;
+            std::string getActGame();
+            
         protected:
             std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> loadGamesLibs(const std::string &path);
             arcade::TGames getGame(const std::string& lib);
             arcade::IGames *getGameLib(const std::string& lib);
+
         private:
             int cursor = 1;
             int nbGames = 2;
+            std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> gameMap;
+            std::string actGame;
     };
 }
 

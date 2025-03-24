@@ -125,5 +125,10 @@ int main(int ac, char **av)
             }
         } else
             game->setKey(key);
+        if (key == arcade::KeyBind::ENTER && actGame == "lib/arcade_menu.so") {
+            actGame = game->getActGame();
+            game = gameMap[actGame].second;
+            graphics->Clear();
+        }
     }
 }

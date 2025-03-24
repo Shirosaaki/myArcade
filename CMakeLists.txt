@@ -118,7 +118,7 @@ target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
 # ---- Install rules ----
 
-install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu
+install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman arcade_snake
     LIBRARY DESTINATION lib
 )
 

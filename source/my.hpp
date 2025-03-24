@@ -12,6 +12,7 @@
     #include <map>
     #include "../lib/graphicals/IGraphics.hpp"
     #include "../lib/games/IGames.hpp"
+    #include "../lib/games/menu/GameMenu.hpp"
     #include <filesystem>
     #include <fstream>
 

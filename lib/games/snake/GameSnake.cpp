@@ -18,9 +18,10 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
 {
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
 
-    if (lib == arcade::TGraphics::SDL) {
+    if (lib == arcade::TGraphics::NCURSES)
+        entities["SNAKE"] = std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6));
+    else
         entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
-    }
     return entities;
 }
 
