@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - main
+    - pre-main
 
   pull_request:
     branches:
@@ -49,10 +50,10 @@ jobs:
     
     # SDL2, ncurses, and SFML
     - name: Install libs
-      run: sudo apt-get update -q && sudo apt-get install libsdl2-dev libsdl2-image-dev libncurses-dev libsfml-dev -y -q
+      run: sudo apt-get update -q && sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libncurses-dev libsfml-dev -y -q
 
     - name: Configure
-      run: cmake --preset=ci-coverage
+      run: cmake --preset=ci-coverage -Wno-error=dev
 
     - name: Build
       run: cmake --build build/coverage -j 2
@@ -84,7 +85,7 @@ jobs:
       run: sudo apt-get update -q && sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev libncurses-dev libsfml-dev -y -q
 
     - name: Configure
-      run: cmake --preset=ci-sanitize
+      run: cmake --preset=ci-sanitize -Wno-error=dev
 
     - name: Build
       run: cmake --build build/sanitize -j 2
@@ -129,7 +130,7 @@ jobs:
 
     - name: Configure
       shell: pwsh
-      run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])"
+      run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])" -Wno-error=dev
 
     - name: Build
       run: cmake --build build --config Release -j 2
