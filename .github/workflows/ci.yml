@@ -133,14 +133,14 @@ jobs:
       run: cmake "--preset=ci-$("${{ matrix.os }}".split("-")[0])" -Wno-error=dev
 
     - name: Build
-      run: cmake --build build --config Release -j 2 -Wno-error=dev
+      run: cmake --build build --config Release -j 2
 
     - name: Install
-      run: cmake --install build --config Release --prefix prefix -Wno-error=dev
+      run: cmake --install build --config Release --prefix prefix
 
     - name: Test
       working-directory: build
-      run: ctest --output-on-failure --no-tests=error -C Release -j 2 -Wno-error=dev
+      run: ctest --output-on-failure --no-tests=error -C Release -j 2
 
   push_mirror:
     runs-on: ubuntu-latest
