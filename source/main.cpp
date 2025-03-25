@@ -127,8 +127,10 @@ int main(int ac, char **av)
             game->setKey(key);
         if (key == arcade::KeyBind::ENTER && actGame == "lib/arcade_menu.so") {
             actGame = game->getActGame();
+            std::cout << actGame << std::endl;
             game = gameMap[actGame].second;
             graphics->Clear();
         }
     }
+    return 0;
 }
