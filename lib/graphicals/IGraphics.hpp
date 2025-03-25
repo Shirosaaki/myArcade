@@ -35,6 +35,8 @@ namespace arcade {
         ESC,
         A_KEY,
         Z_KEY,
+        Q_KEY,
+        S_KEY,
         UP_KEY,
         DOWN_KEY,
         LEFT_KEY,
