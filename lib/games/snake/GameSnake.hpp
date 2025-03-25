@@ -7,6 +7,7 @@
 #ifndef GAME_SNAKE_HPP_
     #define GAME_SNAKE_HPP_
     #include "../IGames.hpp"
+    #include "Board.hpp"
     #include <map>
 
 namespace arcade {
@@ -18,6 +19,7 @@ namespace arcade {
                 LEFT,
                 RIGHT
             } direction;
+            Board board;
         public:
             GameSnake();
             ~GameSnake();
@@ -26,6 +28,7 @@ namespace arcade {
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
             std::string getActGame() override { return "lib/arcade_snake.so"; }
+            void handleGame();
     };
 }
 

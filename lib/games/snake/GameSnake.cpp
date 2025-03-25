@@ -5,8 +5,10 @@
 ** GameSnake
 */
 #include "GameSnake.hpp"
+#include <ncurses.h>
 
 arcade::GameSnake::GameSnake()
+    : board(30, 70)
 {
 }
 
@@ -14,13 +16,20 @@ arcade::GameSnake::~GameSnake()
 {
 }
 
+void arcade::GameSnake::handleGame()
+{
+    board.initBoard();
+}
+
 std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
 {
+    int xMax;
+    int yMax;
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
 
-    if (lib == arcade::TGraphics::NCURSES)
-        entities["SNAKE"] = std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6));
-    else
+    if (lib == arcade::TGraphics::NCURSES) {
+        handleGame();
+    } else
         entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
     return entities;
 }

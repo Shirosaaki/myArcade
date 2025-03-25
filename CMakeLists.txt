@@ -94,6 +94,8 @@ set_target_properties(arcade_pacman PROPERTIES
 add_library(arcade_snake SHARED
     lib/games/snake/GameSnake.cpp
     lib/games/snake/GameSnake.hpp
+    lib/games/snake/Board.cpp
+    lib/games/snake/Board.hpp
 )
 
 set_target_properties(arcade_snake PROPERTIES
@@ -101,6 +103,8 @@ set_target_properties(arcade_snake PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
     PREFIX ""
 )
+
+target_link_libraries(arcade_snake ncurses)
 
 # ---- Declare executable ----
 
