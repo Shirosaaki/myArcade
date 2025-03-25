@@ -74,6 +74,10 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 return KeyBind::A_KEY;
             case SDLK_z:
                 return KeyBind::Z_KEY;
+            case SDLK_s:
+                return KeyBind::S_KEY;
+            case SDLK_q:
+                return KeyBind::Q_KEY;
             case SDLK_SPACE:
                 return KeyBind::SPACE;
             case SDLK_RETURN:

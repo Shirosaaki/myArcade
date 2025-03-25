@@ -34,6 +34,10 @@ arcade::KeyBind arcade::LibSfml::getKey()
                 return KeyBind::Z_KEY;
             if (this->event.key.code == sf::Keyboard::A)
                 return KeyBind::A_KEY;
+            if (this->event.key.code == sf::Keyboard::Q)
+                return KeyBind::Q_KEY;
+            if (this->event.key.code == sf::Keyboard::S)
+                return KeyBind::S_KEY;
             if (this->event.key.code == sf::Keyboard::Space)
                 return KeyBind::SPACE;
             if (this->event.key.code == sf::Keyboard::Return)

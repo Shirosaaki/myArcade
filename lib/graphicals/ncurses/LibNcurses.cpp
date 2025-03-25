@@ -42,6 +42,10 @@ arcade::KeyBind arcade::LibNcurses::getKey()
         return KeyBind::A_KEY;
     case 122:
         return KeyBind::Z_KEY;
+    case 113:
+        return KeyBind::Q_KEY;
+    case 115:
+        return KeyBind::S_KEY;
     case 32:
         return KeyBind::SPACE;
     case 10:

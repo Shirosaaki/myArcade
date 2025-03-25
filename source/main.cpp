@@ -123,6 +123,33 @@ int main(int ac, char **av)
                 graphics->Init();
                 lib = it->second.first;
             }
+        } else if (key == arcade::KeyBind::S_KEY) {
+            auto it = gameMap.find(actGame);
+            if (it != gameMap.end()) {
+                ++it;
+                if (it == gameMap.end())
+                    it = gameMap.begin();
+                if (it->first == "lib/arcade_menu.so")
+                    it++;
+                if (it == gameMap.end())
+                    it = gameMap.begin();
+                actGame = it->first;
+                game = it->second.second;
+            }
+        } else if (key == arcade::KeyBind::Q_KEY) {
+            auto it = gameMap.find(actGame);
+            if (it != gameMap.end()) {
+                if (it == gameMap.begin())
+                    it = gameMap.end();
+                --it;
+                if (it->first == "lib/arcade_menu.so")
+                    it--;
+                if (it == gameMap.end())
+                    it = gameMap.begin();
+                actGame = it->first;
+                game = it->second.second;
+                graphics->Clear();
+            }
         } else
             game->setKey(key);
         if (key == arcade::KeyBind::ENTER && actGame == "lib/arcade_menu.so") {
