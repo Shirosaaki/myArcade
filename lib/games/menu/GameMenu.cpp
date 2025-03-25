@@ -94,9 +94,18 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
         entity.first = std::make_pair(0, 0);
         entity.second = std::make_pair(1080, 720);
         entities["assets/menu/menu.png"] = entity;
-        entity.first = std::make_pair(0, 50);
-        entity.second = std::make_pair(720, 500);
-        entities["MENU"] = entity;
+        int i = 330;
+        for (const auto &game : this->gameMap) {
+            entity.first = std::make_pair(390, i);
+            entity.second = std::make_pair(280, 50);
+            std::string gameName = game.first;
+            if ((i+20) / 70 == cursor + 4) {
+                gameName = "*RED*" + game.first;
+                this->actGame = game.first;
+            }
+            entities[gameName] = entity;
+            i += 70;
+        }
     }
     return entities;
 }
