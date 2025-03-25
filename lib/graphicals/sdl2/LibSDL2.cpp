@@ -99,13 +99,18 @@ arcade::KeyBind arcade::LibSDL2::getKey()
 void arcade::LibSDL2::DisplayText(const std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entity)
 {
     SDL_Texture *texture = nullptr;
+    SDL_Color color = {255, 255, 255, 255};
+    std::string text = entity.first;
 
+    if (entity.first.find("*RED*") != std::string::npos) {
+        text = entity.first.substr(5);
+        color = {255, 0, 0, 255};
+    }
     auto it = this->textureCache.find(entity.first);
     if (it != this->textureCache.end()) {
         texture = it->second;
     } else {
-        SDL_Color color = {255, 255, 255, 255};
-        SDL_Surface *surface = TTF_RenderText_Solid(this->font, entity.first.c_str(), color);
+        SDL_Surface *surface = TTF_RenderText_Solid(this->font, text.c_str(), color);
         if (surface == nullptr) {
             std::cerr << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
             SDL_DestroyRenderer(this->renderer);
@@ -191,9 +196,14 @@ void arcade::LibSDL2::Nuke()
     for (auto &texture : this->textureCache) {
         SDL_DestroyTexture(texture.second);
     }
+    this->textureCache.clear();
     TTF_CloseFont(this->font);
+    this->font = nullptr;
     SDL_DestroyRenderer(this->renderer);
+    this->renderer = nullptr;
     SDL_DestroyWindow(this->window);
+    this->window = nullptr;
+    TTF_Quit();
     SDL_Quit();
 }
 
