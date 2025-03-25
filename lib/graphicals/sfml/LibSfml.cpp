@@ -18,6 +18,7 @@ void arcade::LibSfml::Init()
 {
     this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Arcade");
     this->window->setFramerateLimit(60);
+    this->font.loadFromFile("assets/TheShow.ttf");
 }
 
 arcade::KeyBind arcade::LibSfml::getKey()
@@ -54,16 +55,32 @@ void arcade::LibSfml::Display(std::map<std::string, std::pair<std::pair<int, int
 {
     this->window->clear();
     for (auto &entity : entities) {
-        continue;
-        sf::Texture texture;
-        sf::Sprite sprite;
-        if (!texture.loadFromFile(entity.first)) {
-            std::cerr << "Error loading texture: " << entity.first << std::endl;
-            continue;
+        if (entity.first.find("assets/") != std::string::npos) {
+            sf::Texture texture;
+            sf::Sprite sprite;
+            if (!texture.loadFromFile(entity.first)) {
+                std::cerr << "Error loading texture: " << entity.first << std::endl;
+                continue;
+            }
+            sprite.setTexture(texture);
+            sprite.setPosition(entity.second.first.first, entity.second.first.second);
+            this->window->draw(sprite);
         }
-        sprite.setTexture(texture);
-        sprite.setPosition(entity.second.first.first, entity.second.first.second);
-        this->window->draw(sprite);
+    }
+    for (auto &entity : entities) {
+        if (entity.first.find("assets/") == std::string::npos) {
+            sf::Text text;
+            text.setFont(this->font);
+            text.setString(entity.first);
+            text.setCharacterSize(35);
+            text.setFillColor(sf::Color::White);
+            text.setPosition(entity.second.first.first, entity.second.first.second);
+            if (entity.first.find("*RED*") != std::string::npos) {
+                text.setString(entity.first.substr(5));
+                text.setFillColor(sf::Color::Red);
+            }
+            this->window->draw(text);
+        }
     }
     this->window->display();
 }

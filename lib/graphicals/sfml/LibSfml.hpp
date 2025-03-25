@@ -28,6 +28,7 @@ namespace arcade{
             sf::RenderWindow *window;
             sf::Event event;
             sf::Music music;
+            sf::Font font;
     };
 }
 

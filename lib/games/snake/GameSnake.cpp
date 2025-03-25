@@ -27,7 +27,22 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
 
 void arcade::GameSnake::setKey(enum arcade::KeyBind key)
 {
-    (void)key;
+    switch (key) {
+        case arcade::KeyBind::UP_KEY:
+            if (direction != Direction::DOWN) direction = Direction::UP;
+            break;
+        case arcade::KeyBind::DOWN_KEY:
+            if (direction != Direction::UP) direction = Direction::DOWN;
+            break;
+        case arcade::KeyBind::LEFT_KEY:
+            if (direction != Direction::RIGHT) direction = Direction::LEFT;
+            break;
+        case arcade::KeyBind::RIGHT_KEY:
+            if (direction != Direction::LEFT) direction = Direction::RIGHT;
+            break;
+        default:
+            break;
+    }
 }
 
 int arcade::GameSnake::getScore()

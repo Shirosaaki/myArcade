@@ -11,6 +11,13 @@
 
 namespace arcade {
     class GameSnake : public IGames {
+        private:
+            enum Direction {
+                UP,
+                DOWN,
+                LEFT,
+                RIGHT
+            } direction;
         public:
             GameSnake();
             ~GameSnake();
