@@ -33,3 +33,4 @@ namespace arcade {
 }
 
 #endif /* !GAME_SNAKE_HPP_ */
+

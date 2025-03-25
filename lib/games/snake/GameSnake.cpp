@@ -8,7 +8,7 @@
 #include <ncurses.h>
 
 arcade::GameSnake::GameSnake()
-    : board(30, 70)
+    : board(30, 65)
 {
 }
 
