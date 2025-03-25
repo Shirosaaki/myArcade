@@ -17,7 +17,12 @@ namespace arcade {
         public:
             Board(int height, int width);
             ~Board() = default;
-            void initBoard();
+            void addBorder();
+            void clear();
+            void refresh();
+            void init();
+            void addAt(int x, int y, chtype ch);  // Add a character at position 
+            chtype getInput();
     };
 }
 

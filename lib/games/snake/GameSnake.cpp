@@ -18,7 +18,9 @@ arcade::GameSnake::~GameSnake()
 
 void arcade::GameSnake::handleGame()
 {
-    board.initBoard();
+    board.init();
+    board.addAt(10, 10, '0');
+    board.refresh();
 }
 
 std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
