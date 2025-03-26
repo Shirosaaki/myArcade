@@ -94,8 +94,6 @@ set_target_properties(arcade_pacman PROPERTIES
 add_library(arcade_snake SHARED
     lib/games/snake/GameSnake.cpp
     lib/games/snake/GameSnake.hpp
-    lib/games/snake/Board.cpp
-    lib/games/snake/Board.hpp
 )
 
 set_target_properties(arcade_snake PROPERTIES

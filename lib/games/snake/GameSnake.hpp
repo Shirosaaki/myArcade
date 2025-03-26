@@ -6,20 +6,22 @@
 */
 #ifndef GAME_SNAKE_HPP_
     #define GAME_SNAKE_HPP_
-    #include "../IGames.hpp"
-    #include "Board.hpp"
-    #include <map>
+
+#include "../IGames.hpp"
+#include <ncurses.h>
+#include <vector>
+#include <utility>
+#include <cstdlib>
+#include <ctime>
 
 namespace arcade {
     class GameSnake : public IGames {
         private:
-            enum Direction {
-                UP,
-                DOWN,
-                LEFT,
-                RIGHT
-            } direction;
-            Board board;
+            std::vector<std::pair<int, int>> snake;
+            std::pair<int, int> fruit;
+            int score;
+            int direction;
+
         public:
             GameSnake();
             ~GameSnake();
@@ -28,7 +30,8 @@ namespace arcade {
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
             std::string getActGame() override { return "lib/arcade_snake.so"; }
-            void handleGame();
+            void updateGame();
+            void generateFruit();
     };
 }
 

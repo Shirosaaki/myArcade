@@ -1,73 +1,125 @@
-/*
-** EPITECH PROJECT, 2025
-** GameSnake
-** File description:
-** GameSnake
-*/
 #include "GameSnake.hpp"
 #include <ncurses.h>
+#include <vector>
+#include <utility>
+#include <cstdlib>
+#include <ctime>
+#include <unistd.h>
 
-arcade::GameSnake::GameSnake()
-    : board(30, 65)
-{
+arcade::GameSnake::GameSnake() : score(0), direction(1) {
+    srand(time(0));
+
+    snake.push_back(std::make_pair(10, 9));
+    snake.push_back(std::make_pair(10, 8));
+    snake.push_back(std::make_pair(10, 7));
+    generateFruit();
 }
 
-arcade::GameSnake::~GameSnake()
-{
+arcade::GameSnake::~GameSnake() {
 }
 
-void arcade::GameSnake::handleGame()
-{
-    board.init();
-    board.addAt(10, 10, '0');
-    board.refresh();
+void arcade::GameSnake::generateFruit() {
+    fruit = std::make_pair(rand() % 20, rand() % 20);
+    for (const auto& segment : snake) {
+        if (segment == fruit) {
+            generateFruit();
+            return;
+        }
+    }
 }
 
-std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
-{
-    int xMax;
-    int yMax;
+void arcade::GameSnake::updateGame() {
+    for (size_t i = snake.size() - 1; i > 0; --i) {
+        snake[i] = snake[i - 1];
+    }
+
+    switch (direction) {
+        case 0: // Haut
+            snake[0].first--;
+            break;
+        case 1: // Droite
+            snake[0].second++;
+            break;
+        case 2: // Bas
+            snake[0].first++;
+            break;
+        case 3: // Gauche
+            snake[0].second--;
+            break;
+    }
+
+    if (snake[0] == fruit) {
+        snake.push_back(snake.back());
+        score += 10;
+        generateFruit();
+    }
+}
+
+std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib) {
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
 
     if (lib == arcade::TGraphics::NCURSES) {
-        handleGame();
-    } else
+        updateGame();
+        clear();
+
+        for (const auto& segment : snake) {
+            mvprintw(segment.first, segment.second, "O");
+        }
+
+        mvprintw(snake[0].first, snake[0].second, "$");
+        mvprintw(fruit.first, fruit.second, "A");
+        refresh();
+
+        int ch = getch();
+        switch (ch) {
+            case KEY_UP:
+                setKey(arcade::KeyBind::UP_KEY);
+                break;
+            case KEY_DOWN:
+                setKey(arcade::KeyBind::DOWN_KEY);
+                break;
+            case KEY_LEFT:
+                setKey(arcade::KeyBind::LEFT_KEY);
+                break;
+            case KEY_RIGHT:
+                setKey(arcade::KeyBind::RIGHT_KEY);
+                break;
+        }
+        usleep(100000);
+    } else {
         entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
+    }
     return entities;
 }
 
-void arcade::GameSnake::setKey(enum arcade::KeyBind key)
-{
+void arcade::GameSnake::setKey(enum arcade::KeyBind key) {
     switch (key) {
         case arcade::KeyBind::UP_KEY:
-            if (direction != Direction::DOWN) direction = Direction::UP;
-            break;
-        case arcade::KeyBind::DOWN_KEY:
-            if (direction != Direction::UP) direction = Direction::DOWN;
-            break;
-        case arcade::KeyBind::LEFT_KEY:
-            if (direction != Direction::RIGHT) direction = Direction::LEFT;
+            if (direction != 2) direction = 0;
             break;
         case arcade::KeyBind::RIGHT_KEY:
-            if (direction != Direction::LEFT) direction = Direction::RIGHT;
+            if (direction != 3) direction = 1;
+            break;
+        case arcade::KeyBind::DOWN_KEY:
+            if (direction != 0) direction = 2;
+            break;
+        case arcade::KeyBind::LEFT_KEY:
+            if (direction != 1) direction = 3;
             break;
         default:
             break;
     }
 }
 
-int arcade::GameSnake::getScore()
-{
-    return 0;
+int arcade::GameSnake::getScore() {
+    return score;
 }
 
-std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib)
-{
+std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib) {
     (void)lib;
     return "";
 }
 
-extern "C" arcade::IGames *entryPoint()
-{
+extern "C" arcade::IGames *entryPoint() {
     return new arcade::GameSnake();
 }
