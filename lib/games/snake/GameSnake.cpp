@@ -18,6 +18,11 @@ arcade::GameSnake::GameSnake() : score(0), direction(1) {
 arcade::GameSnake::~GameSnake() {
 }
 
+void arcade::GameSnake::createBox() {
+    boxGame = newwin(35, 70, 7, 55);
+    box(boxGame, 0, 0);
+}
+
 void arcade::GameSnake::generateFruit() {
     fruit = std::make_pair(rand() % 20, rand() % 20);
     for (const auto& segment : snake) {
@@ -59,16 +64,15 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
 
     if (lib == arcade::TGraphics::NCURSES) {
+        createBox();
         updateGame();
-        clear();
 
         for (const auto& segment : snake) {
-            mvprintw(segment.first, segment.second, "O");
+            mvwprintw(boxGame, segment.first, segment.second, "O");
         }
-
-        mvprintw(snake[0].first, snake[0].second, "$");
-        mvprintw(fruit.first, fruit.second, "A");
-        refresh();
+        mvwprintw(boxGame ,snake[0].first, snake[0].second, "$");
+        mvwprintw(boxGame ,fruit.first, fruit.second, "A");
+        wrefresh(boxGame);
 
         int ch = getch();
         switch (ch) {

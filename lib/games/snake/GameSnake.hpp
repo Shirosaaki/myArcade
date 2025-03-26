@@ -21,6 +21,7 @@ namespace arcade {
             std::pair<int, int> fruit;
             int score;
             int direction;
+            WINDOW *boxGame;
 
         public:
             GameSnake();
@@ -32,6 +33,7 @@ namespace arcade {
             std::string getActGame() override { return "lib/arcade_snake.so"; }
             void updateGame();
             void generateFruit();
+            void createBox();
     };
 }
 
