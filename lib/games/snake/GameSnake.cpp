@@ -67,11 +67,13 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
         createBox();
         updateGame();
 
+        mvprintw(4, 75, "WELCOME TO SNAKE !");
         for (const auto& segment : snake) {
             mvwprintw(boxGame, segment.first, segment.second, "O");
         }
         mvwprintw(boxGame ,snake[0].first, snake[0].second, "$");
         mvwprintw(boxGame ,fruit.first, fruit.second, "A");
+        mvprintw(6, 55, "SCORE: %d", score);
         wrefresh(boxGame);
 
         int ch = getch();
