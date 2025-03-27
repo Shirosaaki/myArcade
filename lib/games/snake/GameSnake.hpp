@@ -22,6 +22,9 @@ namespace arcade {
             int score;
             int direction;
             WINDOW *boxGame;
+            int xMaxBox;
+            int yMaxBox;
+            bool gameOver;
 
         public:
             GameSnake();
@@ -34,6 +37,8 @@ namespace arcade {
             void updateGame();
             void generateFruit();
             void createBox();
+            bool checkCollisions();
+            bool isGameOver();
     };
 }
 

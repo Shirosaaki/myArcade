@@ -6,12 +6,13 @@
 #include <ctime>
 #include <unistd.h>
 
-arcade::GameSnake::GameSnake() : score(0), direction(1) {
+arcade::GameSnake::GameSnake() : score(0), direction(1), gameOver(false) {
     srand(time(0));
 
     snake.push_back(std::make_pair(10, 9));
     snake.push_back(std::make_pair(10, 8));
     snake.push_back(std::make_pair(10, 7));
+
     generateFruit();
 }
 
@@ -21,6 +22,7 @@ arcade::GameSnake::~GameSnake() {
 void arcade::GameSnake::createBox() {
     boxGame = newwin(35, 70, 7, 55);
     box(boxGame, 0, 0);
+    getmaxyx(boxGame, yMaxBox, xMaxBox);
 }
 
 void arcade::GameSnake::generateFruit() {
@@ -60,38 +62,61 @@ void arcade::GameSnake::updateGame() {
     }
 }
 
+bool arcade::GameSnake::checkCollisions() {
+    auto head = snake.front();
+     if (head.first <= 1 || head.first >= 34 || head.second <= 1 || head.second >= 69) {
+        mvprintw(1, 75, "Collision ");
+        return true;
+    }
+    return false;
+}
+
+bool arcade::GameSnake::isGameOver() {
+    gameOver = checkCollisions();
+    return gameOver;
+}
+
 std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib) {
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
 
-    if (lib == arcade::TGraphics::NCURSES) {
-        createBox();
-        updateGame();
 
-        mvprintw(4, 75, "WELCOME TO SNAKE !");
-        for (const auto& segment : snake) {
-            mvwprintw(boxGame, segment.first, segment.second, "O");
-        }
-        mvwprintw(boxGame ,snake[0].first, snake[0].second, "$");
-        mvwprintw(boxGame ,fruit.first, fruit.second, "A");
-        mvprintw(6, 55, "SCORE: %d", score);
-        wrefresh(boxGame);
+    if (lib == arcade::TGraphics::NCURSES) {  // Ajouter une condition si on appuie sur restart
+        while (!isGameOver()) {
+            createBox();
+            updateGame();
 
-        int ch = getch();
-        switch (ch) {
-            case KEY_UP:
-                setKey(arcade::KeyBind::UP_KEY);
-                break;
-            case KEY_DOWN:
-                setKey(arcade::KeyBind::DOWN_KEY);
-                break;
-            case KEY_LEFT:
-                setKey(arcade::KeyBind::LEFT_KEY);
-                break;
-            case KEY_RIGHT:
-                setKey(arcade::KeyBind::RIGHT_KEY);
-                break;
+            checkCollisions();
+
+            mvprintw(2, 75, "Dimensions : %d x %d", xMaxBox, yMaxBox);
+            mvprintw(4, 75, "WELCOME TO SNAKE !");
+            for (const auto& segment : snake) {
+                mvwprintw(boxGame, segment.first, segment.second, "O");
+            }
+            mvwprintw(boxGame ,snake[0].first, snake[0].second, "$");
+            mvwprintw(boxGame ,fruit.first, fruit.second, "A");
+            mvprintw(6, 55, "SCORE: %d", score);
+            wrefresh(boxGame);
+
+            int ch = getch();
+            switch (ch) {
+                case KEY_UP:
+                    setKey(arcade::KeyBind::UP_KEY);
+                    break;
+                case KEY_DOWN:
+                    setKey(arcade::KeyBind::DOWN_KEY);
+                    break;
+                case KEY_LEFT:
+                    setKey(arcade::KeyBind::LEFT_KEY);
+                    break;
+                case KEY_RIGHT:
+                    setKey(arcade::KeyBind::RIGHT_KEY);
+                    break;
+            }
+            usleep(100000);
         }
-        usleep(100000);
+        erase();
+        mvprintw(12, 75, "GAME OVER ! Your score is : %d", score);
+        clearok(boxGame, TRUE);
     } else {
         entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
     }
