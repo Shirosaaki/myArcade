@@ -104,7 +104,7 @@ set_target_properties(arcade_snake PROPERTIES
 
 # ---- Declare executable ----
 
-add_executable(arcade_exe source/main.cpp source/load_libs.cpp)
+add_executable(arcade_exe source/main.cpp source/GameCore.cpp source/Error.cpp)
 add_executable(arcade::exe ALIAS arcade_exe)
 
 set_property(TARGET arcade_exe PROPERTY OUTPUT_NAME arcade)
