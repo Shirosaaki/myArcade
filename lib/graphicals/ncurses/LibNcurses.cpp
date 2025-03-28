@@ -28,8 +28,12 @@ void arcade::LibNcurses::Init()
     init_pair(4, COLOR_BLUE, COLOR_BLACK);
     init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(6, COLOR_CYAN, COLOR_BLACK);
-    init_pair(7, COLOR_WHITE, COLOR_BLACK);
-    init_pair(9, COLOR_BRIGHT_MAGENTA, COLOR_BLACK);
+    init_pair(7, COLOR_WHITE, COLOR_BLACK); // pacgum
+    init_pair(9, COLOR_BRIGHT_MAGENTA, COLOR_BLACK); // superpacgum
+    init_pair(10, COLOR_BLACK, COLOR_YELLOW); // pacman
+    init_pair(11, COLOR_BLACK, COLOR_BLUE); // Wall
+    init_pair(12, COLOR_BLACK, COLOR_RED); // Ghost Red
+    
 }
 
 arcade::KeyBind arcade::LibNcurses::getKey()
