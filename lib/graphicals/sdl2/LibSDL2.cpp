@@ -56,6 +56,14 @@ void arcade::LibSDL2::Init()
         SDL_Quit();
         exit(84);
     }
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        std::cerr << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
+        SDL_DestroyRenderer(this->renderer);
+        SDL_DestroyWindow(this->window);
+        SDL_Quit();
+        exit(84);
+    }
+    Mix_AllocateChannels(16);
 }
 
 arcade::KeyBind arcade::LibSDL2::getKey()
@@ -187,7 +195,26 @@ void arcade::LibSDL2::Display(std::map<std::string, std::pair<std::pair<int, int
 
 void arcade::LibSDL2::PlaySound(std::string sound)
 {
-    (void)sound;
+    if (sound == this->currentSound) {
+        return;
+    }
+    this->currentSound = sound;
+    Mix_Music *music = Mix_LoadMUS(sound.c_str());
+    if (music == nullptr) {
+        std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
+        SDL_DestroyRenderer(this->renderer);
+        SDL_DestroyWindow(this->window);
+        SDL_Quit();
+        exit(84);
+    }
+    if (Mix_PlayMusic(music, -1) == -1) {
+        std::cerr << "Mix_PlayMusic Error: " << Mix_GetError() << std::endl;
+        SDL_DestroyRenderer(this->renderer);
+        SDL_DestroyWindow(this->window);
+        SDL_Quit();
+        exit(84);
+    }
+    //Mix_FreeMusic(music);
 }
 
 void arcade::LibSDL2::Clear()
@@ -203,6 +230,10 @@ void arcade::LibSDL2::Nuke()
     this->textureCache.clear();
     TTF_CloseFont(this->font);
     this->font = nullptr;
+    Mix_HaltMusic();
+    Mix_FreeMusic(this->music);
+    this->music = nullptr;
+    Mix_CloseAudio();
     SDL_DestroyRenderer(this->renderer);
     this->renderer = nullptr;
     SDL_DestroyWindow(this->window);

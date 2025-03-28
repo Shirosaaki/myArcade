@@ -19,6 +19,7 @@ void arcade::LibSfml::Init()
     this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Arcade");
     this->window->setFramerateLimit(60);
     this->font.loadFromFile("assets/TheShow.ttf");
+    this->music.setVolume(50);
 }
 
 arcade::KeyBind arcade::LibSfml::getKey()
@@ -91,9 +92,13 @@ void arcade::LibSfml::Display(std::map<std::string, std::pair<std::pair<int, int
 
 void arcade::LibSfml::PlaySound(std::string sound)
 {
+    if (sound == this->currentSound) {
+        return;
+    }
+    this->currentSound = sound;
     if (!this->music.openFromFile(sound)) {
-        std::cerr << "Error loading music" << std::endl;
-        exit(84);
+        std::cerr << "Error: Could not load sound file: " << sound << std::endl;
+        return;
     }
     this->music.play();
 }
@@ -105,6 +110,7 @@ void arcade::LibSfml::Clear()
 
 void arcade::LibSfml::Nuke()
 {
+    this->music.stop();
     this->window->close();
     delete this->window;
 }

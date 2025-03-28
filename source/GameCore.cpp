@@ -261,5 +261,6 @@ void GameCore::run()
             this->setTypeCurrentGame(_games[currentGameKey].first);
             _currentGraphical->Clear();
         }
+        _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
     }
 }

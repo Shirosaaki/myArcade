@@ -135,8 +135,9 @@ int arcade::GameMenu::getScore()
 
 std::string arcade::GameMenu::getSound(enum TGraphics lib)
 {
-    (void)lib;
-    return "";
+    if (lib == TGraphics::NCURSES)
+        return "";
+    return "assets/menu/TheShost.wav";
 }
 
 std::string arcade::GameMenu::getActGame()

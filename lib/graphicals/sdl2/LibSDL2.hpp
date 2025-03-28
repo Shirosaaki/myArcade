@@ -15,6 +15,7 @@
     #include <SDL2/SDL_audio.h>
     #include <SDL2/SDL_image.h>
     #include <SDL2/SDL_ttf.h>
+    #include <SDL2/SDL_mixer.h>
     #include <unordered_map>
  
  namespace arcade {
@@ -39,7 +40,9 @@
             TTF_Font *font;
             SDL_Texture *texture;
             SDL_Rect rect;
+            Mix_Music *music;
             std::unordered_map<std::string, SDL_Texture*> textureCache;
+            std::string currentSound;
     };
 }
 

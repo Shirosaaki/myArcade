@@ -29,6 +29,7 @@ namespace arcade{
             sf::Event event;
             sf::Music music;
             sf::Font font;
+            std::string currentSound;
     };
 }
 
