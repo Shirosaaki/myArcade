@@ -13,6 +13,7 @@
 #include <utility>
 #include <cstdlib>
 #include <ctime>
+#include "../../graphicals/ncurses/LibNcurses.hpp"
 
 namespace arcade {
     class GameSnake : public IGames {
@@ -25,6 +26,7 @@ namespace arcade {
             int xMaxBox;
             int yMaxBox;
             bool gameOver;
+            LibNcurses *ncurses;
 
         public:
             GameSnake();
@@ -34,13 +36,13 @@ namespace arcade {
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
             std::string getActGame() override { return "lib/arcade_snake.so"; }
-            void updateGame();
+            void updateGame(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void generateFruit();
             void createBox();
             bool checkCollisions();
             bool isGameOver();
+            void run();
     };
 }
 
 #endif /* !GAME_SNAKE_HPP_ */
-
