@@ -81,12 +81,12 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> body_snake;
     std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
 
-    if (lib == arcade::TGraphics::NCURSES) {
-        body_snake["$"] = std::make_pair(std::make_pair(snake[0].first, snake[0].second), std::make_pair(2, 2));
 
+    if (lib == arcade::TGraphics::NCURSES) {  // Ajouter une condition si on appuie sur restart
         int i = 0;
         for (const auto& segment : snake) {
             if (i == 0) {
+                body_snake["@*head"] = std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1));
                 i++;
                 continue;
             }
@@ -110,7 +110,7 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
                 setKey(arcade::KeyBind::RIGHT_KEY);
                 break;
             }
-        usleep(100000);
+            usleep(100000);
     } else {
         entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
     }
