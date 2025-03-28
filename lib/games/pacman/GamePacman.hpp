@@ -40,6 +40,7 @@ namespace arcade {
             Direction nextDirection = NONE;
             int score = 0;
             int lives = 3;
+            std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
     };
 }
 

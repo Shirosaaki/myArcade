@@ -6,9 +6,6 @@
 */
 #include "GamePacman.hpp"
 
-// Ajoutez une variable pour stocker le dernier moment où Pac-Man a été déplacé
-std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
-
 arcade::GamePacman::GamePacman()
 {
     map = {
