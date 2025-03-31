@@ -56,20 +56,16 @@ void arcade::LibSDL2::Init()
         SDL_Quit();
         exit(84);
     }
-    if (SDL_INIT_GAMECONTROLLER != 0) {
-        if (SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt") == -1) {
-            std::cerr << "Failed to load controller mappings: " << SDL_GetError() << std::endl;
-        }
-    }
-    this->controller = SDL_GameControllerOpen(0);
-    /*if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+    if (SDL_Init(SDL_INIT_JOYSTICK) != 0)
+        std::cerr << "SDL_INIT Error: " << SDL_GetError() << std::endl;
+    this->joystick = SDL_JoystickOpen(0);
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         std::cerr << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
-        SDL_DestroyRenderer(this->renderer);
-        SDL_DestroyWindow(this->window);
-        SDL_Quit();
-        exit(84);
+        return;
     }
-    Mix_AllocateChannels(16);*/
+    Mix_AllocateChannels(16);
+    this->music = nullptr;
+    this->currentSound = "";
 }
 
 arcade::KeyBind arcade::LibSDL2::getKey()
@@ -81,34 +77,29 @@ arcade::KeyBind arcade::LibSDL2::getKey()
         switch (event.type) {
             case SDL_QUIT:
                 return KeyBind::ESC;
-            case SDL_CONTROLLERBUTTONDOWN:
-                std::cout << "Button pressed: " << event.cbutton.button << std::endl;
-                if (controller) {
-                    switch (event.cbutton.button) {
-                        case SDL_CONTROLLER_BUTTON_A: return KeyBind::ENTER;
-                        case SDL_CONTROLLER_BUTTON_B: return KeyBind::ESC;
-                        case SDL_CONTROLLER_BUTTON_DPAD_UP: return KeyBind::UP_KEY;
-                        case SDL_CONTROLLER_BUTTON_DPAD_DOWN: return KeyBind::DOWN_KEY;
-                        case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return KeyBind::LEFT_KEY;
-                        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: return KeyBind::RIGHT_KEY;
-                        case SDL_CONTROLLER_BUTTON_START: return KeyBind::SPACE;
-                    }
+            case SDL_JOYAXISMOTION:
+                if (event.jaxis.axis == 0) {
+                    if (event.jaxis.value < -deadZone)
+                        return KeyBind::LEFT_KEY;
+                    else if (event.jaxis.value > deadZone)
+                        return KeyBind::RIGHT_KEY;
+                }
+                if (event.jaxis.axis == 1) {
+                    if (event.jaxis.value < -deadZone)
+                        return KeyBind::UP_KEY;
+                    else if (event.jaxis.value > deadZone)
+                        return KeyBind::DOWN_KEY;
                 }
                 break;
-            case SDL_CONTROLLERAXISMOTION:
-                std::cout << "Axis: " << event.caxis.axis << " Value: " << event.caxis.value << std::endl;
-                if (controller) {
-                    switch (event.caxis.axis) {
-                        case SDL_CONTROLLER_AXIS_LEFTX:
-                            if (event.caxis.value > deadZone) return KeyBind::RIGHT_KEY;
-                            if (event.caxis.value < -deadZone) return KeyBind::LEFT_KEY;
-                            break;
-                        case SDL_CONTROLLER_AXIS_LEFTY:
-                            if (event.caxis.value > deadZone) return KeyBind::DOWN_KEY;
-                            if (event.caxis.value < -deadZone) return KeyBind::UP_KEY;
-                            break;
-                    }
-                }
+            case SDL_JOYBUTTONDOWN:
+                if (event.jbutton.button == 0)
+                    return KeyBind::A_KEY;
+                if (event.jbutton.button == 1)
+                    return KeyBind::SPACE;
+                if (event.jbutton.button == 2)
+                    return KeyBind::Z_KEY;
+                if (event.jbutton.button == 3)
+                    return KeyBind::A_KEY;
                 break;
 
             case SDL_KEYDOWN:
@@ -222,22 +213,19 @@ void arcade::LibSDL2::PlaySound(std::string sound)
         return;
     }
     this->currentSound = sound;
-    /*Mix_Music *music = Mix_LoadMUS(sound.c_str());
-    if (music == nullptr) {
+    this->music = Mix_LoadMUS(sound.c_str());
+    if (this->music == nullptr) {
         std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
-        SDL_DestroyRenderer(this->renderer);
-        SDL_DestroyWindow(this->window);
-        SDL_Quit();
-        exit(84);
+        return;
     }
-    if (Mix_PlayMusic(music, -1) == -1) {
+    if (Mix_PlayMusic(this->music, -1) == -1) {
         std::cerr << "Mix_PlayMusic Error: " << Mix_GetError() << std::endl;
-        SDL_DestroyRenderer(this->renderer);
-        SDL_DestroyWindow(this->window);
-        SDL_Quit();
-        exit(84);
-    }*/
-    //Mix_FreeMusic(music);
+        return;
+    }
+    if (Mix_VolumeMusic(MIX_MAX_VOLUME / 2) == -1) {
+        std::cerr << "Mix_VolumeMusic Error: " << Mix_GetError() << std::endl;
+        return;
+    }
 }
 
 void arcade::LibSDL2::Clear()
@@ -253,18 +241,26 @@ void arcade::LibSDL2::Nuke()
     this->textureCache.clear();
     TTF_CloseFont(this->font);
     this->font = nullptr;
-    if (this->controller) {
-        SDL_GameControllerClose(this->controller);
-        this->controller = nullptr;
+    if (this->joystick) {
+        SDL_JoystickClose(this->joystick);
+        this->joystick = nullptr;
     }
-    /*Mix_HaltMusic();
-    Mix_FreeMusic(this->music);
-    this->music = nullptr;
-    Mix_CloseAudio();*/
-    SDL_DestroyRenderer(this->renderer);
-    this->renderer = nullptr;
-    SDL_DestroyWindow(this->window);
-    this->window = nullptr;
+    if (this->music) {
+        Mix_HaltMusic();
+        Mix_FreeMusic(this->music);
+        this->music = nullptr;
+    }
+    if (this->window) {
+        SDL_DestroyWindow(this->window);
+        this->window = nullptr;
+    }
+    if (this->renderer) {
+        SDL_DestroyRenderer(this->renderer);
+        this->renderer = nullptr;
+    }
+    IMG_Quit();
+    Mix_CloseAudio();
+    Mix_Quit();
     TTF_Quit();
     SDL_Quit();
 }

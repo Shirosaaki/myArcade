@@ -44,7 +44,7 @@
             Mix_Music *music;
             std::unordered_map<std::string, SDL_Texture*> textureCache;
             std::string currentSound;
-            SDL_GameController *controller;
+            SDL_Joystick *joystick;
     };
 }
 
