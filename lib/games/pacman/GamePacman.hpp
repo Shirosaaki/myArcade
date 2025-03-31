@@ -13,7 +13,7 @@
     #include <cmath>
     #include <queue>
     #include <unordered_map>
-    #include <functional> // Pour std::hash
+    #include <functional> // for std::hash
 
 namespace arcade {
     class GamePacman : public IGames {
@@ -38,6 +38,7 @@ namespace arcade {
             void moveRedGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void movePinkGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void moveOrangeGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
+            void moveBlueGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void checkCollision(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void UpdateGame(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             std::pair<int, int> findShortestPath(std::pair<int, int> start, std::pair<int, int> end);
@@ -51,6 +52,7 @@ namespace arcade {
             std::pair<int, int> pink_ghost_pos; 
             std::pair<int, int> start_pink_ghost_pos;
             std::pair<int, int> blue_ghost_pos;
+            std::pair<int, int> start_blue_ghost_pos;
             std::pair<int, int> orange_ghost_pos;
             std::pair<int, int> start_orange_ghost_pos;
             std::pair<int, int> tpl_pos;
@@ -65,6 +67,7 @@ namespace arcade {
             std::chrono::time_point<std::chrono::steady_clock> lastRedGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastPinkGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastOrangeGhostMoveTime = std::chrono::steady_clock::now();
+            std::chrono::time_point<std::chrono::steady_clock> lastBlueGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastFearTime = std::chrono::steady_clock::now();
     };
 }

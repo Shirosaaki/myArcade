@@ -49,9 +49,11 @@ arcade::GamePacman::GamePacman()
     red_ghost_pos = std::make_pair(11, map[0].size()/ 2 - 1);
     pink_ghost_pos = std::make_pair(13, map[0].size()/ 2 - 1);
     orange_ghost_pos = std::make_pair(13, map[0].size()/ 2 - 2);
+    blue_ghost_pos = std::make_pair(13, map[0].size()/ 2);
     start_red_ghost_pos = red_ghost_pos;
     start_pink_ghost_pos = pink_ghost_pos;
     start_orange_ghost_pos = orange_ghost_pos;
+    start_blue_ghost_pos = blue_ghost_pos;
 }
 
 arcade::GamePacman::~GamePacman()
@@ -168,7 +170,60 @@ void arcade::GamePacman::moveOrangeGhost(std::map<std::string, std::pair<std::pa
     orange_ghost_pos = nextPos;
 }
 
+void arcade::GamePacman::moveBlueGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastBlueGhostMoveTime);
 
+    if (elapsed.count() < 300)
+        return;
+    lastBlueGhostMoveTime = now;
+    entities["*clear"] = std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0));
+
+    // Calculer la position intermédiaire basée sur la direction de Pac-Man
+    std::pair<int, int> target = player_pos;
+    switch (currentDirection) {
+        case UP:
+            target.first -= 2;
+            break;
+        case DOWN:
+            target.first += 2;
+            break;
+        case LEFT:
+            target.second -= 2;
+            break;
+        case RIGHT:
+            target.second += 2;
+            break;
+        default:
+            break;
+    }
+
+    // Vérifier que la position intermédiaire est dans les limites de la carte
+    if (target.first < 0) target.first = 0;
+    if (target.first >= map.size()) target.first = map.size() - 1;
+    if (target.second < 0) target.second = 0;
+    if (target.second >= map[0].size()) target.second = map[0].size() - 1;
+
+    // Calculer la position cible pour le fantôme bleu
+    std::pair<int, int> blueTarget = {
+        target.first + (target.first - red_ghost_pos.first),
+        target.second + (target.second - red_ghost_pos.second)
+    };
+
+    // Vérifier que la position cible est dans les limites de la carte
+    if (blueTarget.first < 0) blueTarget.first = 0;
+    if (blueTarget.first >= map.size()) blueTarget.first = map.size() - 1;
+    if (blueTarget.second < 0) blueTarget.second = 0;
+    if (blueTarget.second >= map[0].size()) blueTarget.second = map[0].size() - 1;
+
+    // Déplacer le fantôme bleu vers la position cible
+    std::pair<int, int> nextPos = findShortestPath(blue_ghost_pos, blueTarget);
+    if (Fear == true) {
+        nextPos = findFarthestPath(blue_ghost_pos, player_pos);
+    }
+    blue_ghost_pos = nextPos;
+}
 
 void arcade::GamePacman::movePinkGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
 {
@@ -304,11 +359,13 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
         entities["R"] = std::make_pair(red_ghost_pos, std::make_pair(12, 12));
         entities["P"] = std::make_pair(pink_ghost_pos, std::make_pair(14, 14));
         entities["O"] = std::make_pair(orange_ghost_pos, std::make_pair(16, 16));
+        entities["B"] = std::make_pair(blue_ghost_pos, std::make_pair(15, 15));
     } else {
         entities["C"] = std::make_pair(player_pos, std::make_pair(8, 8));
         entities["R"] = std::make_pair(red_ghost_pos, std::make_pair(13, 13));
         entities["P"] = std::make_pair(pink_ghost_pos, std::make_pair(13, 13));
         entities["O"] = std::make_pair(orange_ghost_pos, std::make_pair(13, 13));
+        entities["B"] = std::make_pair(blue_ghost_pos, std::make_pair(13, 13));
     }
     std::string my_score = "Score : ";
     my_score += std::to_string(score);
@@ -457,6 +514,7 @@ void arcade::GamePacman::UpdateGame(std::map<std::string, std::pair<std::pair<in
     moveRedGhost(entities);
     movePinkGhost(entities);
     moveOrangeGhost(entities);
+    moveBlueGhost(entities);
     checkCollision(entities);
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastFearTime);
