@@ -20,12 +20,10 @@ void arcade::LibSfml::Init()
     this->window->setFramerateLimit(60);
     this->font.loadFromFile("assets/TheShow.ttf");
     this->music.setVolume(50);
-    // init joystick
     if (!sf::Joystick::isConnected(0)) {
         std::cerr << "No controller connected!" << std::endl;
     }
     else {
-        std::cout << "Controller connected!" << std::endl;
         sf::Joystick::Identification id = sf::Joystick::getIdentification(0);
         if (id.vendorId == 0x045e && id.productId == 0x028e) {
             std::cout << "Controller is an Xbox controller!" << std::endl;
@@ -64,7 +62,6 @@ arcade::KeyBind arcade::LibSfml::getKey()
                 return KeyBind::RIGHT_KEY;
         }
     }
-    //ssf::Joystick::update();
     if (sf::Joystick::isConnected(0)) {
         if (sf::Joystick::isButtonPressed(0, 1))
             return KeyBind::ENTER;
@@ -76,10 +73,8 @@ arcade::KeyBind arcade::LibSfml::getKey()
             return KeyBind::Q_KEY;
         if (sf::Joystick::isButtonPressed(0, 5))
             return KeyBind::S_KEY;
-        if (sf::Joystick::isButtonPressed(0, 0)) {
-            std::cout << "Z" << std::endl;
+        if (sf::Joystick::isButtonPressed(0, 0))
             return KeyBind::Z_KEY;
-        }
         if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) < -50)
             return KeyBind::LEFT_KEY;
         if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 50)
@@ -153,5 +148,6 @@ void arcade::LibSfml::Nuke()
 
 extern "C" arcade::IGraphics *entryPoint()
 {
+    std::cout << "Loading Sfml" << std::endl;
     return new arcade::LibSfml();
 }

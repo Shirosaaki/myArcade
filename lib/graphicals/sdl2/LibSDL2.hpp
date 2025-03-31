@@ -39,7 +39,6 @@
             SDL_Window *window;
             SDL_Renderer *renderer;
             TTF_Font *font;
-            SDL_Texture *texture;
             SDL_Rect rect;
             Mix_Music *music;
             std::unordered_map<std::string, SDL_Texture*> textureCache;

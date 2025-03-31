@@ -18,6 +18,7 @@ arcade::LibSDL2::~LibSDL2()
 
 void arcade::LibSDL2::Init()
 {
+    this->currentSound = "";
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         exit(84);
@@ -53,19 +54,20 @@ void arcade::LibSDL2::Init()
         std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
         SDL_DestroyRenderer(this->renderer);
         SDL_DestroyWindow(this->window);
+        TTF_Quit();
         SDL_Quit();
         exit(84);
     }
     if (SDL_Init(SDL_INIT_JOYSTICK) != 0)
         std::cerr << "SDL_INIT Error: " << SDL_GetError() << std::endl;
-    this->joystick = SDL_JoystickOpen(0);
+    else
+        this->joystick = SDL_JoystickOpen(0);
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         std::cerr << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
         return;
     }
     Mix_AllocateChannels(16);
     this->music = nullptr;
-    this->currentSound = "";
 }
 
 arcade::KeyBind arcade::LibSDL2::getKey()
@@ -143,19 +145,13 @@ void arcade::LibSDL2::DisplayText(const std::pair<std::string, std::pair<std::pa
         SDL_Surface *surface = TTF_RenderText_Solid(this->font, text.c_str(), color);
         if (surface == nullptr) {
             std::cerr << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         texture = SDL_CreateTextureFromSurface(this->renderer, surface);
         SDL_FreeSurface(surface);
         if (texture == nullptr) {
             std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         this->textureCache[entity.first] = texture;
     }
@@ -174,19 +170,13 @@ void arcade::LibSDL2::DisplayImage(const std::pair<std::string, std::pair<std::p
         SDL_Surface *surface = IMG_Load(entity.first.c_str());
         if (surface == nullptr) {
             std::cerr << "IMG_Load Error: " << SDL_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         texture = SDL_CreateTextureFromSurface(this->renderer, surface);
         SDL_FreeSurface(surface);
         if (texture == nullptr) {
             std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         this->textureCache[entity.first] = texture;
     }
@@ -196,17 +186,15 @@ void arcade::LibSDL2::DisplayImage(const std::pair<std::string, std::pair<std::p
 
 void arcade::LibSDL2::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
 {
-    SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
+    SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
     SDL_RenderClear(this->renderer);
     for (auto &entity : entities) {
-        if (entity.first.find("assets/") != std::string::npos) {
+        if (entity.first.find("assets/") != std::string::npos)
             DisplayImage(entity);
-        }
     }
     for (auto &entity : entities) {
-        if (entity.first.find("assets/") == std::string::npos) {
+        if (entity.first.find("assets/") == std::string::npos)
             DisplayText(entity);
-        }
     }
     SDL_RenderPresent(this->renderer);
 }
@@ -242,9 +230,6 @@ void arcade::LibSDL2::Nuke()
     for (auto &texture : this->textureCache) {
         SDL_DestroyTexture(texture.second);
     }
-    this->textureCache.clear();
-    TTF_CloseFont(this->font);
-    this->font = nullptr;
     if (this->joystick) {
         SDL_JoystickClose(this->joystick);
         this->joystick = nullptr;
@@ -254,19 +239,14 @@ void arcade::LibSDL2::Nuke()
         Mix_FreeMusic(this->music);
         this->music = nullptr;
     }
-    if (this->window) {
-        SDL_DestroyWindow(this->window);
-        this->window = nullptr;
-    }
     if (this->renderer) {
         SDL_DestroyRenderer(this->renderer);
         this->renderer = nullptr;
     }
-    IMG_Quit();
-    Mix_CloseAudio();
-    Mix_Quit();
-    TTF_Quit();
-    SDL_Quit();
+    if (this->window) {
+        SDL_DestroyWindow(this->window);
+        this->window = nullptr;
+    }
 }
 
 extern "C" arcade::IGraphics *entryPoint()
