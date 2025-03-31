@@ -20,6 +20,17 @@ void arcade::LibSfml::Init()
     this->window->setFramerateLimit(60);
     this->font.loadFromFile("assets/TheShow.ttf");
     this->music.setVolume(50);
+    // init joystick
+    if (!sf::Joystick::isConnected(0)) {
+        std::cerr << "No controller connected!" << std::endl;
+    }
+    else {
+        std::cout << "Controller connected!" << std::endl;
+        sf::Joystick::Identification id = sf::Joystick::getIdentification(0);
+        if (id.vendorId == 0x045e && id.productId == 0x028e) {
+            std::cout << "Controller is an Xbox controller!" << std::endl;
+        }
+    }
 }
 
 arcade::KeyBind arcade::LibSfml::getKey()
@@ -27,9 +38,6 @@ arcade::KeyBind arcade::LibSfml::getKey()
     while (this->window->pollEvent(this->event)) {
         if (this->event.type == sf::Event::Closed) {
             return KeyBind::ESC;
-        }
-        if (event.type == sf::Event::JoystickConnected) {
-            std::cout << "Controller " << event.joystickConnect.joystickId << " connected\n";
         }
         if (this->event.type == sf::Event::KeyPressed) {
             if (this->event.key.code == sf::Keyboard::Escape)
@@ -56,16 +64,30 @@ arcade::KeyBind arcade::LibSfml::getKey()
                 return KeyBind::RIGHT_KEY;
         }
     }
-    sf::Joystick::update();
+    //ssf::Joystick::update();
     if (sf::Joystick::isConnected(0)) {
-        std::cout << "Controller connected!" << std::endl;
-        sf::Joystick::Identification id = sf::Joystick::getIdentification(0);
-        if (id.vendorId == 0x045e && id.productId == 0x028e) {
-            float leftStickX = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
-            if (sf::Joystick::isButtonPressed(0, 0)) {
-                std::cout << "Bouton A (Xbox) pressé!" << std::endl;
-            }
+        if (sf::Joystick::isButtonPressed(0, 1))
+            return KeyBind::ENTER;
+        if (sf::Joystick::isButtonPressed(0, 2))
+            return KeyBind::SPACE;
+        if (sf::Joystick::isButtonPressed(0, 3))
+            return KeyBind::A_KEY;
+        if (sf::Joystick::isButtonPressed(0, 4))
+            return KeyBind::Q_KEY;
+        if (sf::Joystick::isButtonPressed(0, 5))
+            return KeyBind::S_KEY;
+        if (sf::Joystick::isButtonPressed(0, 0)) {
+            std::cout << "Z" << std::endl;
+            return KeyBind::Z_KEY;
         }
+        if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) < -50)
+            return KeyBind::LEFT_KEY;
+        if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 50)
+            return KeyBind::RIGHT_KEY;
+        if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -50)
+            return KeyBind::UP_KEY;
+        if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 50)
+            return KeyBind::DOWN_KEY;
     }
     return KeyBind::NONE;
 }

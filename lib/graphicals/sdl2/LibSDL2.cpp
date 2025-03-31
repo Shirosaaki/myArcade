@@ -92,14 +92,18 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 }
                 break;
             case SDL_JOYBUTTONDOWN:
-                if (event.jbutton.button == 0)
-                    return KeyBind::A_KEY;
                 if (event.jbutton.button == 1)
-                    return KeyBind::SPACE;
+                    return KeyBind::ENTER;
                 if (event.jbutton.button == 2)
-                    return KeyBind::Z_KEY;
+                    return KeyBind::SPACE;
                 if (event.jbutton.button == 3)
                     return KeyBind::A_KEY;
+                if (event.jbutton.button == 4)
+                    return KeyBind::Q_KEY;
+                if (event.jbutton.button == 5)
+                    return KeyBind::S_KEY;
+                if (event.jbutton.button == 0)
+                    return KeyBind::Z_KEY;
                 break;
 
             case SDL_KEYDOWN:
