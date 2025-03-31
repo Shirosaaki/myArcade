@@ -103,6 +103,19 @@ set_target_properties(arcade_snake PROPERTIES
     PREFIX ""
 )
 
+# ---- Declare the show library ----
+
+add_library(arcade_show SHARED
+    lib/games/theShow/GameTheShow.cpp
+    lib/games/theShow/GameTheShow.hpp
+)
+
+set_target_properties(arcade_show PROPERTIES
+    OUTPUT_NAME "arcade_the_show"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
+)
+
 # ---- Declare executable ----
 
 add_executable(arcade_exe source/main.cpp source/GameCore.cpp source/Error.cpp)

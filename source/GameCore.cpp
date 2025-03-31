@@ -291,6 +291,10 @@ void GameCore::run()
         if (key == arcade::KeyBind::ENTER && this->typeCurrentGame == arcade::TGames::MENU) {
             auto currentGameKey = _currentGame->getActGame();
             _currentGame = _games[currentGameKey].second;
+            if (_currentGame == nullptr) {
+                this->loadGamesLibs("lib/");
+                _currentGame = _games[currentGameKey].second;
+            }
             this->setTypeCurrentGame(_games[currentGameKey].first);
             _currentGraphical->Clear();
         }

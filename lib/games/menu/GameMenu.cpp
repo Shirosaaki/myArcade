@@ -32,6 +32,7 @@ std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> arcade::GameM
         gameMap[path] = std::make_pair(tgame, game);
     }
     gameMap.erase("lib/arcade_menu.so");
+    this->nbGames = gameMap.size();
     return gameMap;
 }
 
@@ -95,16 +96,18 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
         entity.second = std::make_pair(1080, 720);
         entities["assets/menu/menu.png"] = entity;
         int i = 330;
+        int x = 1;
         for (const auto &game : this->gameMap) {
             entity.first = std::make_pair(390, i);
             entity.second = std::make_pair(280, 50);
             std::string gameName = game.first;
-            if ((i+20) / 70 == cursor + 4) {
+            if (x == cursor) {
                 gameName = "*RED*" + game.first;
                 this->actGame = game.first;
             }
             entities[gameName] = entity;
             i += 70;
+            x++;
         }
     }
     return entities;
@@ -125,7 +128,7 @@ void arcade::GameMenu::setKey(enum KeyBind key)
     if (cursor < 1)
         cursor = nbGames;
     if (cursor > nbGames)
-        cursor = 0;
+        cursor = 1;
 }
 
 int arcade::GameMenu::getScore()

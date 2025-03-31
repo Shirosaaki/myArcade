@@ -18,7 +18,7 @@ void arcade::LibSfml::Init()
 {
     this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Arcade");
     this->window->setFramerateLimit(60);
-    this->font.loadFromFile("assets/TheShow.ttf");
+    this->font.loadFromFile("assets/fonts/TheShow.ttf");
     this->music.setVolume(50);
     if (!sf::Joystick::isConnected(0)) {
         std::cerr << "No controller connected!" << std::endl;
@@ -100,6 +100,8 @@ void arcade::LibSfml::Display(std::map<std::string, std::pair<std::pair<int, int
             }
             sprite.setTexture(texture);
             sprite.setPosition(entity.second.first.first, entity.second.first.second);
+            sprite.setScale(entity.second.second.first / static_cast<float>(texture.getSize().x),
+                            entity.second.second.second / static_cast<float>(texture.getSize().y));
             this->window->draw(sprite);
         }
     }

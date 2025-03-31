@@ -49,7 +49,7 @@ void arcade::LibSDL2::Init()
         SDL_Quit();
         exit(84);
     }
-    this->font = TTF_OpenFont("assets/TheShow.ttf", 24);
+    this->font = TTF_OpenFont("assets/fonts/TheShow.ttf", 24);
     if (this->font == nullptr) {
         std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
         SDL_DestroyRenderer(this->renderer);
@@ -227,9 +227,9 @@ void arcade::LibSDL2::Clear()
 
 void arcade::LibSDL2::Nuke()
 {
-    for (auto &texture : this->textureCache) {
-        SDL_DestroyTexture(texture.second);
-    }
+    for (auto &texture : this->textureCache)
+        if (texture.second)
+            SDL_DestroyTexture(texture.second);
     this->textureCache.clear();
     if (this->font) {
         TTF_CloseFont(this->font);
@@ -239,11 +239,8 @@ void arcade::LibSDL2::Nuke()
         SDL_JoystickClose(this->joystick);
         this->joystick = nullptr;
     }
-    if (this->music) {
+    if (this->music)
         Mix_HaltMusic();
-        Mix_FreeMusic(this->music);
-        this->music = nullptr;
-    }
     if (this->renderer) {
         SDL_DestroyRenderer(this->renderer);
         this->renderer = nullptr;
