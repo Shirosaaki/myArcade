@@ -36,6 +36,8 @@ class GameCore {
         arcade::IGraphics *getCurrentGraphical() const { return _currentGraphical; }
         arcade::IGames *getCurrentGame() const { return _currentGame; }
 
+        void konamiCode();
+
         void run();
         void nextGraphical();
         void prevGraphical();
@@ -50,7 +52,7 @@ class GameCore {
         arcade::TGames typeCurrentGame;
         arcade::TGraphics typeCurrentGraphical;
         std::vector<void *> _handles;
-
+        std::vector<arcade::KeyBind> _konamiCode;
 };
 
 #endif /* !GAME_CORE_HPP_ */

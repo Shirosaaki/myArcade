@@ -167,6 +167,18 @@ void GameCore::setCurrentGame(const std::string &lib)
     _currentGame = it->second.second;
 }
 
+void GameCore::konamiCode()
+{
+    if (_konamiCode.size() < 10)
+        return;
+    if (std::equal(_konamiCode.begin(), _konamiCode.end(), std::vector<arcade::KeyBind>{arcade::KeyBind::UP_KEY, arcade::KeyBind::UP_KEY,
+        arcade::KeyBind::DOWN_KEY, arcade::KeyBind::DOWN_KEY, arcade::KeyBind::LEFT_KEY, arcade::KeyBind::RIGHT_KEY,
+        arcade::KeyBind::LEFT_KEY, arcade::KeyBind::RIGHT_KEY, arcade::KeyBind::SPACE, arcade::KeyBind::A_KEY}.begin())) {
+        std::cout << "Konami code activated" << std::endl;
+        _konamiCode.clear();
+    }
+}
+
 void GameCore::nextGraphical()
 {
     auto it = std::find_if(_graphicals.begin(), _graphicals.end(),
@@ -260,6 +272,9 @@ void GameCore::run()
         auto entities = _currentGame->GetDisplay(typeCurrentGraphical);
         _currentGraphical->Display(entities);
         auto key = _currentGraphical->getKey();
+        if (key == arcade::KeyBind::NONE)
+            continue;
+        _konamiCode.push_back(key);
         if (key == arcade::KeyBind::ESC) {
             _currentGraphical->Nuke();
             break;
