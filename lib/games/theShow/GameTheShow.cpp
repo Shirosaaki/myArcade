@@ -26,18 +26,29 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
     entities["assets/theShow/maison.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720));
     if (isMoving == true) {
         elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMoveTime);
-        if (elapsed.count() > 250) {
+        if (elapsed.count() > 200) {
             moveIndex = (moveIndex + 1) % 3;
             lastMoveTime = now;
         }
-        if (moveIndex == 0)
-            entities["assets/theShow/zEricIdle.png"] = std::make_pair(pos, std::make_pair(90, 150));
-        else if (moveIndex == 1)
-            entities["assets/theShow/zEricWalk1.png"] = std::make_pair(pos, std::make_pair(100, 150));
-        else if (moveIndex == 2)
-            entities["assets/theShow/zEricWalk2.png"] = std::make_pair(pos, std::make_pair(105, 150));
-    } else
+        if (isRight == true) {
+            if (moveIndex == 0)
+                entities["assets/theShow/zEricIdle.png"] = std::make_pair(pos, std::make_pair(90, 150));
+            else if (moveIndex == 1)
+                entities["assets/theShow/zEricWalk1.png"] = std::make_pair(pos, std::make_pair(100, 150));
+            else if (moveIndex == 2)
+                entities["assets/theShow/zEricWalk2.png"] = std::make_pair(pos, std::make_pair(105, 150));
+        } else {
+            if (moveIndex == 0)
+                entities["assets/theShow/zEricIdle2.png"] = std::make_pair(pos, std::make_pair(90, 150));
+            else if (moveIndex == 1)
+                entities["assets/theShow/zEricWalk12.png"] = std::make_pair(pos, std::make_pair(100, 150));
+            else if (moveIndex == 2)
+                entities["assets/theShow/zEricWalk22.png"] = std::make_pair(pos, std::make_pair(105, 150));
+        }
+    } else if (isRight == true)
         entities["assets/theShow/zEricIdle.png"] = std::make_pair(pos, std::make_pair(90, 150));
+    else
+        entities["assets/theShow/zEricIdle2.png"] = std::make_pair(pos, std::make_pair(90, 150));
     return entities;
 }
 
@@ -50,15 +61,12 @@ void arcade::GameTheShow::setKey(enum KeyBind key)
         timeMove = std::chrono::steady_clock::now();
         return;
     }
-    if (key == KeyBind::RIGHT_KEY && canMove && pos.first < 1080) {
+    if (key == KeyBind::RIGHT_KEY && canMove && pos.first < 990) {
         pos.first += 10;
         isRight = true;
         isMoving = true;
         timeMove = std::chrono::steady_clock::now();
         return;
-    }
-    if (key == KeyBind::SPACE) {
-        canMove = !canMove;
     }
 }
 
