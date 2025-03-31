@@ -36,9 +36,11 @@ namespace arcade {
             std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplayNcurses();
             void movePlayer(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void moveRedGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
+            void movePinkGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void checkCollision(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void UpdateGame(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             std::pair<int, int> findShortestPath(std::pair<int, int> start, std::pair<int, int> end);
+            std::pair<int, int> findFarthestPath(std::pair<int, int> start, std::pair<int, int> end);
         private:
             std::vector<std::string> map;
             std::pair<int, int> player_pos;
@@ -58,6 +60,7 @@ namespace arcade {
             int lives = 3;
             std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastRedGhostMoveTime = std::chrono::steady_clock::now();
+            std::chrono::time_point<std::chrono::steady_clock> lastFearTime = std::chrono::steady_clock::now();
     };
 }
 

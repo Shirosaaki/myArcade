@@ -31,8 +31,10 @@ void arcade::LibNcurses::Init()
     init_pair(7, COLOR_WHITE, COLOR_BLACK); // pacgum
     init_pair(9, COLOR_BRIGHT_MAGENTA, COLOR_BLACK); // superpacgum
     init_pair(10, COLOR_BLACK, COLOR_YELLOW); // pacman
+    init_pair(8, COLOR_YELLOW, COLOR_WHITE); // superpacman
     init_pair(11, COLOR_BLACK, COLOR_BLUE); // Wall
     init_pair(12, COLOR_BLACK, COLOR_RED); // Ghost Red
+    init_pair(13, COLOR_WHITE, COLOR_GREEN); // Ghost Fear
     
 }
 
