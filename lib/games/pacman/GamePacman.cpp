@@ -48,7 +48,10 @@ arcade::GamePacman::GamePacman()
     nextDirection = RIGHT;
     red_ghost_pos = std::make_pair(11, map[0].size()/ 2 - 1);
     pink_ghost_pos = std::make_pair(13, map[0].size()/ 2 - 1);
+    orange_ghost_pos = std::make_pair(13, map[0].size()/ 2 - 2);
     start_red_ghost_pos = red_ghost_pos;
+    start_pink_ghost_pos = pink_ghost_pos;
+    start_orange_ghost_pos = orange_ghost_pos;
 }
 
 arcade::GamePacman::~GamePacman()
@@ -59,10 +62,10 @@ arcade::GamePacman::~GamePacman()
 std::pair<int, int> arcade::GamePacman::findShortestPath(std::pair<int, int> start, std::pair<int, int> target)
 {
     std::vector<std::pair<int, int>> directions = {
-        {0, 1},  // Droite
-        {0, -1}, // Gauche
-        {1, 0},  // Bas
-        {-1, 0}  // Haut
+        {0, 1},  // Right
+        {0, -1}, // Left
+        {1, 0},  // Down
+        {-1, 0}  // Up
     };
     std::queue<std::pair<int, int>> queue;
     queue.push(start);
@@ -98,12 +101,11 @@ std::pair<int, int> arcade::GamePacman::findShortestPath(std::pair<int, int> sta
 std::pair<int, int> arcade::GamePacman::findFarthestPath(std::pair<int, int> start, std::pair<int, int> target)
 {
     std::vector<std::pair<int, int>> directions = {
-        {0, 1},  // Droite
-        {0, -1}, // Gauche
-        {1, 0},  // Bas
-        {-1, 0}  // Haut
+        {0, 1},  // Right
+        {0, -1}, // Left
+        {1, 0},  // Down
+        {-1, 0}  // Up
     };
-
     std::pair<int, int> farthestPos = start;
     double maxDistance = -1;
 
@@ -120,6 +122,89 @@ std::pair<int, int> arcade::GamePacman::findFarthestPath(std::pair<int, int> sta
         }
     }
     return farthestPos;
+}
+
+void arcade::GamePacman::moveOrangeGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastOrangeGhostMoveTime);
+
+    if (elapsed.count() < 300)
+        return;
+    lastOrangeGhostMoveTime = now;
+    entities["*clear"] = std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0));
+    double distance = std::hypot(orange_ghost_pos.first - player_pos.first, orange_ghost_pos.second - player_pos.second);
+    std::pair<int, int> nextPos;
+
+    if (distance <= 8) {
+        nextPos = findShortestPath(orange_ghost_pos, player_pos);
+    } else {
+        std::vector<std::pair<int, int>> directions = {
+            {0, 1},  // Right
+            {0, -1}, // Left
+            {1, 0},  // Down
+            {-1, 0}  // Up
+        };
+
+        std::vector<std::pair<int, int>> validMoves;
+        for (const auto &dir : directions) {
+            std::pair<int, int> neighbor = {orange_ghost_pos.first + dir.first, orange_ghost_pos.second + dir.second};
+            if (neighbor.first >= 0 && neighbor.first < map.size() &&
+                neighbor.second >= 0 && neighbor.second < map[neighbor.first].size() &&
+                map[neighbor.first][neighbor.second] != '#') {
+                validMoves.push_back(neighbor);
+            }
+        }
+
+        if (!validMoves.empty()) {
+            nextPos = validMoves[rand() % validMoves.size()];
+        } else {
+            nextPos = orange_ghost_pos;
+        }
+    }
+
+    if (Fear == true)
+        nextPos = findFarthestPath(orange_ghost_pos, player_pos);
+    orange_ghost_pos = nextPos;
+}
+
+
+
+void arcade::GamePacman::movePinkGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+{
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastPinkGhostMoveTime);
+
+    if (elapsed.count() < 300)
+        return;
+    lastPinkGhostMoveTime = now;
+    entities["*clear"] = std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0));
+    std::pair<int, int> target = player_pos;
+    switch (currentDirection) {
+        case UP:
+            target.first -= 4;
+            break;
+        case DOWN:
+            target.first += 4;
+            break;
+        case LEFT:
+            target.second -= 4;
+            break;
+        case RIGHT:
+            target.second += 4;
+            break;
+        default:
+            break;
+    }
+    if (target.first < 0) target.first = 0;
+    if (target.first >= map.size()) target.first = map.size() - 1;
+    if (target.second < 0) target.second = 0;
+    if (target.second >= map[0].size()) target.second = map[0].size() - 1;
+
+    std::pair<int, int> nextPos = findShortestPath(pink_ghost_pos, target);
+    if (Fear == true)
+        nextPos = findFarthestPath(pink_ghost_pos, target);
+    pink_ghost_pos = nextPos;
 }
 
 void arcade::GamePacman::moveRedGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
@@ -217,9 +302,13 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
     if (!Fear) {
         entities["C"] = std::make_pair(player_pos, std::make_pair(10, 10));
         entities["R"] = std::make_pair(red_ghost_pos, std::make_pair(12, 12));
+        entities["P"] = std::make_pair(pink_ghost_pos, std::make_pair(14, 14));
+        entities["O"] = std::make_pair(orange_ghost_pos, std::make_pair(16, 16));
     } else {
         entities["C"] = std::make_pair(player_pos, std::make_pair(8, 8));
         entities["R"] = std::make_pair(red_ghost_pos, std::make_pair(13, 13));
+        entities["P"] = std::make_pair(pink_ghost_pos, std::make_pair(13, 13));
+        entities["O"] = std::make_pair(orange_ghost_pos, std::make_pair(13, 13));
     }
     std::string my_score = "Score : ";
     my_score += std::to_string(score);
@@ -242,7 +331,6 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
     lastMoveTime = now;
     entities["*clear"] = std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0));
 
-    // Mise à jour de la direction actuelle en fonction de la prochaine direction
     if (nextDirection != NONE) {
         switch (nextDirection) {
             case UP:
@@ -265,8 +353,6 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
                 break;
         }
     }
-
-    // Déplacement de Pac-Man dans la direction actuelle
     switch (currentDirection) {
         case UP:
             if (map[player_pos.first - 1][player_pos.second] != '#') {
@@ -274,8 +360,8 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
                     score += 10;
                 if (map[player_pos.first - 1][player_pos.second] == 'O') {
                     score += 50;
-                    Fear = true; // Activer le mode peur
-                    lastFearTime = std::chrono::steady_clock::now(); // Enregistrer le début du mode peur
+                    Fear = true;
+                    lastFearTime = std::chrono::steady_clock::now();
                 }
                 player_pos.first--;
                 map[tmp.first][tmp.second] = ' ';
@@ -287,8 +373,8 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
                     score += 10;
                 if (map[player_pos.first + 1][player_pos.second] == 'O') {
                     score += 50;
-                    Fear = true; // Activer le mode peur
-                    lastFearTime = std::chrono::steady_clock::now(); // Enregistrer le début du mode peur
+                    Fear = true;
+                    lastFearTime = std::chrono::steady_clock::now();
                 }
                 player_pos.first++;
                 map[tmp.first][tmp.second] = ' ';
@@ -303,8 +389,8 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
                     score += 10;
                 if (map[player_pos.first][player_pos.second - 1] == 'O') {
                     score += 50;
-                    Fear = true; // Activer le mode peur
-                    lastFearTime = std::chrono::steady_clock::now(); // Enregistrer le début du mode peur
+                    Fear = true;
+                    lastFearTime = std::chrono::steady_clock::now();
                 }
                 player_pos.second--;
                 map[tmp.first][tmp.second] = ' ';
@@ -319,8 +405,8 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
                     score += 10;
                 if (map[player_pos.first][player_pos.second + 1] == 'O') {
                     score += 50;
-                    Fear = true; // Activer le mode peur
-                    lastFearTime = std::chrono::steady_clock::now(); // Enregistrer le début du mode peur
+                    Fear = true;
+                    lastFearTime = std::chrono::steady_clock::now();
                 }
                 player_pos.second++;
                 map[tmp.first][tmp.second] = ' ';
@@ -333,36 +419,48 @@ void arcade::GamePacman::movePlayer(std::map<std::string, std::pair<std::pair<in
 
 void arcade::GamePacman::checkCollision(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
 {
-    // Effacer les entités précédentes
-    //entities["*clear"] = std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0));
-
-    // Vérifier la collision entre Pac-Man et le fantôme rouge
     if (player_pos == red_ghost_pos) {
         if (Fear == false) {
-            // Pac-Man perd une vie
             lives--;
-            player_pos = start_player_pos; // Réinitialiser la position de Pac-Man
+            player_pos = start_player_pos;
         } else {
-            // Pac-Man mange le fantôme
             score += 200;
-            red_ghost_pos = start_red_ghost_pos; // Réinitialiser la position du fantôme
+            red_ghost_pos = start_red_ghost_pos;
+        }
+    }
+    if (player_pos == pink_ghost_pos) {
+        if (Fear == false) {
+            lives--;
+            player_pos = start_player_pos;
+        } else {
+            score += 200;
+            pink_ghost_pos = start_pink_ghost_pos;
+        }
+    }
+    if (player_pos == orange_ghost_pos) {
+        if (Fear == false) {
+            lives--;
+            player_pos = start_player_pos;
+        } else {
+            score += 200;
+            orange_ghost_pos = start_orange_ghost_pos;
         }
     }
 
-    if (lives <= 0) {
+    if (lives <= 0)
         gameOver = true;
-    }
 }
 
 void arcade::GamePacman::UpdateGame(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
 {
     movePlayer(entities);
     moveRedGhost(entities);
+    movePinkGhost(entities);
+    moveOrangeGhost(entities);
     checkCollision(entities);
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - lastFearTime);
 
-    if (elapsed.count() >= 10) {
+    if (elapsed.count() >= 10)
         Fear = false;
-    }
 }

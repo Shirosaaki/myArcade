@@ -22,6 +22,13 @@ void arcade::LibNcurses::Init()
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
     start_color();
+
+    // Vérifiez si le terminal supporte les couleurs personnalisées
+    if (can_change_color()) {
+        // Définir la couleur orange #FF6600
+        init_color(COLOR_ORANGE, 1000, 500, 0);
+    }
+
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_YELLOW, COLOR_BLACK);
@@ -35,7 +42,9 @@ void arcade::LibNcurses::Init()
     init_pair(11, COLOR_BLACK, COLOR_BLUE); // Wall
     init_pair(12, COLOR_BLACK, COLOR_RED); // Ghost Red
     init_pair(13, COLOR_WHITE, COLOR_GREEN); // Ghost Fear
-    
+    init_pair(14, COLOR_BLACK, COLOR_MAGENTA); // Ghost Pink
+    init_pair(15, COLOR_BLACK, COLOR_CYAN); // Ghost Blue
+    init_pair(16, COLOR_BLACK, COLOR_ORANGE); // Ghost Orange
 }
 
 arcade::KeyBind arcade::LibNcurses::getKey()

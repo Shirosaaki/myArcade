@@ -10,7 +10,7 @@
     #include "../IGraphics.hpp"
     #include <ncurses.h>
     #define COLOR_BRIGHT_MAGENTA 9
-    #define COLOR_PINK 10
+    #define COLOR_ORANGE 16
     
 namespace arcade {
     class LibNcurses : public IGraphics {
