@@ -230,6 +230,11 @@ void arcade::LibSDL2::Nuke()
     for (auto &texture : this->textureCache) {
         SDL_DestroyTexture(texture.second);
     }
+    this->textureCache.clear();
+    if (this->font) {
+        TTF_CloseFont(this->font);
+        this->font = nullptr;
+    }
     if (this->joystick) {
         SDL_JoystickClose(this->joystick);
         this->joystick = nullptr;
@@ -247,6 +252,10 @@ void arcade::LibSDL2::Nuke()
         SDL_DestroyWindow(this->window);
         this->window = nullptr;
     }
+    Mix_CloseAudio();
+    TTF_Quit();
+    IMG_Quit();
+    SDL_Quit();
 }
 
 extern "C" arcade::IGraphics *entryPoint()

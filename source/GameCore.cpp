@@ -187,7 +187,14 @@ void GameCore::nextGraphical()
         _currentGraphical->Init();
         this->setTypeCurrentGraphical(it->second.first);
         _currentGraphical->Clear();
+    } else {
+        _currentGraphical->Nuke();
+        _currentGraphical = _graphicals.begin()->second.second;
+        _currentGraphical->Init();
+        this->setTypeCurrentGraphical(_graphicals.begin()->second.first);
+        _currentGraphical->Clear();
     }
+    _currentGraphical->Clear();
 }
 
 void GameCore::prevGraphical()
@@ -205,7 +212,14 @@ void GameCore::prevGraphical()
         _currentGraphical->Init();
         this->setTypeCurrentGraphical(it->second.first);
         _currentGraphical->Clear();
+    } else {
+        _currentGraphical->Nuke();
+        _currentGraphical = _graphicals.begin()->second.second;
+        _currentGraphical->Init();
+        this->setTypeCurrentGraphical(_graphicals.begin()->second.first);
+        _currentGraphical->Clear();
     }
+    _currentGraphical->Clear();
 }
 
 void GameCore::nextGame()
