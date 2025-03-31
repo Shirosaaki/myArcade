@@ -16,6 +16,7 @@
     #include <SDL2/SDL_image.h>
     #include <SDL2/SDL_ttf.h>
     #include <SDL2/SDL_mixer.h>
+    #include <SDL2/SDL_gamecontroller.h>
     #include <unordered_map>
  
  namespace arcade {
@@ -43,6 +44,7 @@
             Mix_Music *music;
             std::unordered_map<std::string, SDL_Texture*> textureCache;
             std::string currentSound;
+            SDL_GameController *controller;
     };
 }
 

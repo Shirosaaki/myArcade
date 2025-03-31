@@ -9,6 +9,7 @@
     #define LIBNCURSES_HPP_
     #include "../IGraphics.hpp"
     #include <ncurses.h>
+    #include <iostream>
     
 namespace arcade {
     class LibNcurses : public IGraphics {

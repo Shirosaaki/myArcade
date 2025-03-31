@@ -28,6 +28,9 @@ arcade::KeyBind arcade::LibSfml::getKey()
         if (this->event.type == sf::Event::Closed) {
             return KeyBind::ESC;
         }
+        if (event.type == sf::Event::JoystickConnected) {
+            std::cout << "Controller " << event.joystickConnect.joystickId << " connected\n";
+        }
         if (this->event.type == sf::Event::KeyPressed) {
             if (this->event.key.code == sf::Keyboard::Escape)
                 return KeyBind::ESC;
@@ -51,6 +54,17 @@ arcade::KeyBind arcade::LibSfml::getKey()
                 return KeyBind::LEFT_KEY;
             if (this->event.key.code == sf::Keyboard::Right)
                 return KeyBind::RIGHT_KEY;
+        }
+    }
+    sf::Joystick::update();
+    if (sf::Joystick::isConnected(0)) {
+        std::cout << "Controller connected!" << std::endl;
+        sf::Joystick::Identification id = sf::Joystick::getIdentification(0);
+        if (id.vendorId == 0x045e && id.productId == 0x028e) {
+            float leftStickX = sf::Joystick::getAxisPosition(0, sf::Joystick::X);
+            if (sf::Joystick::isButtonPressed(0, 0)) {
+                std::cout << "Bouton A (Xbox) pressé!" << std::endl;
+            }
         }
     }
     return KeyBind::NONE;

@@ -56,53 +56,76 @@ void arcade::LibSDL2::Init()
         SDL_Quit();
         exit(84);
     }
-    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+    if (SDL_INIT_GAMECONTROLLER != 0) {
+        if (SDL_GameControllerAddMappingsFromFile("gamecontrollerdb.txt") == -1) {
+            std::cerr << "Failed to load controller mappings: " << SDL_GetError() << std::endl;
+        }
+    }
+    this->controller = SDL_GameControllerOpen(0);
+    /*if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
         std::cerr << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
         SDL_DestroyRenderer(this->renderer);
         SDL_DestroyWindow(this->window);
         SDL_Quit();
         exit(84);
     }
-    Mix_AllocateChannels(16);
+    Mix_AllocateChannels(16);*/
 }
 
 arcade::KeyBind arcade::LibSDL2::getKey()
 {
     SDL_Event event;
+    static float deadZone = 8000.0f;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-        case SDL_QUIT:
-            return KeyBind::ESC;
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-            case SDLK_ESCAPE:
+            case SDL_QUIT:
                 return KeyBind::ESC;
-            case SDLK_a:
-                return KeyBind::A_KEY;
-            case SDLK_z:
-                return KeyBind::Z_KEY;
-            case SDLK_s:
-                return KeyBind::S_KEY;
-            case SDLK_q:
-                return KeyBind::Q_KEY;
-            case SDLK_SPACE:
-                return KeyBind::SPACE;
-            case SDLK_RETURN:
-                return KeyBind::ENTER;
-            case SDLK_DOWN:
-                return KeyBind::DOWN_KEY;
-            case SDLK_UP:
-                return KeyBind::UP_KEY;
-            case SDLK_LEFT:
-                return KeyBind::LEFT_KEY;
-            case SDLK_RIGHT:
-                return KeyBind::RIGHT_KEY;
-            default:
-                return KeyBind::NONE;
-            }
-        default:
-            return KeyBind::NONE;
+            case SDL_CONTROLLERBUTTONDOWN:
+                std::cout << "Button pressed: " << event.cbutton.button << std::endl;
+                if (controller) {
+                    switch (event.cbutton.button) {
+                        case SDL_CONTROLLER_BUTTON_A: return KeyBind::ENTER;
+                        case SDL_CONTROLLER_BUTTON_B: return KeyBind::ESC;
+                        case SDL_CONTROLLER_BUTTON_DPAD_UP: return KeyBind::UP_KEY;
+                        case SDL_CONTROLLER_BUTTON_DPAD_DOWN: return KeyBind::DOWN_KEY;
+                        case SDL_CONTROLLER_BUTTON_DPAD_LEFT: return KeyBind::LEFT_KEY;
+                        case SDL_CONTROLLER_BUTTON_DPAD_RIGHT: return KeyBind::RIGHT_KEY;
+                        case SDL_CONTROLLER_BUTTON_START: return KeyBind::SPACE;
+                    }
+                }
+                break;
+            case SDL_CONTROLLERAXISMOTION:
+                std::cout << "Axis: " << event.caxis.axis << " Value: " << event.caxis.value << std::endl;
+                if (controller) {
+                    switch (event.caxis.axis) {
+                        case SDL_CONTROLLER_AXIS_LEFTX:
+                            if (event.caxis.value > deadZone) return KeyBind::RIGHT_KEY;
+                            if (event.caxis.value < -deadZone) return KeyBind::LEFT_KEY;
+                            break;
+                        case SDL_CONTROLLER_AXIS_LEFTY:
+                            if (event.caxis.value > deadZone) return KeyBind::DOWN_KEY;
+                            if (event.caxis.value < -deadZone) return KeyBind::UP_KEY;
+                            break;
+                    }
+                }
+                break;
+
+            case SDL_KEYDOWN:
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE: return KeyBind::ESC;
+                    case SDLK_a: return KeyBind::A_KEY;
+                    case SDLK_z: return KeyBind::Z_KEY;
+                    case SDLK_s: return KeyBind::S_KEY;
+                    case SDLK_q: return KeyBind::Q_KEY;
+                    case SDLK_SPACE: return KeyBind::SPACE;
+                    case SDLK_RETURN: return KeyBind::ENTER;
+                    case SDLK_DOWN: return KeyBind::DOWN_KEY;
+                    case SDLK_UP: return KeyBind::UP_KEY;
+                    case SDLK_LEFT: return KeyBind::LEFT_KEY;
+                    case SDLK_RIGHT: return KeyBind::RIGHT_KEY;
+                    default: return KeyBind::NONE;
+                }
         }
     }
     return KeyBind::NONE;
@@ -199,7 +222,7 @@ void arcade::LibSDL2::PlaySound(std::string sound)
         return;
     }
     this->currentSound = sound;
-    Mix_Music *music = Mix_LoadMUS(sound.c_str());
+    /*Mix_Music *music = Mix_LoadMUS(sound.c_str());
     if (music == nullptr) {
         std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
         SDL_DestroyRenderer(this->renderer);
@@ -213,7 +236,7 @@ void arcade::LibSDL2::PlaySound(std::string sound)
         SDL_DestroyWindow(this->window);
         SDL_Quit();
         exit(84);
-    }
+    }*/
     //Mix_FreeMusic(music);
 }
 
@@ -230,10 +253,14 @@ void arcade::LibSDL2::Nuke()
     this->textureCache.clear();
     TTF_CloseFont(this->font);
     this->font = nullptr;
-    Mix_HaltMusic();
+    if (this->controller) {
+        SDL_GameControllerClose(this->controller);
+        this->controller = nullptr;
+    }
+    /*Mix_HaltMusic();
     Mix_FreeMusic(this->music);
     this->music = nullptr;
-    Mix_CloseAudio();
+    Mix_CloseAudio();*/
     SDL_DestroyRenderer(this->renderer);
     this->renderer = nullptr;
     SDL_DestroyWindow(this->window);

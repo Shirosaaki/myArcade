@@ -34,6 +34,7 @@ void arcade::LibNcurses::Init()
 arcade::KeyBind arcade::LibNcurses::getKey()
 {
     int key = getch();
+    std::cerr << key << std::endl;
 
     switch (key) {
     case 27:
