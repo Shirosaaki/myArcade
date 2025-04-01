@@ -16,6 +16,7 @@ arcade::LibNcurses::~LibNcurses()
 
 void arcade::LibNcurses::Init()
 {
+    setlocale(LC_ALL, "");
     initscr();
     noecho();
     curs_set(0);
@@ -23,12 +24,10 @@ void arcade::LibNcurses::Init()
     nodelay(stdscr, TRUE);
     start_color();
 
-    // Vérifiez si le terminal supporte les couleurs personnalisées
     if (can_change_color()) {
-        // Définir la couleur orange #FF6600
+        // Define orange #FF6600
         init_color(COLOR_ORANGE, 1000, 500, 0);
     }
-
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_YELLOW, COLOR_BLACK);
@@ -45,6 +44,7 @@ void arcade::LibNcurses::Init()
     init_pair(14, COLOR_BLACK, COLOR_MAGENTA); // Ghost Pink
     init_pair(15, COLOR_BLACK, COLOR_CYAN); // Ghost Blue
     init_pair(16, COLOR_BLACK, COLOR_ORANGE); // Ghost Orange
+
 }
 
 arcade::KeyBind arcade::LibNcurses::getKey()
@@ -81,7 +81,6 @@ arcade::KeyBind arcade::LibNcurses::getKey()
 
 void arcade::LibNcurses::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
 {
-    //this->Clear();
     for (auto &entity : entities) {
         std::string tmp = entity.first;
         if (entity.first.find("*clear") != std::string::npos) {

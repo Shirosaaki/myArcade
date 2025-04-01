@@ -40,6 +40,7 @@ namespace arcade {
             void moveOrangeGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void moveBlueGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             void checkCollision(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
+            void moveDeadGhost(std::pair<int, int> &ghost_pos, const std::pair<int, int> &start_pos, bool &ghost_dead, std::chrono::steady_clock::time_point &ghost_timer);
             void UpdateGame(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
             std::pair<int, int> findShortestPath(std::pair<int, int> start, std::pair<int, int> end);
             std::pair<int, int> findFarthestPath(std::pair<int, int> start, std::pair<int, int> end);
@@ -55,6 +56,10 @@ namespace arcade {
             std::pair<int, int> start_blue_ghost_pos;
             std::pair<int, int> orange_ghost_pos;
             std::pair<int, int> start_orange_ghost_pos;
+            bool red_ghost_dead = false;
+            bool blue_ghost_dead = false;
+            bool orange_ghost_dead = false;
+            bool pink_ghost_dead = false;
             std::pair<int, int> tpl_pos;
             std::pair<int, int> tpr_pos;
             Direction currentDirection = NONE;
@@ -63,12 +68,17 @@ namespace arcade {
             bool gameOver = false;
             int score = 0;
             int lives = 3;
+            bool clear = false;
             std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastRedGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastPinkGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastOrangeGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastBlueGhostMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> lastFearTime = std::chrono::steady_clock::now();
+            std::chrono::steady_clock::time_point red_ghost_dead_timer;
+            std::chrono::steady_clock::time_point blue_ghost_dead_timer;
+            std::chrono::steady_clock::time_point orange_ghost_dead_timer;
+            std::chrono::steady_clock::time_point pink_ghost_dead_timer;
     };
 }
 
