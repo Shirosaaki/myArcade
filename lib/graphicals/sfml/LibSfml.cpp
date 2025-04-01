@@ -106,7 +106,7 @@ arcade::KeyBind arcade::LibSfml::getKey()
         } else if (std::abs(sf::Joystick::getAxisPosition(0, sf::Joystick::PovY)) <= 50)
             lastKey = KeyBind::NONE;
     }
-    if (lastKey != KeyBind::NONE && lastKey != KeyBind::UP_KEY && lastKey != KeyBind::DOWN_KEY)
+    if (lastKey != arcade::KeyBind::NONE && (lastKey == KeyBind::LEFT_KEY || lastKey == KeyBind::RIGHT_KEY))
         return lastKey;
     return KeyBind::NONE;
 }
