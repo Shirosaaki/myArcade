@@ -35,9 +35,11 @@ arcade::KeyBind arcade::LibSfml::getKey()
 {
     while (this->window->pollEvent(this->event)) {
         if (this->event.type == sf::Event::Closed) {
+            lastKey = KeyBind::NONE;
             return KeyBind::ESC;
         }
         if (this->event.type == sf::Event::KeyReleased) {
+            lastKey = KeyBind::NONE;
             if (this->event.key.code == sf::Keyboard::Escape)
                 return KeyBind::ESC;
             if (this->event.key.code == sf::Keyboard::Z)
@@ -63,6 +65,8 @@ arcade::KeyBind arcade::LibSfml::getKey()
         }
     }
     if (sf::Joystick::isConnected(0)) {
+        arcade::KeyBind tmpKey = lastKey;
+        lastKey = KeyBind::NONE;
         if (sf::Joystick::isButtonPressed(0, 1))
             return KeyBind::ENTER;
         if (sf::Joystick::isButtonPressed(0, 2))
@@ -79,6 +83,7 @@ arcade::KeyBind arcade::LibSfml::getKey()
             return KeyBind::LEFT_KEY;
         if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 50)
             return KeyBind::RIGHT_KEY;
+        lastKey = tmpKey;
         if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -50 && lastKey != KeyBind::UP_KEY) {
             lastKey = KeyBind::UP_KEY;
             return KeyBind::UP_KEY;
