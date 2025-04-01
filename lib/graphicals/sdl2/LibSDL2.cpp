@@ -82,10 +82,10 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 return KeyBind::ESC;
             case SDL_JOYAXISMOTION:
                 if (event.jaxis.axis == 0) {
-                    if (event.jaxis.value < -deadZone && lastKey != KeyBind::LEFT_KEY) {
+                    if (event.jaxis.value < -deadZone) {
                         lastKey = KeyBind::LEFT_KEY;
                         return KeyBind::LEFT_KEY;
-                    } else if (event.jaxis.value > deadZone && lastKey != KeyBind::RIGHT_KEY) {
+                    } else if (event.jaxis.value > deadZone) {
                         lastKey = KeyBind::RIGHT_KEY;
                         return KeyBind::RIGHT_KEY;
                     } else if (std::abs(event.jaxis.value) <= deadZone)
@@ -136,8 +136,8 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 }
         }
     }
-    /*if (lastKey != arcade::KeyBind::NONE)
-        return lastKey;*/
+    if (lastKey != arcade::KeyBind::NONE)
+        return lastKey;
     return KeyBind::NONE;
 }
 
