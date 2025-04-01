@@ -44,6 +44,7 @@
             std::unordered_map<std::string, SDL_Texture*> textureCache;
             std::string currentSound;
             SDL_Joystick *joystick;
+            arcade::KeyBind lastKey = arcade::KeyBind::NONE;
     };
 }
 

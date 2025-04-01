@@ -74,6 +74,7 @@ arcade::KeyBind arcade::LibSDL2::getKey()
 {
     SDL_Event event;
     static float deadZone = 7000.0f;
+    
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
@@ -81,19 +82,28 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 return KeyBind::ESC;
             case SDL_JOYAXISMOTION:
                 if (event.jaxis.axis == 0) {
-                    if (event.jaxis.value < -deadZone)
+                    if (event.jaxis.value < -deadZone) {
+                        lastKey = KeyBind::LEFT_KEY;
                         return KeyBind::LEFT_KEY;
-                    else if (event.jaxis.value > deadZone)
+                    } else if (event.jaxis.value > deadZone) {
+                        lastKey = KeyBind::RIGHT_KEY;
                         return KeyBind::RIGHT_KEY;
+                    } else if (std::abs(event.jaxis.value) <= deadZone)
+                        lastKey = KeyBind::NONE;
                 }
                 if (event.jaxis.axis == 1) {
-                    if (event.jaxis.value < -deadZone)
+                    if (event.jaxis.value < -deadZone) {
+                        lastKey = KeyBind::UP_KEY;
                         return KeyBind::UP_KEY;
-                    else if (event.jaxis.value > deadZone)
+                    } else if (event.jaxis.value > deadZone) {
+                        lastKey = KeyBind::DOWN_KEY;
                         return KeyBind::DOWN_KEY;
+                    } else if (std::abs(event.jaxis.value) <= deadZone)
+                        lastKey = KeyBind::NONE;
                 }
                 break;
             case SDL_JOYBUTTONDOWN:
+                lastKey = KeyBind::NONE;
                 if (event.jbutton.button == 1)
                     return KeyBind::ENTER;
                 if (event.jbutton.button == 2)
@@ -109,6 +119,7 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 break;
 
             case SDL_KEYDOWN:
+                lastKey = KeyBind::NONE;
                 switch (event.key.keysym.sym) {
                     case SDLK_ESCAPE: return KeyBind::ESC;
                     case SDLK_a: return KeyBind::A_KEY;
@@ -125,6 +136,8 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 }
         }
     }
+    if (lastKey != arcade::KeyBind::NONE)
+        return lastKey;
     return KeyBind::NONE;
 }
 
