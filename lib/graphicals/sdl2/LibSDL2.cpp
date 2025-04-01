@@ -102,7 +102,7 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                         lastKey = KeyBind::NONE;
                 }
                 break;
-            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP:
                 lastKey = KeyBind::NONE;
                 if (event.jbutton.button == 1)
                     return KeyBind::ENTER;
