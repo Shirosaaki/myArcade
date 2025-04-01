@@ -21,6 +21,8 @@ namespace arcade {
             int getScore();
             std::string getSound(enum TGraphics lib);
             std::string getActGame();
+
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> displayFirstCinematic();
         
         private:
             std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
@@ -30,8 +32,10 @@ namespace arcade {
             bool isMoving = false;
             std::pair<int, int> pos;
             int moveIndex = 0;
+            bool isTheFirstTime = true;
             std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
             std::chrono::time_point<std::chrono::steady_clock> timeMove = std::chrono::steady_clock::now();
+            int nbFrames = 0;
     };
 }
 

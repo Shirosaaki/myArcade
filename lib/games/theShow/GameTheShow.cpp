@@ -15,8 +15,35 @@ arcade::GameTheShow::~GameTheShow()
 {
 }
 
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameTheShow::displayFirstCinematic()
+{
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> entities;
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - timeMove);
+
+    if (elapsed.count() > 200) {
+        entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
+        timeMove = now;
+        nbFrames++;
+    } else
+        entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
+    if (nbFrames == 130) {
+        isTheFirstTime = false;
+        return entities;
+    }
+    return entities;
+}
+
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameTheShow::GetDisplay(enum TGraphics lib)
 {
+    if (lib == TGraphics::NCURSES) {
+        std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entity;
+        entity.first = "THE_SHOW";
+        entity.second.first = std::make_pair(0, 0);
+        entity.second.second = std::make_pair(6, 6);
+        return {entity};
+    } if (isTheFirstTime == true)
+        return displayFirstCinematic();
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - timeMove);
     if (elapsed.count() > 400)
@@ -76,8 +103,10 @@ int arcade::GameTheShow::getScore()
 
 std::string arcade::GameTheShow::getSound(enum TGraphics lib)
 {
-    (void)lib;
-    return "assets/sound.wav";
+    if (lib != TGraphics::NCURSES && isTheFirstTime == true)
+        return "assets/theShow/intro.wav";
+    else
+        return "";
 }
 
 std::string arcade::GameTheShow::getActGame()
