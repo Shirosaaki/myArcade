@@ -73,7 +73,7 @@ void arcade::LibSDL2::Init()
 arcade::KeyBind arcade::LibSDL2::getKey()
 {
     SDL_Event event;
-    static float deadZone = 8000.0f;
+    static float deadZone = 7000.0f;
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
