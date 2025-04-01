@@ -65,33 +65,45 @@ arcade::KeyBind arcade::LibSfml::getKey()
         }
     }
     if (sf::Joystick::isConnected(0)) {
-        if (sf::Joystick::isButtonPressed(0, 1))
+        if (sf::Joystick::isButtonPressed(0, 1) && lastKey != KeyBind::ENTER) {
+            lastKey = KeyBind::ENTER;
             return KeyBind::ENTER;
-        if (sf::Joystick::isButtonPressed(0, 2))
+        }
+        if (sf::Joystick::isButtonPressed(0, 2) && lastKey != KeyBind::SPACE) {
+            lastKey = KeyBind::SPACE;
             return KeyBind::SPACE;
-        if (sf::Joystick::isButtonPressed(0, 3))
+        }
+        if (sf::Joystick::isButtonPressed(0, 3) && lastKey != KeyBind::A_KEY) {
+            lastKey = KeyBind::A_KEY;
             return KeyBind::A_KEY;
-        if (sf::Joystick::isButtonPressed(0, 4))
+        }
+        if (sf::Joystick::isButtonPressed(0, 4) && lastKey != KeyBind::Q_KEY) {
+            lastKey = KeyBind::Q_KEY;
             return KeyBind::Q_KEY;
-        if (sf::Joystick::isButtonPressed(0, 5))
+        }
+        if (sf::Joystick::isButtonPressed(0, 5) && lastKey != KeyBind::S_KEY) {
+            lastKey = KeyBind::S_KEY;
             return KeyBind::S_KEY;
-        if (sf::Joystick::isButtonPressed(0, 0))
+        }
+        if (sf::Joystick::isButtonPressed(0, 0) && lastKey != KeyBind::Z_KEY) {
+            lastKey = KeyBind::Z_KEY;
             return KeyBind::Z_KEY;
-        if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) < -50) {
+        }
+        if (sf::Joystick::getAxisPosition(0, sf::Joystick::PovX) < -50 && lastKey != KeyBind::LEFT_KEY) {
             lastKey = KeyBind::LEFT_KEY;
             return KeyBind::LEFT_KEY;
-        } else if (sf::Joystick::getAxisPosition(0, sf::Joystick::X) > 50) {
+        } else if (sf::Joystick::getAxisPosition(0, sf::Joystick::PovX) > 50 && lastKey != KeyBind::RIGHT_KEY) {
             lastKey = KeyBind::RIGHT_KEY;
             return KeyBind::RIGHT_KEY;
-        } else if (std::abs(sf::Joystick::getAxisPosition(0, sf::Joystick::X)) <= 50)
+        } else if (std::abs(sf::Joystick::getAxisPosition(0, sf::Joystick::PovX)) <= 50)
             lastKey = KeyBind::NONE;
-        if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) < -50 && lastKey != KeyBind::UP_KEY) {
+        if (sf::Joystick::getAxisPosition(0, sf::Joystick::PovY) < -50 && lastKey != KeyBind::UP_KEY) {
             lastKey = KeyBind::UP_KEY;
             return KeyBind::UP_KEY;
-        } else if (sf::Joystick::getAxisPosition(0, sf::Joystick::Y) > 50 && lastKey != KeyBind::DOWN_KEY) {
+        } else if (sf::Joystick::getAxisPosition(0, sf::Joystick::PovY) > 50 && lastKey != KeyBind::DOWN_KEY) {
             lastKey = KeyBind::DOWN_KEY;
             return KeyBind::DOWN_KEY;
-        } else if (std::abs(sf::Joystick::getAxisPosition(0, sf::Joystick::Y)) <= 50)
+        } else if (std::abs(sf::Joystick::getAxisPosition(0, sf::Joystick::PovY)) <= 50)
             lastKey = KeyBind::NONE;
     }
     if (lastKey != KeyBind::NONE && lastKey != KeyBind::UP_KEY && lastKey != KeyBind::DOWN_KEY)
