@@ -136,7 +136,7 @@ arcade::KeyBind arcade::LibSDL2::getKey()
                 }
         }
     }
-    if (lastKey != arcade::KeyBind::NONE)
+    if (lastKey != arcade::KeyBind::NONE && lastKey != KeyBind::UP_KEY && lastKey != KeyBind::DOWN_KEY)
         return lastKey;
     return KeyBind::NONE;
 }
