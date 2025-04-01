@@ -21,7 +21,7 @@ namespace arcade {
         public:
             GameSnake();
             ~GameSnake();
-            std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum arcade::TGraphics lib) override;
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplay(enum arcade::TGraphics lib) override;
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;

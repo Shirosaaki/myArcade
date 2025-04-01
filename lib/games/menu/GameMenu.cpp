@@ -72,40 +72,48 @@ arcade::TGames arcade::GameMenu::getGame(const std::string& lib)
     return (it != gameMap.end()) ? it->second : arcade::TGames::NONE;
 }
 
-std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameMenu::GetDisplay(enum TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameMenu::GetDisplay(enum TGraphics lib)
 {
-    std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> entities;
     this->gameMap = loadGamesLibs("lib/");
     if (lib == TGraphics::NCURSES) {
-        std::pair<std::pair<int, int>, std::pair<int, int>> entity = std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6));
-        entities["MENU"] = entity;
+        std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entity;
+        entity.first = "MENU";
+        entity.second.first = std::make_pair(0, 0);
+        entity.second.second = std::make_pair(6, 6);
+        entities.push_back(entity);
         int i = 3;
         for (const auto &game : this->gameMap) {
-            entity = std::make_pair(std::make_pair(i, 0), std::make_pair(6, 6));
+            entity.first = game.first;
+            entity.second.first = std::make_pair(i, 0);
+            entity.second.second = std::make_pair(6, 6);
             if (i / 2 == cursor) {
-                entity.second = std::make_pair(1, 1);
+                entity.second.second = std::make_pair(1, 1);
                 this->actGame = game.first;
             }
-            entities[game.first] = entity;
+            entities.push_back(entity);
             i += 2;
         }
         nbGames = gameMap.size();
     } else {
-        std::pair<std::pair<int, int>, std::pair<int, int>> entity;
-        entity.first = std::make_pair(0, 0);
-        entity.second = std::make_pair(1080, 720);
-        entities["assets/menu/menu.png"] = entity;
+        std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entity;
+        entity.first = "assets/menu/menu.png";
+        entity.second.first = std::make_pair(0, 0);
+        entity.second.second = std::make_pair(1080, 720);
+        entities.push_back(entity);
         int i = 330;
         int x = 1;
         for (const auto &game : this->gameMap) {
-            entity.first = std::make_pair(390, i);
-            entity.second = std::make_pair(280, 50);
+            entity.first = game.first;
+            entity.second.first = std::make_pair(390, i);
+            entity.second.second = std::make_pair(280, 50);
             std::string gameName = game.first;
             if (x == cursor) {
                 gameName = "*RED*" + game.first;
                 this->actGame = game.first;
             }
-            entities[gameName] = entity;
+            entity.first = gameName;
+            entities.push_back(entity);
             i += 70;
             x++;
         }

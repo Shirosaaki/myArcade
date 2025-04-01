@@ -15,15 +15,14 @@ arcade::GameTheShow::~GameTheShow()
 {
 }
 
-std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameTheShow::GetDisplay(enum TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameTheShow::GetDisplay(enum TGraphics lib)
 {
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - timeMove);
-    if (elapsed.count() > 400) {
+    if (elapsed.count() > 400)
         isMoving = false;
-    }
-    std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
-    entities["assets/theShow/maison.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720));
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> entities;
+    entities.emplace_back("assets/theShow/maison.png", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
     if (isMoving == true) {
         elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMoveTime);
         if (elapsed.count() > 200) {
@@ -32,23 +31,23 @@ std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcad
         }
         if (isRight == true) {
             if (moveIndex == 0)
-                entities["assets/theShow/zEricIdle.png"] = std::make_pair(pos, std::make_pair(90, 150));
+                entities.emplace_back("assets/theShow/EricIdle.png", std::make_pair(pos, std::make_pair(90, 150)));
             else if (moveIndex == 1)
-                entities["assets/theShow/zEricWalk1.png"] = std::make_pair(pos, std::make_pair(100, 150));
+                entities.emplace_back("assets/theShow/EricWalk1.png", std::make_pair(pos, std::make_pair(100, 150)));
             else if (moveIndex == 2)
-                entities["assets/theShow/zEricWalk2.png"] = std::make_pair(pos, std::make_pair(105, 150));
+                entities.emplace_back("assets/theShow/EricWalk2.png", std::make_pair(pos, std::make_pair(105, 150)));
         } else {
             if (moveIndex == 0)
-                entities["assets/theShow/zEricIdle2.png"] = std::make_pair(pos, std::make_pair(90, 150));
+                entities.emplace_back("assets/theShow/EricIdle2.png", std::make_pair(pos, std::make_pair(90, 150)));
             else if (moveIndex == 1)
-                entities["assets/theShow/zEricWalk12.png"] = std::make_pair(pos, std::make_pair(100, 150));
+                entities.emplace_back("assets/theShow/EricWalk12.png", std::make_pair(pos, std::make_pair(100, 150)));
             else if (moveIndex == 2)
-                entities["assets/theShow/zEricWalk22.png"] = std::make_pair(pos, std::make_pair(105, 150));
+                entities.emplace_back("assets/theShow/EricWalk22.png", std::make_pair(pos, std::make_pair(105, 150)));
         }
     } else if (isRight == true)
-        entities["assets/theShow/zEricIdle.png"] = std::make_pair(pos, std::make_pair(90, 150));
+        entities.emplace_back("assets/theShow/EricIdle.png", std::make_pair(pos, std::make_pair(90, 150)));
     else
-        entities["assets/theShow/zEricIdle2.png"] = std::make_pair(pos, std::make_pair(90, 150));
+        entities.emplace_back("assets/theShow/EricIdle2.png", std::make_pair(pos, std::make_pair(90, 150)));
     return entities;
 }
 

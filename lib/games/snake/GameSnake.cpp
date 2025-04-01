@@ -14,15 +14,15 @@ arcade::GameSnake::~GameSnake()
 {
 }
 
-std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
 {
-    std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
 
     if (lib == arcade::TGraphics::NCURSES)
-        entities["SNAKE"] = std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6));
+        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6))));
     else
-        entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
-    return entities;
+        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
+    return display;
 }
 
 void arcade::GameSnake::setKey(enum arcade::KeyBind key)

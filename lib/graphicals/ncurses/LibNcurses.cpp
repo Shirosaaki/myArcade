@@ -62,10 +62,9 @@ arcade::KeyBind arcade::LibNcurses::getKey()
     }
 }
 
-void arcade::LibNcurses::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+void arcade::LibNcurses::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
-    //this->Clear();
-    for (auto &entity : entities) {
+    for (const auto &entity : entities) {
         attron(COLOR_PAIR(entity.second.second.first));
         mvprintw(entity.second.first.first, entity.second.first.second, "%s", entity.first.c_str());
         attroff(COLOR_PAIR(entity.second.second.first));

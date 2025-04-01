@@ -87,7 +87,7 @@ arcade::KeyBind arcade::LibSfml::getKey()
     return KeyBind::NONE;
 }
 
-void arcade::LibSfml::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+void arcade::LibSfml::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
     this->window->clear();
     for (auto &entity : entities) {

@@ -26,7 +26,7 @@
             ~LibSDL2();
             void Init() override;
             arcade::KeyBind getKey() override;
-            void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) override;
+            void Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity) override;
             void PlaySound(std::string sound) override;
             void Clear() override;
             void Nuke() override;

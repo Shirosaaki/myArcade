@@ -184,15 +184,15 @@ void arcade::LibSDL2::DisplayImage(const std::pair<std::string, std::pair<std::p
     SDL_RenderCopy(this->renderer, texture, nullptr, &rect);
 }
 
-void arcade::LibSDL2::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+void arcade::LibSDL2::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity)
 {
     SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
     SDL_RenderClear(this->renderer);
-    for (auto &entity : entities) {
+    for (auto &entity : entity) {
         if (entity.first.find("assets/") != std::string::npos)
             DisplayImage(entity);
     }
-    for (auto &entity : entities) {
+    for (auto &entity : entity) {
         if (entity.first.find("assets/") == std::string::npos)
             DisplayText(entity);
     }
