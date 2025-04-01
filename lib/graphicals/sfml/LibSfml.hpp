@@ -30,6 +30,7 @@ namespace arcade{
             sf::Music music;
             sf::Font font;
             std::string currentSound;
+            arcade::KeyBind lastKey = arcade::KeyBind::NONE;
     };
 }
 
