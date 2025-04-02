@@ -65,8 +65,15 @@ arcade::KeyBind arcade::LibNcurses::getKey()
 void arcade::LibNcurses::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
     for (const auto &entity : entities) {
+        std::string display = entity.first;
+             if (entity.first.find("*clear") != std::string::npos) {
+                  this->Clear();
+                  continue;
+              }
+             if (entity.first.find("*") != std::string::npos)
+                display = entity.first.substr(0, entity.first.find("*"));
         attron(COLOR_PAIR(entity.second.second.first));
-        mvprintw(entity.second.first.first, entity.second.first.second, "%s", entity.first.c_str());
+        mvprintw(entity.second.first.first, entity.second.first.second, "%s", display.c_str());
         attroff(COLOR_PAIR(entity.second.second.first));
     }
     refresh();
