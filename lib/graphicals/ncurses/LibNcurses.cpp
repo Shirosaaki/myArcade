@@ -34,7 +34,6 @@ void arcade::LibNcurses::Init()
 arcade::KeyBind arcade::LibNcurses::getKey()
 {
     int key = getch();
-
     switch (key) {
     case 27:
         return KeyBind::ESC;
@@ -42,6 +41,10 @@ arcade::KeyBind arcade::LibNcurses::getKey()
         return KeyBind::A_KEY;
     case 122:
         return KeyBind::Z_KEY;
+    case 113:
+        return KeyBind::Q_KEY;
+    case 115:
+        return KeyBind::S_KEY;
     case 32:
         return KeyBind::SPACE;
     case 10:
@@ -59,19 +62,11 @@ arcade::KeyBind arcade::LibNcurses::getKey()
     }
 }
 
-void arcade::LibNcurses::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+void arcade::LibNcurses::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
-    //this->Clear();
-    for (auto &entity : entities) {
-        std::string display = entity.first;
-        if (entity.first.find("*clear") != std::string::npos) {
-             this->Clear();
-             continue;
-         }
-        if (entity.first.find("*") != std::string::npos)
-            display = entity.first.substr(0, entity.first.find("*"));
+    for (const auto &entity : entities) {
         attron(COLOR_PAIR(entity.second.second.first));
-        mvprintw(entity.second.first.first, entity.second.first.second, "%s", display.c_str());
+        mvprintw(entity.second.first.first, entity.second.first.second, "%s", entity.first.c_str());
         attroff(COLOR_PAIR(entity.second.second.first));
     }
     refresh();

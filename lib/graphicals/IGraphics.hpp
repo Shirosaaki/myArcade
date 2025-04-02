@@ -35,6 +35,8 @@ namespace arcade {
         ESC,
         A_KEY,
         Z_KEY,
+        Q_KEY,
+        S_KEY,
         UP_KEY,
         DOWN_KEY,
         LEFT_KEY,
@@ -51,7 +53,7 @@ namespace arcade {
             virtual ~IGraphics() = default;
             virtual void Init() = 0;
             virtual arcade::KeyBind getKey() = 0;
-            virtual void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) = 0;
+            virtual void Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity) = 0;
             virtual void PlaySound(std::string sound) = 0;
             virtual void Clear() = 0;
             virtual void Nuke() = 0;
