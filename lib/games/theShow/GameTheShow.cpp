@@ -21,16 +21,19 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - timeMove);
 
-    if (elapsed.count() > 200) {
-        entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
-        timeMove = now;
-        nbFrames++;
-    } else
-        entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
-    if (nbFrames == 130) {
+    if (nbFrames == 131) {
         isTheFirstTime = false;
         return entities;
     }
+    if (elapsed.count() > 175) {
+        if (nbFrames == 0)
+            nbFrames++;
+        entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
+        timeMove = now;
+        nbFrames++;
+        
+    } else
+        entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));
     return entities;
 }
 
@@ -106,7 +109,7 @@ std::string arcade::GameTheShow::getSound(enum TGraphics lib)
     if (lib != TGraphics::NCURSES && isTheFirstTime == true)
         return "assets/theShow/intro.wav";
     else
-        return "";
+        return "assets/menu/TheShost.wav";
 }
 
 std::string arcade::GameTheShow::getActGame()

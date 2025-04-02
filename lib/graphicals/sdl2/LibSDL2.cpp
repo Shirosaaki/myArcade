@@ -218,6 +218,11 @@ void arcade::LibSDL2::PlaySound(std::string sound)
         return;
     }
     this->currentSound = sound;
+    if (this->music) {
+        Mix_HaltMusic();
+        Mix_FreeMusic(this->music);
+        this->music = nullptr;
+    }
     this->music = Mix_LoadMUS(sound.c_str());
     if (this->music == nullptr) {
         std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;

@@ -271,6 +271,7 @@ void GameCore::run()
     while (1) {
         auto entities = _currentGame->GetDisplay(typeCurrentGraphical);
         _currentGraphical->Display(entities);
+        _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
         auto key = _currentGraphical->getKey();
         if (key == arcade::KeyBind::NONE)
             continue;
@@ -298,6 +299,5 @@ void GameCore::run()
             this->setTypeCurrentGame(_games[currentGameKey].first);
             _currentGraphical->Clear();
         }
-        _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
     }
 }
