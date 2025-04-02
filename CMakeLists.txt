@@ -103,9 +103,6 @@ set_target_properties(arcade_snake PROPERTIES
     PREFIX ""
 )
 
-<<<<<<< HEAD
-target_link_libraries(arcade_snake ncurses)
-=======
 # ---- Declare the show library ----
 
 add_library(arcade_show SHARED
@@ -118,7 +115,6 @@ set_target_properties(arcade_show PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
     PREFIX ""
 )
->>>>>>> origin/theShow
 
 # ---- Declare executable ----
 
