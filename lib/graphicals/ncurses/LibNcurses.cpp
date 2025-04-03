@@ -64,14 +64,22 @@ arcade::KeyBind arcade::LibNcurses::getKey()
 
 void arcade::LibNcurses::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
+
+    bool cleared = false;
+    for (const auto &entity : entities) {
+        if (entity.first.find("*clear") != std::string::npos && !cleared) {
+            this->Clear();
+            cleared = true; // S'assurer que l'écran est effacé une seule fois
+        }
+    }
+
     for (const auto &entity : entities) {
         std::string display = entity.first;
-             if (entity.first.find("*clear") != std::string::npos) {
-                  this->Clear();
-                  continue;
-              }
-             if (entity.first.find("*") != std::string::npos)
-                display = entity.first.substr(0, entity.first.find("*"));
+        if (entity.first.find("*clear") != std::string::npos) {
+            continue; // Ignorer l'entité *clear après avoir effacé l'écran
+        }
+        if (entity.first.find("*") != std::string::npos)
+            display = entity.first.substr(0, entity.first.find("*"));
         attron(COLOR_PAIR(entity.second.second.first));
         mvprintw(entity.second.first.first, entity.second.first.second, "%s", display.c_str());
         attroff(COLOR_PAIR(entity.second.second.first));

@@ -103,6 +103,8 @@ set_target_properties(arcade_snake PROPERTIES
     PREFIX ""
 )
 
+target_link_libraries(arcade_snake arcade_ncurses ncurses)
+
 # ---- Declare the show library ----
 
 add_library(arcade_show SHARED
