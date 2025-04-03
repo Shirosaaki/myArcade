@@ -10,9 +10,9 @@
 
 arcade::GameSnake::GameSnake() : score(0), direction(RIGHT)
 {
-    snake.push_back(std::make_pair(10, 9));
-    snake.push_back(std::make_pair(10, 8));
-    snake.push_back(std::make_pair(10, 7));
+    snake.push_back(std::make_pair(10, 75));
+    snake.push_back(std::make_pair(10, 76));
+    snake.push_back(std::make_pair(10, 77));
  
     generateFruit();
 }
@@ -34,17 +34,22 @@ void arcade::GameSnake::generateFruit() {
 
 void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
-    // Dimensions de la map
-    int width = 20;
-    int height = 20;
-
-    for (int x = 0; x < width; ++x) {
-        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(0, x), std::make_pair(4, 4))));
-        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(height - 1, x), std::make_pair(4, 4))));
+    int width = 70;
+    int height = 35;
+    
+    int width_screen = 0;
+    int height_screen = 0;
+    getmaxyx(stdscr, height_screen, width_screen);
+    
+    int offset_x = (width_screen - width) / 2;
+    int offset_y = (height_screen - height) / 2;
+    for (int x = 0; x < width; x++) {
+        entities.push_back(std::make_pair("#*wall_up", std::make_pair(std::make_pair(offset_y, offset_x + x), std::make_pair(4, 4))));
+        entities.push_back(std::make_pair("#*wall_down", std::make_pair(std::make_pair(offset_y + height - 1, offset_x + x), std::make_pair(4, 4))));
     }
-    for (int y = 0; y < height; ++y) {
-        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(y, 0), std::make_pair(4, 4))));
-        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(y, width - 1), std::make_pair(4, 4))));
+    for (int y = 0; y < height; y++) {
+        entities.push_back(std::make_pair("#*wall_left", std::make_pair(std::make_pair(offset_y + y, offset_x), std::make_pair(4, 4))));
+        entities.push_back(std::make_pair("#*wall_right", std::make_pair(std::make_pair(offset_y + y, offset_x + width - 1), std::make_pair(4, 4))));
     }
 }
 
