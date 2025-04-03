@@ -29,9 +29,8 @@ namespace arcade {
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
-            std::string getActGame() override { return "lib/arcade_snake.so"; }
-            void updateGame();
-            void generateFruit();
+            std::string getActGame() override { return "Game Over"; }
+            void resetGame() override;
     };
 }
 

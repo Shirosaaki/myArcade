@@ -346,10 +346,42 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
         return GetDisplayNcurses();
     else
         return GetDisplayGraph();
-        //display.push_back(std::make_pair("PACMAN", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
     return display;
 }
 
+void arcade::GamePacman::resetGame()
+{
+    score = 0;
+    lives = 3;
+    Fear = false;
+    map = new_map;
+    clear = false;
+    gameOver = false;
+    nextDirection = RIGHT;
+    red_ghost_dead = false;
+    blue_ghost_dead = false;
+    pink_ghost_dead = false;
+    currentDirection = RIGHT;
+    orange_ghost_dead = false;
+    start_player_pos = player_pos;
+    tpl_pos = std::make_pair(14, 1);
+    start_red_ghost_pos = red_ghost_pos;
+    start_pink_ghost_pos = pink_ghost_pos;
+    start_blue_ghost_pos = blue_ghost_pos;
+    start_orange_ghost_pos = orange_ghost_pos;
+    startTime = std::chrono::steady_clock::now();
+    tpr_pos = std::make_pair(14, map[0].size() - 3);
+    lastMoveTime = std::chrono::steady_clock::now();
+    player_pos = std::make_pair(22, map[0].size()/2 - 1);
+    blue_ghost_pos = std::make_pair(13, map[0].size()/ 2);
+    lastRedGhostMoveTime = std::chrono::steady_clock::now();
+    lastPinkGhostMoveTime = std::chrono::steady_clock::now();
+    lastBlueGhostMoveTime = std::chrono::steady_clock::now();
+    red_ghost_pos = std::make_pair(12, map[0].size()/ 2 - 1);
+    pink_ghost_pos = std::make_pair(13, map[0].size()/ 2 - 1);
+    lastOrangeGhostMoveTime = std::chrono::steady_clock::now();
+    orange_ghost_pos = std::make_pair(13, map[0].size()/ 2 - 2);
+}
 
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GamePacman::GetDisplayNcurses()
 {

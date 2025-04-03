@@ -16,6 +16,9 @@
     #include "../lib/games/menu/GameMenu.hpp"
     #include <filesystem>
     #include <fstream>
+    #include <sstream>
+    #include <vector>
+    #include <algorithm>
 
 class GameCore {
     public:
@@ -44,6 +47,9 @@ class GameCore {
         void nextGame();
         void prevGame();
 
+        void saveScore(int score, const std::string &playerName);
+        std::string tgameToString(arcade::TGames game);
+
     private:
         std::map<std::string, std::pair<arcade::TGraphics, arcade::IGraphics *>> _graphicals;
         std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> _games;
@@ -53,6 +59,9 @@ class GameCore {
         arcade::TGraphics typeCurrentGraphical;
         std::vector<void *> _handles;
         std::vector<arcade::KeyBind> _konamiCode;
+        std::string _currentPlayerName = "Player1";
 };
+
+std::ostream &operator<<(std::ostream &os, const arcade::TGames &game);
 
 #endif /* !GAME_CORE_HPP_ */

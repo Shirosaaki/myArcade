@@ -6,16 +6,16 @@
 #include <ctime>
 #include <unistd.h>
 
-arcade::GameSnake::GameSnake() : score(0), direction(1) {
+arcade::GameSnake::GameSnake() : score(0), direction(1)
+{
     srand(time(0));
-
     snake.push_back(std::make_pair(10, 9));
     snake.push_back(std::make_pair(10, 8));
     snake.push_back(std::make_pair(10, 7));
-    generateFruit();
 }
 
-arcade::GameSnake::~GameSnake() {
+arcade::GameSnake::~GameSnake()
+{
 }
 
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
@@ -29,7 +29,8 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
     return display;
 }
 
-void arcade::GameSnake::setKey(enum arcade::KeyBind key) {
+void arcade::GameSnake::setKey(enum arcade::KeyBind key)
+{
     switch (key) {
         case arcade::KeyBind::UP_KEY:
             if (direction != 2) direction = 0;
@@ -48,13 +49,25 @@ void arcade::GameSnake::setKey(enum arcade::KeyBind key) {
     }
 }
 
-int arcade::GameSnake::getScore() {
-    return score;
+int arcade::GameSnake::getScore()
+{
+    return 50;
 }
 
-std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib) {
+std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib)
+{
     (void)lib;
     return "";
+}
+
+void arcade::GameSnake::resetGame()
+{
+    score = 0;
+    direction = 1;
+    snake.clear();
+    snake.push_back(std::make_pair(10, 9));
+    snake.push_back(std::make_pair(10, 8));
+    snake.push_back(std::make_pair(10, 7));
 }
 
 extern "C" arcade::IGames *entryPoint() {

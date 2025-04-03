@@ -266,6 +266,108 @@ void GameCore::prevGame()
     }
 }
 
+void GameCore::saveScore(int score, const std::string &playerName) {
+    struct GameEntry {
+        std::string name;
+        std::vector<std::pair<std::string, int>> players;
+    };
+    std::vector<GameEntry> games;
+    std::string currentGame;
+    std::vector<std::pair<std::string, int>> currentPlayers;
+    std::ifstream inputFile("scores.txt");
+    if (inputFile) {
+        std::string line;
+        auto trim = [](const std::string &s) {
+            size_t start = s.find_first_not_of(" \t");
+            if (start == std::string::npos) return std::string();
+            size_t end = s.find_last_not_of(" \t");
+            return s.substr(start, end - start + 1);
+        };
+        while (std::getline(inputFile, line)) {
+            std::string trimmedLine = trim(line);
+            if (trimmedLine.size() > 4 &&
+                trimmedLine.substr(0, 3) == "-- " && 
+                trimmedLine.substr(trimmedLine.size() - 3) == " --") {
+                std::string gameName = trimmedLine.substr(3, trimmedLine.size() - 6);
+                gameName = trim(gameName);
+                if (!currentGame.empty()) {
+                    games.push_back({currentGame, currentPlayers});
+                    currentPlayers.clear();
+                }
+                currentGame = gameName;
+            }
+            else if (!currentGame.empty() && !trimmedLine.empty()) {
+                size_t colonPos = trimmedLine.find(':');
+                if (colonPos != std::string::npos) {
+                    std::string name = trim(trimmedLine.substr(0, colonPos));
+                    std::string scoreStr = trim(trimmedLine.substr(colonPos + 1));
+                    int playerScore = std::stoi(scoreStr);
+                    currentPlayers.emplace_back(name, playerScore);
+                }
+            }
+        }
+        if (!currentGame.empty())
+            games.push_back({currentGame, currentPlayers});
+    }
+    const std::string CURRENT_GAME = tgameToString(typeCurrentGame);
+    auto it = std::find_if(games.begin(), games.end(), 
+        [&](const GameEntry& e) { return e.name == CURRENT_GAME; });    
+    if (it != games.end()) {
+        bool found = false;
+        for (auto& pair : it->players)
+            if (pair.first == playerName) {
+                pair.second = score;
+                found = true;
+                break;
+            }
+        if (!found)
+            it->players.emplace_back(playerName, score);
+    }
+    else
+        games.push_back({CURRENT_GAME, {{playerName, score}}});
+    std::ofstream outputFile("scores.txt");
+    for (size_t i = 0; i < games.size(); ++i) {
+        const auto& game = games[i];
+        outputFile << "-- " << game.name << " --\n";
+        for (const auto& player : game.players)
+            outputFile << player.first << ": " << player.second << "\n";
+        if (i != games.size() - 1)
+            outputFile << "\n";
+    }
+}
+
+std::string GameCore::tgameToString(arcade::TGames game)
+{
+    switch (game) {
+        case arcade::TGames::MENU:
+            return "MENU";
+        case arcade::TGames::PACMAN:
+            return "PACMAN";
+        case arcade::TGames::SNAKE:
+            return "SNAKE";
+        case arcade::TGames::MINESWEEPER:
+            return "MINESWEEPER";
+        case arcade::TGames::NIBBLER:
+            return "NIBBLER";
+        case arcade::TGames::QIX:
+            return "QIX";
+        case arcade::TGames::CENTIPEDE:
+            return "CENTIPEDE";
+        case arcade::TGames::SOLARFOX:
+            return "SOLARFOX";
+        case arcade::TGames::SOKOBAN:
+            return "SOKOBAN";
+        case arcade::TGames::SPACE_INVADER:
+            return "SPACE_INVADER";
+        case arcade::TGames::TETRIS:
+            return "TETRIS";
+        case arcade::TGames::THE_SHOW:
+            return "THE_SHOW";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 void GameCore::run()
 {
     while (1) {
@@ -273,9 +375,8 @@ void GameCore::run()
         _currentGraphical->Display(entities);
         _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
         auto key = _currentGraphical->getKey();
-        if (key == arcade::KeyBind::NONE)
-            continue;
-        _konamiCode.push_back(key);
+        if (key != arcade::KeyBind::NONE)
+            _konamiCode.push_back(key);
         if (key == arcade::KeyBind::ESC) {
             _currentGraphical->Nuke();
             break;
@@ -297,7 +398,50 @@ void GameCore::run()
                 _currentGame = _games[currentGameKey].second;
             }
             this->setTypeCurrentGame(_games[currentGameKey].first);
+            this->_currentGame->resetGame();
             _currentGraphical->Clear();
         }
+        if (_currentGame->getActGame() == "Game Over") {
+            _currentGraphical->Clear();
+            saveScore(_currentGame->getScore(), _currentPlayerName);
+            _currentGame = _games["lib/arcade_menu.so"].second;
+            if (_currentGame == nullptr) {
+                this->loadGamesLibs("lib/");
+                _currentGame = _games["lib/arcade_menu.so"].second;
+            }
+            this->setTypeCurrentGame(arcade::TGames::MENU);
+            continue;
+        }
     }
+}
+
+std::ostream &operator<<(std::ostream &os, const arcade::TGames &game)
+{
+    if (game == arcade::TGames::MENU)
+        os << "MENU";
+    else if (game == arcade::TGames::PACMAN)
+        os << "PACMAN";
+    else if (game == arcade::TGames::SNAKE)
+        os << "SNAKE";
+    else if (game == arcade::TGames::MINESWEEPER)
+        os << "MINESWEEPER";
+    else if (game == arcade::TGames::NIBBLER)
+        os << "NIBBLER";
+    else if (game == arcade::TGames::QIX)
+        os << "QIX";
+    else if (game == arcade::TGames::CENTIPEDE)
+        os << "CENTIPEDE";
+    else if (game == arcade::TGames::SOLARFOX)
+        os << "SOLARFOX";
+    else if (game == arcade::TGames::SOKOBAN)
+        os << "SOKOBAN";
+    else if (game == arcade::TGames::SPACE_INVADER)
+        os << "SPACE_INVADER";
+    else if (game == arcade::TGames::TETRIS)
+        os << "TETRIS";
+    else if (game == arcade::TGames::THE_SHOW)
+        os << "THE_SHOW";
+    else
+        os << "UNKNOWN";
+    return os;
 }

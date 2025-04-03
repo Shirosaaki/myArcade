@@ -31,7 +31,14 @@ namespace arcade {
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
-            std::string getActGame() override { return "lib/arcade_pacman.so"; }
+            std::string getActGame() override {
+                if (gameOver) {
+                    return "Game Over";
+                }
+                return "Game Running";
+            }
+            void resetGame() override;
+
         protected:
             std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayNcurses();
             std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayGraph();
@@ -47,6 +54,7 @@ namespace arcade {
             void UpdateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
             std::pair<int, int> findShortestPath(std::pair<int, int> start, std::pair<int, int> end);
             std::pair<int, int> findFarthestPath(std::pair<int, int> start, std::pair<int, int> end);
+
         private:
             int speed_ghost = 300;
             int speed_player = 200;

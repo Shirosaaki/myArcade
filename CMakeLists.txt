@@ -92,18 +92,19 @@ set_target_properties(arcade_pacman PROPERTIES
 
 # ---- Declare snake library ----
 
-#add_library(arcade_snake SHARED
-#    lib/games/snake/GameSnake.cpp
-#    lib/games/snake/GameSnake.hpp
-#)
+add_library(arcade_snake SHARED
+    lib/games/snake/GameSnake.cpp
+    lib/games/snake/GameSnake.hpp
+)
 
-#set_target_properties(arcade_snake PROPERTIES
-#    OUTPUT_NAME "arcade_snake"
-#    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
-#    PREFIX ""
-#)
+set_target_properties(arcade_snake PROPERTIES
+    OUTPUT_NAME "arcade_snake"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+    PREFIX ""
+)
 
-#target_link_libraries(arcade_snake ncurses)
+target_link_libraries(arcade_snake ncurses)
+
 # ---- Declare the show library ----
 
 add_library(arcade_show SHARED
@@ -133,7 +134,7 @@ target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
 # ---- Install rules ----
 
-install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman
+install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman arcade_show arcade_snake
     LIBRARY DESTINATION lib
 )
 

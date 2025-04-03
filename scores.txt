@@ -1,0 +1,6 @@
+-- PACMAN --
+Player: 180
+Player1: 150
+
+-- SNAKE --
+Player1: 50

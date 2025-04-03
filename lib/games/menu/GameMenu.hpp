@@ -21,6 +21,7 @@ namespace arcade {
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
             std::string getActGame();
+            void resetGame() override { return; }
             
         protected:
             std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> loadGamesLibs(const std::string &path);
