@@ -32,9 +32,28 @@ void arcade::GameSnake::generateFruit() {
     }
 }
 
+void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
+{
+    // Dimensions de la map
+    int width = 20;
+    int height = 20;
+
+    for (int x = 0; x < width; ++x) {
+        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(0, x), std::make_pair(4, 4))));
+        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(height - 1, x), std::make_pair(4, 4))));
+    }
+    for (int y = 0; y < height; ++y) {
+        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(y, 0), std::make_pair(4, 4))));
+        entities.push_back(std::make_pair("#*wall", std::make_pair(std::make_pair(y, width - 1), std::make_pair(4, 4))));
+    }
+}
+
 void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
     
     entities.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
+
+    generateMap(entities);
+
     for (size_t i = snake.size() - 1; i > 0; --i) {
         snake[i] = snake[i - 1];
     }
@@ -71,7 +90,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
         int i = 0;
         for (const auto& segment : snake) {
             if (i == 0) {
-                display.push_back(std::make_pair("$*head", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
+                display.push_back(std::make_pair("$*head", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(2, 2))));
                 i++;
                 continue;
             }
@@ -79,7 +98,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
             display.push_back(std::make_pair("O*" + key, std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
             i++;
         }
-        
+        display.push_back(std::make_pair("A*fruit", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(3, 3))));
         arcade::KeyBind key = ncurses.getKey();
         if (key != arcade::KeyBind::NONE) {
             setKey(key);

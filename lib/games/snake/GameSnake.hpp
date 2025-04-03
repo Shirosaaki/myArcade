@@ -38,6 +38,7 @@ namespace arcade {
             std::string getActGame() override { return "lib/arcade_snake.so"; }
             void generateFruit();
             void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
+            void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
     };
 }
 
