@@ -133,7 +133,7 @@ void arcade::GamePacman::moveOrangeGhost(std::vector<std::pair<std::string, std:
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastOrangeGhostMoveTime);
 
-    if (elapsed.count() < 300)
+    if (elapsed.count() < speed_ghost)
         return;
     lastOrangeGhostMoveTime = now;
     
@@ -188,7 +188,7 @@ void arcade::GamePacman::moveBlueGhost(std::vector<std::pair<std::string, std::p
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastBlueGhostMoveTime);
 
-    if (elapsed.count() < 300)
+    if (elapsed.count() < speed_ghost)
         return;
     lastBlueGhostMoveTime = now;
 
@@ -242,7 +242,7 @@ void arcade::GamePacman::movePinkGhost(std::vector<std::pair<std::string, std::p
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastPinkGhostMoveTime);
 
-    if (elapsed.count() < 300)
+    if (elapsed.count() < speed_ghost)
         return;
     lastPinkGhostMoveTime = now;
     if (!clear) {
@@ -283,7 +283,7 @@ void arcade::GamePacman::moveRedGhost(std::vector<std::pair<std::string, std::pa
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastRedGhostMoveTime);
     std::pair<int, int> nextPos = findShortestPath(red_ghost_pos, player_pos);
 
-    if (elapsed.count() < 300)
+    if (elapsed.count() < speed_ghost)
         return;
     lastRedGhostMoveTime = now;
     if (!clear) {
@@ -303,7 +303,7 @@ void arcade::GamePacman::moveDeadGhost(std::pair<int, int> &ghost_pos, const std
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - ghost_timer);
 
-    if (elapsed.count() < 200)
+    if (elapsed.count() < 100)
         return;
     ghost_timer = now;
     if (ghost_pos == start_pos) {
@@ -522,7 +522,7 @@ void arcade::GamePacman::movePlayer(std::vector<std::pair<std::string, std::pair
     auto now = std::chrono::steady_clock::now();
     auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMoveTime);
 
-    if (elapsed.count() < 200)
+    if (elapsed.count() < speed_player)
         return;
     lastMoveTime = now;
     if (!clear) {
@@ -728,6 +728,8 @@ void arcade::GamePacman::winGame()
     pink_ghost_dead = false;
     gameOver = false;
     clear = false;
+    speed_ghost *= 0.9;
+    speed_player *= 0.95;
     startTime = std::chrono::steady_clock::now();
     lastMoveTime = std::chrono::steady_clock::now();
     lastRedGhostMoveTime = std::chrono::steady_clock::now();

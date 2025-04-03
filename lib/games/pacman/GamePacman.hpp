@@ -48,6 +48,8 @@ namespace arcade {
             std::pair<int, int> findShortestPath(std::pair<int, int> start, std::pair<int, int> end);
             std::pair<int, int> findFarthestPath(std::pair<int, int> start, std::pair<int, int> end);
         private:
+            int speed_ghost = 300;
+            int speed_player = 200;
             std::vector<std::string> map;
             std::vector<std::string> new_map;
             std::pair<int, int> player_pos;
