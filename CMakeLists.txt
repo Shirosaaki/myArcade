@@ -44,8 +44,9 @@ set_target_properties(arcade_sdl2 PROPERTIES
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(SDL2_ttf REQUIRED)
-target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS})
-target_link_libraries(arcade_sdl2 PRIVATE SDL2_image SDL2_ttf SDL2)
+find_package(SDL2_mixer REQUIRED)
+target_include_directories(arcade_sdl2 PRIVATE ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS} ${SDL2_TTF_INCLUDE_DIRS} ${SDL2_MIXER_INCLUDE_DIRS})
+target_link_libraries(arcade_sdl2 PRIVATE SDL2_image SDL2_ttf SDL2 SDL2_mixer)
 
 # ---- Declare SFMl library ----
 
@@ -91,22 +92,34 @@ set_target_properties(arcade_pacman PROPERTIES
 
 # ---- Declare snake library ----
 
-add_library(arcade_snake SHARED
-    lib/games/snake/GameSnake.cpp
-    lib/games/snake/GameSnake.hpp
+#add_library(arcade_snake SHARED
+#    lib/games/snake/GameSnake.cpp
+#    lib/games/snake/GameSnake.hpp
+#)
+
+#set_target_properties(arcade_snake PROPERTIES
+#    OUTPUT_NAME "arcade_snake"
+#    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
+#    PREFIX ""
+#)
+
+#target_link_libraries(arcade_snake ncurses)
+# ---- Declare the show library ----
+
+add_library(arcade_show SHARED
+    lib/games/theShow/GameTheShow.cpp
+    lib/games/theShow/GameTheShow.hpp
 )
 
-set_target_properties(arcade_snake PROPERTIES
-    OUTPUT_NAME "arcade_snake"
+set_target_properties(arcade_show PROPERTIES
+    OUTPUT_NAME "arcade_the_show"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/lib"
     PREFIX ""
 )
 
-target_link_libraries(arcade_snake ncurses)
-
 # ---- Declare executable ----
 
-add_executable(arcade_exe source/main.cpp source/load_libs.cpp)
+add_executable(arcade_exe source/main.cpp source/GameCore.cpp source/Error.cpp)
 add_executable(arcade::exe ALIAS arcade_exe)
 
 set_property(TARGET arcade_exe PROPERTY OUTPUT_NAME arcade)
@@ -120,7 +133,7 @@ target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
 # ---- Install rules ----
 
-install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman arcade_snake
+install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman
     LIBRARY DESTINATION lib
 )
 

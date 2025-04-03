@@ -50,7 +50,6 @@ void arcade::LibNcurses::Init()
 arcade::KeyBind arcade::LibNcurses::getKey()
 {
     int key = getch();
-
     switch (key) {
     case 27:
         return KeyBind::ESC;
@@ -58,6 +57,10 @@ arcade::KeyBind arcade::LibNcurses::getKey()
         return KeyBind::A_KEY;
     case 122:
         return KeyBind::Z_KEY;
+    case 113:
+        return KeyBind::Q_KEY;
+    case 115:
+        return KeyBind::S_KEY;
     case 32:
         return KeyBind::SPACE;
     case 10:
@@ -79,7 +82,7 @@ arcade::KeyBind arcade::LibNcurses::getKey()
     }
 }
 
-void arcade::LibNcurses::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+void arcade::LibNcurses::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
     for (auto &entity : entities) {
         std::string tmp = entity.first;

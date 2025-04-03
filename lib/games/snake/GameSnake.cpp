@@ -18,78 +18,15 @@ arcade::GameSnake::GameSnake() : score(0), direction(1) {
 arcade::GameSnake::~GameSnake() {
 }
 
-void arcade::GameSnake::generateFruit() {
-    fruit = std::make_pair(rand() % 20, rand() % 20);
-    for (const auto& segment : snake) {
-        if (segment == fruit) {
-            generateFruit();
-            return;
-        }
-    }
-}
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
+{
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
 
-void arcade::GameSnake::updateGame() {
-    for (size_t i = snake.size() - 1; i > 0; --i) {
-        snake[i] = snake[i - 1];
-    }
-
-    switch (direction) {
-        case 0: // Haut
-            snake[0].first--;
-            break;
-        case 1: // Droite
-            snake[0].second++;
-            break;
-        case 2: // Bas
-            snake[0].first++;
-            break;
-        case 3: // Gauche
-            snake[0].second--;
-            break;
-    }
-
-    if (snake[0] == fruit) {
-        snake.push_back(snake.back());
-        score += 10;
-        generateFruit();
-    }
-}
-
-std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib) {
-    std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
-
-    if (lib == arcade::TGraphics::NCURSES) {
-        updateGame();
-        clear();
-
-        for (const auto& segment : snake) {
-            mvprintw(segment.first, segment.second, "O");
-        }
-
-        mvprintw(snake[0].first, snake[0].second, "$");
-        mvprintw(fruit.first, fruit.second, "A");
-        refresh();
-
-        int ch = getch();
-        switch (ch) {
-            case KEY_UP:
-                setKey(arcade::KeyBind::UP_KEY);
-                break;
-            case KEY_DOWN:
-                setKey(arcade::KeyBind::DOWN_KEY);
-                break;
-            case KEY_LEFT:
-                setKey(arcade::KeyBind::LEFT_KEY);
-                break;
-            case KEY_RIGHT:
-                setKey(arcade::KeyBind::RIGHT_KEY);
-                break;
-        }
-        usleep(100000);
-    } else {
-        entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
-    }
-    return entities;
+    if (lib == arcade::TGraphics::NCURSES)
+        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6))));
+    else
+        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
+    return display;
 }
 
 void arcade::GameSnake::setKey(enum arcade::KeyBind key) {

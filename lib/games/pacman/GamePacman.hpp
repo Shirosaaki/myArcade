@@ -7,7 +7,7 @@
 #ifndef GAME_PACMAN_HPP_
     #define GAME_PACMAN_HPP_
     #include "../IGames.hpp"
-    #include <map>
+    #include <vector>
     #include <chrono>
     #include <algorithm>
     #include <cmath>
@@ -27,29 +27,33 @@ namespace arcade {
             };
             GamePacman();
             ~GamePacman();
-            std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum arcade::TGraphics lib) override;
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplay(enum arcade::TGraphics lib) override;
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
             std::string getActGame() override { return "lib/arcade_pacman.so"; }
         protected:
-            std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplayNcurses();
-            void movePlayer(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
-            void moveRedGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
-            void movePinkGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
-            void moveOrangeGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
-            void moveBlueGhost(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
-            void checkCollision(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayNcurses();
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayGraph();
+            void movePlayer(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
+            void moveRedGhost(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
+            void movePinkGhost(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
+            void moveOrangeGhost(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
+            void moveBlueGhost(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
+            void checkCollision();
+            void winGame();
+            bool checkWin();
             void moveDeadGhost(std::pair<int, int> &ghost_pos, const std::pair<int, int> &start_pos, bool &ghost_dead, std::chrono::steady_clock::time_point &ghost_timer);
-            void UpdateGame(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities);
+            void UpdateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>& entities);
             std::pair<int, int> findShortestPath(std::pair<int, int> start, std::pair<int, int> end);
             std::pair<int, int> findFarthestPath(std::pair<int, int> start, std::pair<int, int> end);
         private:
             std::vector<std::string> map;
+            std::vector<std::string> new_map;
             std::pair<int, int> player_pos;
             std::pair<int, int> start_player_pos;
             std::pair<int, int> red_ghost_pos;
-            std::pair<int, int> start_red_ghost_pos;;
+            std::pair<int, int> start_red_ghost_pos;
             std::pair<int, int> pink_ghost_pos; 
             std::pair<int, int> start_pink_ghost_pos;
             std::pair<int, int> blue_ghost_pos;
@@ -79,6 +83,7 @@ namespace arcade {
             std::chrono::steady_clock::time_point blue_ghost_dead_timer;
             std::chrono::steady_clock::time_point orange_ghost_dead_timer;
             std::chrono::steady_clock::time_point pink_ghost_dead_timer;
+            std::chrono::steady_clock::time_point startTime;
     };
 }
 

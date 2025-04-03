@@ -15,6 +15,8 @@
     #include <SDL2/SDL_audio.h>
     #include <SDL2/SDL_image.h>
     #include <SDL2/SDL_ttf.h>
+    #include <SDL2/SDL_mixer.h>
+    #include <SDL2/SDL_gamecontroller.h>
     #include <unordered_map>
  
  namespace arcade {
@@ -24,7 +26,7 @@
             ~LibSDL2();
             void Init() override;
             arcade::KeyBind getKey() override;
-            void Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities) override;
+            void Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity) override;
             void PlaySound(std::string sound) override;
             void Clear() override;
             void Nuke() override;
@@ -37,9 +39,12 @@
             SDL_Window *window;
             SDL_Renderer *renderer;
             TTF_Font *font;
-            SDL_Texture *texture;
             SDL_Rect rect;
+            Mix_Music *music;
             std::unordered_map<std::string, SDL_Texture*> textureCache;
+            std::string currentSound;
+            SDL_Joystick *joystick;
+            arcade::KeyBind lastKey = arcade::KeyBind::NONE;
     };
 }
 
