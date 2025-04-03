@@ -26,6 +26,8 @@ namespace arcade {
             } direction;
             std::vector<std::pair<int, int>> snake;
             std::pair<int, int> fruit;
+            std::pair<int, int> wall;
+            std::pair<int, int> offset_pos;
             int score;
             LibNcurses ncurses;
         public:
