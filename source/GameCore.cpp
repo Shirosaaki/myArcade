@@ -169,7 +169,7 @@ void GameCore::setCurrentGame(const std::string &lib)
 
 void GameCore::konamiCode()
 {
-    if (_konamiCode.size() < 10)
+    if (_konamiCode.size() <= 10)
         return;
     if (std::equal(_konamiCode.begin(), _konamiCode.end(), std::vector<arcade::KeyBind>{arcade::KeyBind::UP_KEY, arcade::KeyBind::UP_KEY,
         arcade::KeyBind::DOWN_KEY, arcade::KeyBind::DOWN_KEY, arcade::KeyBind::LEFT_KEY, arcade::KeyBind::RIGHT_KEY,
@@ -267,71 +267,58 @@ void GameCore::prevGame()
 }
 
 void GameCore::saveScore(int score, const std::string &playerName) {
-    struct GameEntry {
-        std::string name;
-        std::vector<std::pair<std::string, int>> players;
-    };
-    std::vector<GameEntry> games;
-    std::string currentGame;
-    std::vector<std::pair<std::string, int>> currentPlayers;
+    using GameScores = std::map<std::string, int>;
+    std::vector<std::pair<std::string, GameScores>> allGames;
+    std::string currentGameName;
+    GameScores currentGameScores;
     std::ifstream inputFile("scores.txt");
     if (inputFile) {
-        std::string line;
-        auto trim = [](const std::string &s) {
-            size_t start = s.find_first_not_of(" \t");
-            if (start == std::string::npos) return std::string();
-            size_t end = s.find_last_not_of(" \t");
-            return s.substr(start, end - start + 1);
+        auto trim = [](const std::string& s) {
+            auto start = s.find_first_not_of(" \t");
+            return (start == std::string::npos) ? "" : s.substr(start, s.find_last_not_of(" \t") - start + 1);
         };
+        std::string line;
         while (std::getline(inputFile, line)) {
-            std::string trimmedLine = trim(line);
-            if (trimmedLine.size() > 4 &&
-                trimmedLine.substr(0, 3) == "-- " && 
-                trimmedLine.substr(trimmedLine.size() - 3) == " --") {
-                std::string gameName = trimmedLine.substr(3, trimmedLine.size() - 6);
-                gameName = trim(gameName);
-                if (!currentGame.empty()) {
-                    games.push_back({currentGame, currentPlayers});
-                    currentPlayers.clear();
+            std::string trimmed = trim(line);
+            if (trimmed.size() > 4 && trimmed.substr(0, 3) == "-- " && trimmed.substr(trimmed.size() - 3) == " --") {
+                if (!currentGameName.empty()) {
+                    allGames.emplace_back(currentGameName, currentGameScores);
+                    currentGameScores.clear();
                 }
-                currentGame = gameName;
+                currentGameName = trim(trimmed.substr(3, trimmed.size() - 6));
             }
-            else if (!currentGame.empty() && !trimmedLine.empty()) {
-                size_t colonPos = trimmedLine.find(':');
-                if (colonPos != std::string::npos) {
-                    std::string name = trim(trimmedLine.substr(0, colonPos));
-                    std::string scoreStr = trim(trimmedLine.substr(colonPos + 1));
-                    int playerScore = std::stoi(scoreStr);
-                    currentPlayers.emplace_back(name, playerScore);
+            else if (!currentGameName.empty() && !trimmed.empty()) {
+                size_t colon = trimmed.find(':');
+                if (colon != std::string::npos) {
+                    std::string name = trim(trimmed.substr(0, colon));
+                    int val = std::stoi(trim(trimmed.substr(colon + 1)));
+                    currentGameScores[name] = val;
                 }
             }
         }
-        if (!currentGame.empty())
-            games.push_back({currentGame, currentPlayers});
+        if (!currentGameName.empty())
+            allGames.emplace_back(currentGameName, currentGameScores);
     }
     const std::string CURRENT_GAME = tgameToString(typeCurrentGame);
-    auto it = std::find_if(games.begin(), games.end(), 
-        [&](const GameEntry& e) { return e.name == CURRENT_GAME; });    
-    if (it != games.end()) {
-        bool found = false;
-        for (auto& pair : it->players)
-            if (pair.first == playerName) {
-                pair.second = score;
-                found = true;
-                break;
-            }
-        if (!found)
-            it->players.emplace_back(playerName, score);
-    }
-    else
-        games.push_back({CURRENT_GAME, {{playerName, score}}});
+    auto gameIt = std::find_if(allGames.begin(), allGames.end(),
+        [&](const auto& game) { return game.first == CURRENT_GAME; });
+    if (gameIt != allGames.end()) {
+        auto& [gameName, scores] = *gameIt;
+        auto it = scores.find(playerName);
+        if (it != scores.end()) {
+            if (score > it->second)
+                it->second = score;
+        } else
+            scores[playerName] = score;
+    } else
+        allGames.emplace_back(CURRENT_GAME, GameScores{{playerName, score}});
     std::ofstream outputFile("scores.txt");
-    for (size_t i = 0; i < games.size(); ++i) {
-        const auto& game = games[i];
-        outputFile << "-- " << game.name << " --\n";
-        for (const auto& player : game.players)
-            outputFile << player.first << ": " << player.second << "\n";
-        if (i != games.size() - 1)
+    for (size_t i = 0; i < allGames.size(); ++i) {
+        const auto& [name, scores] = allGames[i];
+        outputFile << "-- " << name << " --\n";
+        for (const auto& [player, highScore] : scores)
+            outputFile << player << ": " << highScore << "\n";
+        if (i < allGames.size() - 1)
             outputFile << "\n";
     }
 }
@@ -375,10 +362,14 @@ void GameCore::run()
         _currentGraphical->Display(entities);
         _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
         auto key = _currentGraphical->getKey();
-        if (key != arcade::KeyBind::NONE)
+        if (key != arcade::KeyBind::NONE) {
             _konamiCode.push_back(key);
+            this->konamiCode();
+        }
         if (key == arcade::KeyBind::ESC) {
             _currentGraphical->Nuke();
+            if (typeCurrentGame != arcade::TGames::MENU)
+                saveScore(_currentGame->getScore(), _currentPlayerName);
             break;
         } else if (key == arcade::KeyBind::Z_KEY)
             this->nextGraphical();

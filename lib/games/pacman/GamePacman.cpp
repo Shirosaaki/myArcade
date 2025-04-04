@@ -541,7 +541,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
     }
     std::string my_score = "Score : ";
     my_score += std::to_string(score);
-    entities.push_back(std::make_pair(my_score, std::make_pair(std::make_pair((map[0].size() + 20) + 665, 9*20), std::make_pair(60, 60))));
+    entities.push_back(std::make_pair(my_score, std::make_pair(std::make_pair((map[0].size() + 20) + 665, 9*20), std::make_pair(180, 60))));
     for(int i = 1; i <= lives; i++)
         entities.push_back(std::make_pair("assets/Pacman/Pacman_Right.png", std::make_pair(std::make_pair((map[0].size() + 20) + 600 + i*65, 2*20), std::make_pair(60, 60))));
     return entities;
