@@ -334,8 +334,10 @@ int arcade::GamePacman::getScore()
 
 std::string arcade::GamePacman::getSound(enum arcade::TGraphics lib)
 {
-    (void)lib;
-    return "";
+    if (lib == arcade::TGraphics::NCURSES)
+        return "";
+    else
+        return "assets/Pacman/pacman.wav";
 }
 
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GamePacman::GetDisplay(enum arcade::TGraphics lib)
