@@ -14,6 +14,7 @@
     #include <cstdlib>
     #include <utility>
     #include "../../graphicals/ncurses/LibNcurses.hpp"
+    #include "../menu/GameMenu.hpp"
 
 namespace arcade {
     class GameSnake : public IGames {
@@ -39,12 +40,14 @@ namespace arcade {
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
-            std::string getActGame() override { return "lib/arcade_snake.so"; }
+            std::string getActGame() override { return "Game Over"; }
             void generateFruit();
             void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
             void checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             bool isGameOver();
+            void resetGame();
+            void initSnake();
     };
 }
 

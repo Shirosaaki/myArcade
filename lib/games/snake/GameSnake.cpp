@@ -10,9 +10,6 @@
 
 arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair(70, 35)), offset_pos(std::make_pair(0, 0)), gameOver(false)
 {
-    // snake.push_back(std::make_pair(20, 75));
-    // snake.push_back(std::make_pair(20, 76));
-    // snake.push_back(std::make_pair(20, 77));
     snake.clear();
     fruit = std::make_pair(10, 80);
     initialized = false;
@@ -21,8 +18,6 @@ arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair
 arcade::GameSnake::~GameSnake()
 {
 }
-
-
 
 void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
@@ -70,10 +65,8 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         }
     }
 }
-    
-    void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
-        generateMap(entities);
-        
+    void arcade::GameSnake::initSnake()
+    {
         if (!initialized) {
             snake.clear(); 
             snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2));
@@ -81,21 +74,28 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 2));
             initialized = true;
         }
+    }
+
+    void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
+        generateMap(entities);
+        
+        initSnake();
+
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
 
         switch (direction) {
-            case UP: // Haut
+            case UP:
             snake[0].first--;
             break;
-            case RIGHT: // Droite
+            case RIGHT:
             snake[0].second++;
             break;
-            case DOWN: // Bas
+            case DOWN:
             snake[0].first++;
             break;
-            case LEFT: // Gauche
+            case LEFT:
             snake[0].second--;
             break;
         }
@@ -122,24 +122,38 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         checkCollision(entities);
     }
     
+    void arcade::GameSnake::resetGame()
+    {
+        score = 0;
+        direction = RIGHT;
+        gameOver = false;
+        snake.clear();
+        initialized = false;
+    
+        snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2));
+        snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 1));
+        snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 2));
+    
+        generateFruit();
+    }
+
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
     {
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
     
     if (lib == arcade::TGraphics::NCURSES) {
-        display.push_back(std::make_pair("Score:", std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
         arcade::KeyBind key = ncurses.getKey();
+
+        if (isGameOver()) {
+            getActGame();
+        } else {
+        display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
         if (key != arcade::KeyBind::NONE) {
             setKey(key);
         }
         updateGame(display);
-        if (isGameOver()) {
-            display.clear();
-            display.push_back(std::make_pair("GAME OVER", std::make_pair(std::make_pair(5, 60), std::make_pair(5, 5))));
-            display.push_back(std::make_pair("RESTART", std::make_pair(std::make_pair(10, 45), std::make_pair(5, 5)))); 
-            display.push_back(std::make_pair("QUIT", std::make_pair(std::make_pair(10, 75), std::make_pair(5, 5))));
-        }
         usleep(129000);
+    }
     } else
         display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
     return display;
