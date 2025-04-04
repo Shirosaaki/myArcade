@@ -41,6 +41,21 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameTheShow::displaySecondCinematic()
 {
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> entities;
+    auto now = std::chrono::steady_clock::now();
+    auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - timeMove);
+
+    if (nbFrames == 112) {
+        _needDisplaySecondCinematic = false;
+        return entities;
+    }
+    if (elapsed.count() > 100) {
+        if (nbFrames == 0)
+            nbFrames++;
+        entities.emplace_back("assets/theShow/movies/sammy/sammy_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(251, 0), std::make_pair(577, 720)));
+        timeMove = now;
+        nbFrames++;
+    } else
+        entities.emplace_back("assets/theShow/movies/sammy/sammy_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(251, 0), std::make_pair(577, 720)));
     return entities;
 }
 
@@ -128,6 +143,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
                     ennemiLife = 3;
                     life = 3;
                     _needDisplaySecondCinematic = true;
+                    nbFrames = 1;
                 }
             }
         }
@@ -234,10 +250,8 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
         return {entity};
     } if (isTheFirstTime == true)
         return displayFirstCinematic();
-    if (_needDisplaySecondCinematic == true) {
-        _needDisplaySecondCinematic = false;
+    if (_needDisplaySecondCinematic == true)
         return displaySecondCinematic();
-    }
     if (actualLevel == 1)
         return displayLevel1();
     if (actualLevel == 2)
@@ -293,6 +307,8 @@ std::string arcade::GameTheShow::getSound(enum TGraphics lib)
 {
     if (lib != TGraphics::NCURSES && isTheFirstTime == true)
         return "assets/theShow/intro.wav";
+    if (lib != TGraphics::NCURSES && _needDisplaySecondCinematic == true)
+        return "assets/theShow/sammy.wav";
     else
         return "assets/menu/TheShost.wav";
 }
