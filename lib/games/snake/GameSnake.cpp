@@ -14,7 +14,7 @@ arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair
     snake.push_back(std::make_pair(10, 76));
     snake.push_back(std::make_pair(10, 77));
     
-    generateFruit();
+    fruit = std::make_pair(10, 80);
 }
 
 arcade::GameSnake::~GameSnake()
@@ -52,9 +52,6 @@ void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair
 }
 
 void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
-    
-    entities.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
-
     generateMap(entities);
 
     for (size_t i = snake.size() - 1; i > 0; --i) {
@@ -83,8 +80,6 @@ void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<
     }
 }
 
-
-
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
 {
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
@@ -93,21 +88,22 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
         int i = 0;
         for (const auto& segment : snake) {
             if (i == 0) {
-                display.push_back(std::make_pair("$*head", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(2, 2))));
+                display.push_back(std::make_pair("$*head", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
                 i++;
                 continue;
             }
             auto key = std::to_string(i);
-            display.push_back(std::make_pair("O*" + key, std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
+            display.push_back(std::make_pair("O*" + key, std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(2, 2))));
             i++;
         }
         display.push_back(std::make_pair("A*fruit", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(3, 3))));
+        display.push_back(std::make_pair("Score:", std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
         arcade::KeyBind key = ncurses.getKey();
         if (key != arcade::KeyBind::NONE) {
             setKey(key);
         }
         updateGame(display);
-        usleep(100000);
+        usleep(109000);
     } else
         display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
     return display;
