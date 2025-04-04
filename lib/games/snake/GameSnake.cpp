@@ -1,44 +1,48 @@
-/*
-** EPITECH PROJECT, 2025
-** GameSnake
-** File description:
-** GameSnake
-*/
 #include "GameSnake.hpp"
+#include <ncurses.h>
+#include <vector>
+#include <utility>
+#include <cstdlib>
+#include <ctime>
+#include <unistd.h>
 
-arcade::GameSnake::GameSnake()
+arcade::GameSnake::GameSnake() : score(0), direction(1)
 {
+    srand(time(0));
+    snake.push_back(std::make_pair(10, 9));
+    snake.push_back(std::make_pair(10, 8));
+    snake.push_back(std::make_pair(10, 7));
 }
 
 arcade::GameSnake::~GameSnake()
 {
 }
 
-std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
 {
-    std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entities;
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
 
     if (lib == arcade::TGraphics::NCURSES)
-        entities["SNAKE"] = std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6));
+        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(0, 0), std::make_pair(6, 6))));
     else
-        entities["assets/snake.png"] = std::make_pair(std::make_pair(0, 0), std::make_pair(50, 50));
-    return entities;
+        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
+    return display;
 }
 
 void arcade::GameSnake::setKey(enum arcade::KeyBind key)
 {
     switch (key) {
         case arcade::KeyBind::UP_KEY:
-            if (direction != Direction::DOWN) direction = Direction::UP;
-            break;
-        case arcade::KeyBind::DOWN_KEY:
-            if (direction != Direction::UP) direction = Direction::DOWN;
-            break;
-        case arcade::KeyBind::LEFT_KEY:
-            if (direction != Direction::RIGHT) direction = Direction::LEFT;
+            if (direction != 2) direction = 0;
             break;
         case arcade::KeyBind::RIGHT_KEY:
-            if (direction != Direction::LEFT) direction = Direction::RIGHT;
+            if (direction != 3) direction = 1;
+            break;
+        case arcade::KeyBind::DOWN_KEY:
+            if (direction != 0) direction = 2;
+            break;
+        case arcade::KeyBind::LEFT_KEY:
+            if (direction != 1) direction = 3;
             break;
         default:
             break;
@@ -47,7 +51,7 @@ void arcade::GameSnake::setKey(enum arcade::KeyBind key)
 
 int arcade::GameSnake::getScore()
 {
-    return 0;
+    return 50;
 }
 
 std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib)
@@ -56,7 +60,16 @@ std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib)
     return "";
 }
 
-extern "C" arcade::IGames *entryPoint()
+void arcade::GameSnake::resetGame()
 {
+    score = 0;
+    direction = 1;
+    snake.clear();
+    snake.push_back(std::make_pair(10, 9));
+    snake.push_back(std::make_pair(10, 8));
+    snake.push_back(std::make_pair(10, 7));
+}
+
+extern "C" arcade::IGames *entryPoint() {
     return new arcade::GameSnake();
 }

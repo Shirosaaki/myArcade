@@ -18,6 +18,7 @@ arcade::LibSDL2::~LibSDL2()
 
 void arcade::LibSDL2::Init()
 {
+    this->currentSound = "";
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         exit(84);
@@ -48,55 +49,95 @@ void arcade::LibSDL2::Init()
         SDL_Quit();
         exit(84);
     }
-    this->font = TTF_OpenFont("assets/TheShow.ttf", 24);
+    this->font = TTF_OpenFont("assets/fonts/TheShow.ttf", 24);
     if (this->font == nullptr) {
         std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << std::endl;
         SDL_DestroyRenderer(this->renderer);
         SDL_DestroyWindow(this->window);
+        TTF_Quit();
         SDL_Quit();
         exit(84);
     }
+    if (SDL_Init(SDL_INIT_JOYSTICK) != 0)
+        std::cerr << "SDL_INIT Error: " << SDL_GetError() << std::endl;
+    else
+        this->joystick = SDL_JoystickOpen(0);
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        std::cerr << "Mix_OpenAudio Error: " << Mix_GetError() << std::endl;
+        return;
+    }
+    Mix_AllocateChannels(16);
+    this->music = nullptr;
 }
 
 arcade::KeyBind arcade::LibSDL2::getKey()
 {
     SDL_Event event;
+    static float deadZone = 8000.0f;
+    
 
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
-        case SDL_QUIT:
-            return KeyBind::ESC;
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-            case SDLK_ESCAPE:
+            case SDL_QUIT:
                 return KeyBind::ESC;
-            case SDLK_a:
-                return KeyBind::A_KEY;
-            case SDLK_z:
-                return KeyBind::Z_KEY;
-            case SDLK_s:
-                return KeyBind::S_KEY;
-            case SDLK_q:
-                return KeyBind::Q_KEY;
-            case SDLK_SPACE:
-                return KeyBind::SPACE;
-            case SDLK_RETURN:
-                return KeyBind::ENTER;
-            case SDLK_DOWN:
-                return KeyBind::DOWN_KEY;
-            case SDLK_UP:
-                return KeyBind::UP_KEY;
-            case SDLK_LEFT:
-                return KeyBind::LEFT_KEY;
-            case SDLK_RIGHT:
-                return KeyBind::RIGHT_KEY;
-            default:
-                return KeyBind::NONE;
-            }
-        default:
-            return KeyBind::NONE;
+            case SDL_JOYAXISMOTION:
+                if (event.jaxis.axis == 0) {
+                    if (event.jaxis.value < -deadZone) {
+                        lastKey = KeyBind::LEFT_KEY;
+                        return KeyBind::LEFT_KEY;
+                    } else if (event.jaxis.value > deadZone) {
+                        lastKey = KeyBind::RIGHT_KEY;
+                        return KeyBind::RIGHT_KEY;
+                    } else if (std::abs(event.jaxis.value) <= deadZone)
+                        lastKey = KeyBind::NONE;
+                }
+                if (event.jaxis.axis == 1) {
+                    if (event.jaxis.value < -deadZone && lastKey != KeyBind::UP_KEY) {
+                        lastKey = KeyBind::UP_KEY;
+                        return KeyBind::UP_KEY;
+                    } else if (event.jaxis.value > deadZone && lastKey != KeyBind::DOWN_KEY) {
+                        lastKey = KeyBind::DOWN_KEY;
+                        return KeyBind::DOWN_KEY;
+                    } else if (std::abs(event.jaxis.value) <= deadZone)
+                        lastKey = KeyBind::NONE;
+                }
+                break;
+            case SDL_JOYBUTTONUP:
+                lastKey = KeyBind::NONE;
+                if (event.jbutton.button == 1)
+                    return KeyBind::ENTER;
+                if (event.jbutton.button == 2)
+                    return KeyBind::SPACE;
+                if (event.jbutton.button == 3)
+                    return KeyBind::A_KEY;
+                if (event.jbutton.button == 4)
+                    return KeyBind::Q_KEY;
+                if (event.jbutton.button == 5)
+                    return KeyBind::S_KEY;
+                if (event.jbutton.button == 0)
+                    return KeyBind::Z_KEY;
+                break;
+
+            case SDL_KEYDOWN:
+                lastKey = KeyBind::NONE;
+                switch (event.key.keysym.sym) {
+                    case SDLK_ESCAPE: return KeyBind::ESC;
+                    case SDLK_a: return KeyBind::A_KEY;
+                    case SDLK_z: return KeyBind::Z_KEY;
+                    case SDLK_s: return KeyBind::S_KEY;
+                    case SDLK_q: return KeyBind::Q_KEY;
+                    case SDLK_SPACE: return KeyBind::SPACE;
+                    case SDLK_RETURN: return KeyBind::ENTER;
+                    case SDLK_DOWN: return KeyBind::DOWN_KEY;
+                    case SDLK_UP: return KeyBind::UP_KEY;
+                    case SDLK_LEFT: return KeyBind::LEFT_KEY;
+                    case SDLK_RIGHT: return KeyBind::RIGHT_KEY;
+                    default: return KeyBind::NONE;
+                }
         }
     }
+    if (lastKey != arcade::KeyBind::NONE && lastKey != KeyBind::UP_KEY && lastKey != KeyBind::DOWN_KEY)
+        return lastKey;
     return KeyBind::NONE;
 }
 
@@ -105,6 +146,10 @@ void arcade::LibSDL2::DisplayText(const std::pair<std::string, std::pair<std::pa
     SDL_Texture *texture = nullptr;
     SDL_Color color = {255, 255, 255, 255};
     std::string text = entity.first;
+
+    if (entity.first.find("*clear") != std::string::npos) {
+        return;
+    }
 
     if (entity.first.find("*RED*") != std::string::npos) {
         text = entity.first.substr(5);
@@ -117,19 +162,13 @@ void arcade::LibSDL2::DisplayText(const std::pair<std::string, std::pair<std::pa
         SDL_Surface *surface = TTF_RenderText_Solid(this->font, text.c_str(), color);
         if (surface == nullptr) {
             std::cerr << "TTF_RenderText_Solid Error: " << TTF_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         texture = SDL_CreateTextureFromSurface(this->renderer, surface);
         SDL_FreeSurface(surface);
         if (texture == nullptr) {
             std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         this->textureCache[entity.first] = texture;
     }
@@ -148,19 +187,13 @@ void arcade::LibSDL2::DisplayImage(const std::pair<std::string, std::pair<std::p
         SDL_Surface *surface = IMG_Load(entity.first.c_str());
         if (surface == nullptr) {
             std::cerr << "IMG_Load Error: " << SDL_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         texture = SDL_CreateTextureFromSurface(this->renderer, surface);
         SDL_FreeSurface(surface);
         if (texture == nullptr) {
             std::cerr << "SDL_CreateTextureFromSurface Error: " << SDL_GetError() << std::endl;
-            SDL_DestroyRenderer(this->renderer);
-            SDL_DestroyWindow(this->window);
-            SDL_Quit();
-            exit(84);
+            return;
         }
         this->textureCache[entity.first] = texture;
     }
@@ -168,26 +201,44 @@ void arcade::LibSDL2::DisplayImage(const std::pair<std::string, std::pair<std::p
     SDL_RenderCopy(this->renderer, texture, nullptr, &rect);
 }
 
-void arcade::LibSDL2::Display(std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> &entities)
+void arcade::LibSDL2::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity)
 {
     SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
     SDL_RenderClear(this->renderer);
-    for (auto &entity : entities) {
-        if (entity.first.find("assets/") != std::string::npos) {
+    for (auto &entity : entity) {
+        if (entity.first.find("assets/") != std::string::npos)
             DisplayImage(entity);
-        }
     }
-    for (auto &entity : entities) {
-        if (entity.first.find("assets/") == std::string::npos) {
+    for (auto &entity : entity) {
+        if (entity.first.find("assets/") == std::string::npos)
             DisplayText(entity);
-        }
     }
     SDL_RenderPresent(this->renderer);
 }
 
 void arcade::LibSDL2::PlaySound(std::string sound)
 {
-    (void)sound;
+    if (sound == this->currentSound)
+        return;
+    this->currentSound = sound;
+    //if (this->music) {
+    //    Mix_HaltMusic();
+    //    Mix_FreeMusic(this->music);
+    //    this->music = nullptr;
+    //}
+    this->music = Mix_LoadMUS(sound.c_str());
+    if (this->music == nullptr) {
+        std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
+        return;
+    }
+    if (Mix_PlayMusic(this->music, -1) == -1) {
+        std::cerr << "Mix_PlayMusic Error: " << Mix_GetError() << std::endl;
+        return;
+    }
+    if (Mix_VolumeMusic(MIX_MAX_VOLUME / 2) == -1) {
+        std::cerr << "Mix_VolumeMusic Error: " << Mix_GetError() << std::endl;
+        return;
+    }
 }
 
 void arcade::LibSDL2::Clear()
@@ -197,17 +248,31 @@ void arcade::LibSDL2::Clear()
 
 void arcade::LibSDL2::Nuke()
 {
-    for (auto &texture : this->textureCache) {
-        SDL_DestroyTexture(texture.second);
-    }
+    for (auto &texture : this->textureCache)
+        if (texture.second)
+            SDL_DestroyTexture(texture.second);
     this->textureCache.clear();
-    TTF_CloseFont(this->font);
-    this->font = nullptr;
-    SDL_DestroyRenderer(this->renderer);
-    this->renderer = nullptr;
-    SDL_DestroyWindow(this->window);
-    this->window = nullptr;
+    if (this->font) {
+        TTF_CloseFont(this->font);
+        this->font = nullptr;
+    }
+    if (this->joystick) {
+        SDL_JoystickClose(this->joystick);
+        this->joystick = nullptr;
+    }
+    if (this->music)
+        Mix_HaltMusic();
+    if (this->renderer) {
+        SDL_DestroyRenderer(this->renderer);
+        this->renderer = nullptr;
+    }
+    if (this->window) {
+        SDL_DestroyWindow(this->window);
+        this->window = nullptr;
+    }
+    Mix_CloseAudio();
     TTF_Quit();
+    IMG_Quit();
     SDL_Quit();
 }
 

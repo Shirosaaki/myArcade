@@ -1,0 +1,10 @@
+-- PACMAN --
+Player: 180
+Player1: 70
+shirosaaki: 2600
+
+-- SNAKE --
+Player1: 50
+
+-- THE_SHOW --
+Player1: 1000000000

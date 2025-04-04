@@ -19,6 +19,12 @@ int main(int ac, char **av)
         core.setCurrentGraphical(av[1]);
         core.setCurrentGame("lib/arcade_menu.so");
         core.setTypeCurrentGame(arcade::TGames::MENU);
+        std::cout << "Type the name of the player: ";
+        std::string playerName;
+        std::getline(std::cin, playerName);
+        if (playerName.empty())
+            throw Error("Invalid player name");
+        core.setCurrentPlayerName(playerName);
         core.setTypeCurrentGraphical(core.getLib(av[1]));
         core.getCurrentGraphical()->Init();
         core.run();

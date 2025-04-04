@@ -33,11 +33,12 @@ namespace arcade {
     class IGames {
         public:
             virtual ~IGames() = default;
-            virtual std::map<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> GetDisplay(enum TGraphics lib) = 0;
+            virtual std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplay(enum TGraphics lib) = 0;
             virtual void setKey(enum KeyBind key) = 0;
             virtual int getScore() = 0;
             virtual std::string getSound(enum TGraphics lib) = 0;
             virtual std::string getActGame() = 0;
+            virtual void resetGame() = 0;
 
         private:
     };
