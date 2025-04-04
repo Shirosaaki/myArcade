@@ -2,5 +2,5 @@
 builtin = clear,rare,en-GB_to_en-US,names,informal,code
 check-filenames =
 check-hidden =
-skip = */.git,*/build,*/prefix, */docs */lib
+skip = */.git,*/build,*/prefix, */docs */lib gamecontrollerdb.txt
 quiet-level = 2
