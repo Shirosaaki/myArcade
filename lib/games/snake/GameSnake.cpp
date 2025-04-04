@@ -21,10 +21,8 @@ arcade::GameSnake::~GameSnake()
 
 void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
-    int width_screen = 0;
-    int height_screen = 0;
-    getmaxyx(stdscr, height_screen, width_screen);
-    
+    int width_screen = 182;
+    int height_screen = 42;
     
     offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
     
@@ -142,7 +140,6 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
     
     if (lib == arcade::TGraphics::NCURSES) {
-        arcade::KeyBind key = ncurses.getKey();
 
         if (isGameOver()) {
             getActGame();
@@ -151,6 +148,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         if (key != arcade::KeyBind::NONE) {
             setKey(key);
         }
+        display.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
         updateGame(display);
         usleep(129000);
     }
@@ -177,6 +175,7 @@ void arcade::GameSnake::setKey(enum arcade::KeyBind key)
         default:
             break;
     }
+    this->key = key;
 }
 
 int arcade::GameSnake::getScore()
@@ -188,6 +187,14 @@ std::string arcade::GameSnake::getSound(enum arcade::TGraphics lib)
 {
     (void)lib;
     return "";
+}
+
+std::string arcade::GameSnake::getActGame()
+{
+    if (gameOver == true) {
+        return "Game Over";
+    }
+    return "Game Snake";
 }
 
 extern "C" arcade::IGames *entryPoint()

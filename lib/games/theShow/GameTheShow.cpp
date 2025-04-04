@@ -101,7 +101,7 @@ void arcade::GameTheShow::setKey(enum KeyBind key)
 
 int arcade::GameTheShow::getScore()
 {
-    return 0;
+    return 1000000000;
 }
 
 std::string arcade::GameTheShow::getSound(enum TGraphics lib)

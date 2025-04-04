@@ -9,6 +9,8 @@
     #define LIBNCURSES_HPP_
     #include "../IGraphics.hpp"
     #include <ncurses.h>
+    #define COLOR_BRIGHT_MAGENTA 9
+    #define COLOR_ORANGE 16
     #include <iostream>
     
 namespace arcade {
@@ -18,7 +20,7 @@ namespace arcade {
             ~LibNcurses();
             void Init() override;
             arcade::KeyBind getKey() override;
-            void Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity) override;
+            void Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities) override;
             void PlaySound(std::string sound) override;
             void Clear() override;
             void Nuke() override;

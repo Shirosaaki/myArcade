@@ -129,6 +129,8 @@ void arcade::LibSfml::Display(const std::vector<std::pair<std::string, std::pair
         }
     }
     for (auto &entity : entities) {
+        if (entity.first.find("*clear") != std::string::npos)
+            continue;
         if (entity.first.find("assets/") == std::string::npos) {
             sf::Text text;
             text.setFont(this->font);

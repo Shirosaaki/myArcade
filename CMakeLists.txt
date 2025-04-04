@@ -103,7 +103,7 @@ set_target_properties(arcade_snake PROPERTIES
     PREFIX ""
 )
 
-target_link_libraries(arcade_snake arcade_ncurses ncurses arcade_menu)
+target_link_libraries(arcade_snake ncurses)
 
 # ---- Declare the show library ----
 
@@ -134,7 +134,7 @@ target_compile_features(arcade_exe PRIVATE cxx_std_20)
 
 # ---- Install rules ----
 
-install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman arcade_snake
+install(TARGETS arcade_ncurses arcade_sdl2 arcade_sfml arcade_menu arcade_pacman arcade_show arcade_snake
     LIBRARY DESTINATION lib
 )
 

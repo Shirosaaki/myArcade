@@ -38,6 +38,7 @@ namespace arcade {
             virtual int getScore() = 0;
             virtual std::string getSound(enum TGraphics lib) = 0;
             virtual std::string getActGame() = 0;
+            virtual void resetGame() = 0;
 
         private:
     };

@@ -16,19 +16,35 @@ arcade::LibNcurses::~LibNcurses()
 
 void arcade::LibNcurses::Init()
 {
+    setlocale(LC_ALL, "");
     initscr();
     noecho();
     curs_set(0);
     keypad(stdscr, TRUE);
     nodelay(stdscr, TRUE);
     start_color();
+
+    if (can_change_color()) {
+        // Define orange #FF6600
+        init_color(COLOR_ORANGE, 1000, 500, 0);
+    }
     init_pair(1, COLOR_RED, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     init_pair(3, COLOR_YELLOW, COLOR_BLACK);
     init_pair(4, COLOR_BLUE, COLOR_BLACK);
     init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
     init_pair(6, COLOR_CYAN, COLOR_BLACK);
-    init_pair(7, COLOR_WHITE, COLOR_BLACK);
+    init_pair(7, COLOR_WHITE, COLOR_BLACK); // pacgum
+    init_pair(9, COLOR_BRIGHT_MAGENTA, COLOR_BLACK); // superpacgum
+    init_pair(10, COLOR_BLACK, COLOR_YELLOW); // pacman
+    init_pair(8, COLOR_YELLOW, COLOR_WHITE); // superpacman
+    init_pair(11, COLOR_BLACK, COLOR_BLUE); // Wall
+    init_pair(12, COLOR_BLACK, COLOR_RED); // Ghost Red
+    init_pair(13, COLOR_WHITE, COLOR_GREEN); // Ghost Fear
+    init_pair(14, COLOR_BLACK, COLOR_MAGENTA); // Ghost Pink
+    init_pair(15, COLOR_BLACK, COLOR_CYAN); // Ghost Blue
+    init_pair(16, COLOR_BLACK, COLOR_ORANGE); // Ghost Orange
+
 }
 
 arcade::KeyBind arcade::LibNcurses::getKey()
@@ -50,12 +66,16 @@ arcade::KeyBind arcade::LibNcurses::getKey()
     case 10:
         return KeyBind::ENTER;
     case 258:
+        this->Clear();
         return KeyBind::DOWN_KEY;
     case 259:
+        this->Clear();
         return KeyBind::UP_KEY;
     case 260:
+        this->Clear();
         return KeyBind::LEFT_KEY;
     case 261:
+        this->Clear();
         return KeyBind::RIGHT_KEY;
     default:
         return KeyBind::NONE;
@@ -64,14 +84,17 @@ arcade::KeyBind arcade::LibNcurses::getKey()
 
 void arcade::LibNcurses::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
-    this->Clear();
-
-    for (const auto &entity : entities) {
-        std::string display = entity.first;
-        if (entity.first.find("*") != std::string::npos)
-            display = entity.first.substr(0, entity.first.find("*"));
+    for (auto &entity : entities) {
+        std::string tmp = entity.first;
+        if (entity.first.find("*clear") != std::string::npos) {
+            this->Clear();
+            continue;
+        }
+        if (entity.first.find("*") != std::string::npos) {
+            tmp = entity.first.substr(0, entity.first.find("*"));
+        }
         attron(COLOR_PAIR(entity.second.second.first));
-        mvprintw(entity.second.first.first, entity.second.first.second, "%s", display.c_str());
+        mvprintw(entity.second.first.first, entity.second.first.second, "%s", tmp.c_str());
         attroff(COLOR_PAIR(entity.second.second.first));
     }
     refresh();

@@ -147,6 +147,10 @@ void arcade::LibSDL2::DisplayText(const std::pair<std::string, std::pair<std::pa
     SDL_Color color = {255, 255, 255, 255};
     std::string text = entity.first;
 
+    if (entity.first.find("*clear") != std::string::npos) {
+        return;
+    }
+
     if (entity.first.find("*RED*") != std::string::npos) {
         text = entity.first.substr(5);
         color = {255, 0, 0, 255};
@@ -199,7 +203,7 @@ void arcade::LibSDL2::DisplayImage(const std::pair<std::string, std::pair<std::p
 
 void arcade::LibSDL2::Display(const std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entity)
 {
-    SDL_SetRenderDrawColor(this->renderer, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(this->renderer, 0, 0, 0, 255);
     SDL_RenderClear(this->renderer);
     for (auto &entity : entity) {
         if (entity.first.find("assets/") != std::string::npos)
@@ -214,15 +218,14 @@ void arcade::LibSDL2::Display(const std::vector<std::pair<std::string, std::pair
 
 void arcade::LibSDL2::PlaySound(std::string sound)
 {
-    if (sound == this->currentSound) {
+    if (sound == this->currentSound)
         return;
-    }
     this->currentSound = sound;
-    if (this->music) {
-        Mix_HaltMusic();
-        Mix_FreeMusic(this->music);
-        this->music = nullptr;
-    }
+    //if (this->music) {
+    //    Mix_HaltMusic();
+    //    Mix_FreeMusic(this->music);
+    //    this->music = nullptr;
+    //}
     this->music = Mix_LoadMUS(sound.c_str());
     if (this->music == nullptr) {
         std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;

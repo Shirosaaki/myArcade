@@ -21,6 +21,7 @@ namespace arcade {
             int getScore();
             std::string getSound(enum TGraphics lib);
             std::string getActGame();
+            void resetGame() override { return; }
 
             std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> displayFirstCinematic();
         

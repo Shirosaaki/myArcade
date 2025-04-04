@@ -16,6 +16,9 @@
     #include "../lib/games/menu/GameMenu.hpp"
     #include <filesystem>
     #include <fstream>
+    #include <sstream>
+    #include <vector>
+    #include <algorithm>
 
 class GameCore {
     public:
@@ -32,6 +35,7 @@ class GameCore {
         void setCurrentGame(const std::string &lib);
         void setTypeCurrentGame(arcade::TGames type) { typeCurrentGame = type; }
         void setTypeCurrentGraphical(arcade::TGraphics type) { typeCurrentGraphical = type; }
+        void setCurrentPlayerName(const std::string &name) { _currentPlayerName = name; }
 
         arcade::IGraphics *getCurrentGraphical() const { return _currentGraphical; }
         arcade::IGames *getCurrentGame() const { return _currentGame; }
@@ -44,6 +48,9 @@ class GameCore {
         void nextGame();
         void prevGame();
 
+        void saveScore(int score, const std::string &playerName);
+        std::string tgameToString(arcade::TGames game);
+
     private:
         std::map<std::string, std::pair<arcade::TGraphics, arcade::IGraphics *>> _graphicals;
         std::map<std::string, std::pair<arcade::TGames, arcade::IGames *>> _games;
@@ -53,6 +60,9 @@ class GameCore {
         arcade::TGraphics typeCurrentGraphical;
         std::vector<void *> _handles;
         std::vector<arcade::KeyBind> _konamiCode;
+        std::string _currentPlayerName = "Default";
 };
+
+std::ostream &operator<<(std::ostream &os, const arcade::TGames &game);
 
 #endif /* !GAME_CORE_HPP_ */

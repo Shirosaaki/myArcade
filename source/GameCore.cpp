@@ -169,7 +169,7 @@ void GameCore::setCurrentGame(const std::string &lib)
 
 void GameCore::konamiCode()
 {
-    if (_konamiCode.size() < 10)
+    if (_konamiCode.size() <= 10)
         return;
     if (std::equal(_konamiCode.begin(), _konamiCode.end(), std::vector<arcade::KeyBind>{arcade::KeyBind::UP_KEY, arcade::KeyBind::UP_KEY,
         arcade::KeyBind::DOWN_KEY, arcade::KeyBind::DOWN_KEY, arcade::KeyBind::LEFT_KEY, arcade::KeyBind::RIGHT_KEY,
@@ -266,6 +266,95 @@ void GameCore::prevGame()
     }
 }
 
+void GameCore::saveScore(int score, const std::string &playerName) {
+    using GameScores = std::map<std::string, int>;
+    std::vector<std::pair<std::string, GameScores>> allGames;
+    std::string currentGameName;
+    GameScores currentGameScores;
+    std::ifstream inputFile("scores.txt");
+    if (inputFile) {
+        auto trim = [](const std::string& s) {
+            auto start = s.find_first_not_of(" \t");
+            return (start == std::string::npos) ? "" : s.substr(start, s.find_last_not_of(" \t") - start + 1);
+        };
+        std::string line;
+        while (std::getline(inputFile, line)) {
+            std::string trimmed = trim(line);
+            if (trimmed.size() > 4 && trimmed.substr(0, 3) == "-- " && trimmed.substr(trimmed.size() - 3) == " --") {
+                if (!currentGameName.empty()) {
+                    allGames.emplace_back(currentGameName, currentGameScores);
+                    currentGameScores.clear();
+                }
+                currentGameName = trim(trimmed.substr(3, trimmed.size() - 6));
+            }
+            else if (!currentGameName.empty() && !trimmed.empty()) {
+                size_t colon = trimmed.find(':');
+                if (colon != std::string::npos) {
+                    std::string name = trim(trimmed.substr(0, colon));
+                    int val = std::stoi(trim(trimmed.substr(colon + 1)));
+                    currentGameScores[name] = val;
+                }
+            }
+        }
+        if (!currentGameName.empty())
+            allGames.emplace_back(currentGameName, currentGameScores);
+    }
+    const std::string CURRENT_GAME = tgameToString(typeCurrentGame);
+    auto gameIt = std::find_if(allGames.begin(), allGames.end(),
+        [&](const auto& game) { return game.first == CURRENT_GAME; });
+    if (gameIt != allGames.end()) {
+        auto& [gameName, scores] = *gameIt;
+        auto it = scores.find(playerName);
+        if (it != scores.end()) {
+            if (score > it->second)
+                it->second = score;
+        } else
+            scores[playerName] = score;
+    } else
+        allGames.emplace_back(CURRENT_GAME, GameScores{{playerName, score}});
+    std::ofstream outputFile("scores.txt");
+    for (size_t i = 0; i < allGames.size(); ++i) {
+        const auto& [name, scores] = allGames[i];
+        outputFile << "-- " << name << " --\n";
+        for (const auto& [player, highScore] : scores)
+            outputFile << player << ": " << highScore << "\n";
+        if (i < allGames.size() - 1)
+            outputFile << "\n";
+    }
+}
+
+std::string GameCore::tgameToString(arcade::TGames game)
+{
+    switch (game) {
+        case arcade::TGames::MENU:
+            return "MENU";
+        case arcade::TGames::PACMAN:
+            return "PACMAN";
+        case arcade::TGames::SNAKE:
+            return "SNAKE";
+        case arcade::TGames::MINESWEEPER:
+            return "MINESWEEPER";
+        case arcade::TGames::NIBBLER:
+            return "NIBBLER";
+        case arcade::TGames::QIX:
+            return "QIX";
+        case arcade::TGames::CENTIPEDE:
+            return "CENTIPEDE";
+        case arcade::TGames::SOLARFOX:
+            return "SOLARFOX";
+        case arcade::TGames::SOKOBAN:
+            return "SOKOBAN";
+        case arcade::TGames::SPACE_INVADER:
+            return "SPACE_INVADER";
+        case arcade::TGames::TETRIS:
+            return "TETRIS";
+        case arcade::TGames::THE_SHOW:
+            return "THE_SHOW";
+        default:
+            return "UNKNOWN";
+    }
+}
+
 void GameCore::run()
 {
     while (1) {
@@ -273,11 +362,14 @@ void GameCore::run()
         _currentGraphical->Display(entities);
         _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
         auto key = _currentGraphical->getKey();
-        if (key == arcade::KeyBind::NONE)
-            continue;
-        _konamiCode.push_back(key);
+        if (key != arcade::KeyBind::NONE) {
+            _konamiCode.push_back(key);
+            this->konamiCode();
+        }
         if (key == arcade::KeyBind::ESC) {
             _currentGraphical->Nuke();
+            if (typeCurrentGame != arcade::TGames::MENU)
+                saveScore(_currentGame->getScore(), _currentPlayerName);
             break;
         } else if (key == arcade::KeyBind::Z_KEY)
             this->nextGraphical();
@@ -297,7 +389,50 @@ void GameCore::run()
                 _currentGame = _games[currentGameKey].second;
             }
             this->setTypeCurrentGame(_games[currentGameKey].first);
+            this->_currentGame->resetGame();
             _currentGraphical->Clear();
         }
+        if (_currentGame->getActGame() == "Game Over") {
+            _currentGraphical->Clear();
+            saveScore(_currentGame->getScore(), _currentPlayerName);
+            _currentGame = _games["lib/arcade_menu.so"].second;
+            if (_currentGame == nullptr) {
+                this->loadGamesLibs("lib/");
+                _currentGame = _games["lib/arcade_menu.so"].second;
+            }
+            this->setTypeCurrentGame(arcade::TGames::MENU);
+            continue;
+        }
     }
+}
+
+std::ostream &operator<<(std::ostream &os, const arcade::TGames &game)
+{
+    if (game == arcade::TGames::MENU)
+        os << "MENU";
+    else if (game == arcade::TGames::PACMAN)
+        os << "PACMAN";
+    else if (game == arcade::TGames::SNAKE)
+        os << "SNAKE";
+    else if (game == arcade::TGames::MINESWEEPER)
+        os << "MINESWEEPER";
+    else if (game == arcade::TGames::NIBBLER)
+        os << "NIBBLER";
+    else if (game == arcade::TGames::QIX)
+        os << "QIX";
+    else if (game == arcade::TGames::CENTIPEDE)
+        os << "CENTIPEDE";
+    else if (game == arcade::TGames::SOLARFOX)
+        os << "SOLARFOX";
+    else if (game == arcade::TGames::SOKOBAN)
+        os << "SOKOBAN";
+    else if (game == arcade::TGames::SPACE_INVADER)
+        os << "SPACE_INVADER";
+    else if (game == arcade::TGames::TETRIS)
+        os << "TETRIS";
+    else if (game == arcade::TGames::THE_SHOW)
+        os << "THE_SHOW";
+    else
+        os << "UNKNOWN";
+    return os;
 }

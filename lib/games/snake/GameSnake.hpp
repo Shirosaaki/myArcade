@@ -9,12 +9,9 @@
     #include "../IGames.hpp"
     #include <map>
     #include <vector>
-    #include <ncurses.h>
     #include <ctime>
     #include <cstdlib>
     #include <utility>
-    #include "../../graphicals/ncurses/LibNcurses.hpp"
-    #include "../menu/GameMenu.hpp"
 
 namespace arcade {
     class GameSnake : public IGames {
@@ -30,9 +27,9 @@ namespace arcade {
             std::pair<int, int> wall;
             std::pair<int, int> offset_pos;
             int score;
-            LibNcurses ncurses;
             bool gameOver;
             bool initialized;
+            KeyBind key;
         public:
             GameSnake();
             ~GameSnake();
@@ -40,14 +37,14 @@ namespace arcade {
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
-            std::string getActGame() override { return "Game Over"; }
+            std::string getActGame() override;
             void generateFruit();
             void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
             void checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             bool isGameOver();
-            void resetGame();
             void initSnake();
+            void resetGame() override;
     };
 }
 
