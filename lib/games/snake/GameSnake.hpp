@@ -30,6 +30,8 @@ namespace arcade {
             std::pair<int, int> offset_pos;
             int score;
             LibNcurses ncurses;
+            bool gameOver;
+            bool initialized;
         public:
             GameSnake();
             ~GameSnake();
@@ -41,6 +43,8 @@ namespace arcade {
             void generateFruit();
             void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
+            void checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
+            bool isGameOver();
     };
 }
 
