@@ -11,8 +11,12 @@
 arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair(70, 35)), offset_pos(std::make_pair(0, 0)), gameOver(false)
 {
     snake.clear();
-    fruit = std::make_pair(10, 80);
     initialized = false;
+    int width_screen = 184;
+    int height_screen = 45;
+    
+    offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
+    generateFruit();
 }
 
 arcade::GameSnake::~GameSnake()
@@ -21,8 +25,8 @@ arcade::GameSnake::~GameSnake()
 
 void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
 {
-    int width_screen = 182;
-    int height_screen = 42;
+    int width_screen = 184;
+    int height_screen = 45;
     
     offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
     
