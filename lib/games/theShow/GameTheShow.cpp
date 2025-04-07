@@ -48,7 +48,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
         _needDisplaySecondCinematic = false;
         return entities;
     }
-    if (elapsed.count() > 100) {
+    if (elapsed.count() > 90) {
         if (nbFrames == 0)
             nbFrames++;
         entities.emplace_back("assets/theShow/movies/sammy/sammy_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(251, 0), std::make_pair(577, 720)));
