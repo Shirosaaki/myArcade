@@ -45,6 +45,7 @@ namespace arcade {
             bool isGameOver();
             void initSnake();
             void resetGame() override;
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayNcurses();
     };
 }
 

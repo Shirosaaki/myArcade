@@ -144,20 +144,26 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
     
     if (lib == arcade::TGraphics::NCURSES) {
-
-        if (isGameOver()) {
-            getActGame();
-        } else {
-        display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
-        if (key != arcade::KeyBind::NONE) {
-            setKey(key);
-        }
-        display.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
-        updateGame(display);
-        usleep(129000);
-    }
+        return GetDisplayNcurses();
     } else
         display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
+    return display;
+}
+
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplayNcurses()
+{
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+
+    if (isGameOver()) {
+        getActGame();
+    }
+    if (key != arcade::KeyBind::NONE) {
+        setKey(key);
+    }
+    display.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
+    display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
+    updateGame(display);
+    usleep(129000);
     return display;
 }
 
