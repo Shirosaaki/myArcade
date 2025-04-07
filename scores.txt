@@ -8,10 +8,12 @@ shirosaaki: 2600
 [B: 0
 [Bd: 0
 [Be: 10
+[Bf: 0
 [Bh: 0
 Player1: 50
 c: 0
 d: 0
+d[A: 0
 e: 0
 f: 0
 g: 0

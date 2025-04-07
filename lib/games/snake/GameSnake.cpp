@@ -95,48 +95,51 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         }
         else {
             snake.clear(); 
-            snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2 - 20));
-            snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2 - 10));
             snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2));
+            snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2 - 10));
+            snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2 - 20));
             initialized = true;
         }
     }
 
     void arcade::GameSnake::updateGameGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
         generateMapGraph(entities);
+        
+        if (!initialized) {
+            initSnake();
+        }
 
-        initSnake();
-
-        snake[0].second -= 10;
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
-
-    int i = 0;
-    for (const auto& segment : snake) {
-        if (i == 0) {
-            entities.push_back(std::make_pair("assets/Snake/head.png*", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
-            std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
-            i++;
-            continue;
+        
+        switch (direction) {
+            case UP:
+            snake[0].second -= 10;
+            break;
+            case RIGHT:
+            snake[0].first += 10;
+            break;
+            case DOWN:
+            snake[0].second += 10;
+            break;
+            case LEFT:
+            snake[0].first -= 10;
+            break;
         }
-        entities.push_back(std::make_pair("assets/Snake/body.png*" + std::to_string(i), std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
-        i++;
-        std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
-    }
 
-    // int i = 0;
-    //     for (const auto& segment : snake) {
-    //         if (i == 0) {
-    //             entities.push_back(std::make_pair("$*head", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
-    //             i++;
-    //             continue;
-    //         }
-    //         auto key = std::to_string(i);
-    //         entities.push_back(std::make_pair("O*" + key, std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(2, 2))));
-    //         i++;
-    //     }
- 
+        int i = 0;
+        for (const auto& segment : snake) {
+            if (i == 0) {
+                entities.push_back(std::make_pair("assets/Snake/head.png*", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
+                std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
+                i++;
+                continue;
+            }
+            entities.push_back(std::make_pair("assets/Snake/body.png*" + std::to_string(i), std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
+            i++;
+            std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
+        }
     }
 
     void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
