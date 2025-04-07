@@ -29,6 +29,7 @@ namespace arcade {
             int score;
             bool gameOver;
             bool initialized;
+            bool isGraphic;
             KeyBind key;
         public:
             GameSnake();

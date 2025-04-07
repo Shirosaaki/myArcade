@@ -114,11 +114,15 @@ void arcade::LibSfml::Display(const std::vector<std::pair<std::string, std::pair
 {
     this->window->clear();
     for (auto &entity : entities) {
-        if (entity.first.find("assets/") != std::string::npos) {
+        std::string cleanedKey = entity.first;
+        if (cleanedKey.find(".png*") != std::string::npos) {
+            cleanedKey.erase(cleanedKey.find(".png*") + 4);
+        }
+        if (cleanedKey.find("assets/") != std::string::npos) {
             sf::Texture texture;
             sf::Sprite sprite;
-            if (!texture.loadFromFile(entity.first)) {
-                std::cerr << "Error loading texture: " << entity.first << std::endl;
+            if (!texture.loadFromFile(cleanedKey)) {
+                std::cerr << "Error loading texture: " << cleanedKey << std::endl;
                 continue;
             }
             sprite.setTexture(texture);
