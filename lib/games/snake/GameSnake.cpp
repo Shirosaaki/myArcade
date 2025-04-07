@@ -40,6 +40,23 @@ void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair
     }
 }
 
+void arcade::GameSnake::generateMapGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
+{
+    int width_screen = 720;
+    int height_screen = 510;
+    
+    offset_pos = std::make_pair((height_screen - wall.second * 8) / 2, (width_screen - wall.first * 8) / 2);
+    
+    for (int x = 0; x < wall.first * 8; x++) {
+        entities.push_back(std::make_pair("assets/Snake/wall.png", std::make_pair(std::make_pair(offset_pos.first, offset_pos.second + x), std::make_pair(15, 15))));
+        entities.push_back(std::make_pair("assets/Snake/wall.png", std::make_pair(std::make_pair(offset_pos.first + wall.second * 8 - 1, offset_pos.second + x), std::make_pair(15, 15))));
+    }
+    for (int y = 0; y < wall.second * 8; y++) {
+        entities.push_back(std::make_pair("assets/Snake/wall.png", std::make_pair(std::make_pair(offset_pos.first + y, offset_pos.second), std::make_pair(15, 15))));
+        entities.push_back(std::make_pair("assets/Snake/wall.png", std::make_pair(std::make_pair(offset_pos.first + y, offset_pos.second + wall.first * 8 - 1), std::make_pair(15, 15))));
+    }
+}
+
 bool arcade::GameSnake::isGameOver() {
     return gameOver;
 }
@@ -76,6 +93,10 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 2));
             initialized = true;
         }
+    }
+
+    void arcade::GameSnake::updateGameGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
+        generateMapGraph(entities);
     }
 
     void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
@@ -146,7 +167,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
     if (lib == arcade::TGraphics::NCURSES) {
         return GetDisplayNcurses();
     } else
-        display.push_back(std::make_pair("SNAKE", std::make_pair(std::make_pair(390, 330), std::make_pair(280, 50))));
+        return GetDisplayGraph();
     return display;
 }
 
@@ -164,6 +185,19 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
     display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
     updateGame(display);
     usleep(129000);
+    return display;
+}
+
+
+
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplayGraph()
+{
+    int x = 0;
+    int y = 0;
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+    display.push_back(std::make_pair("assets/Snake/body.png", std::make_pair(std::make_pair(x*20, y*20), std::make_pair(20, 20))));
+    generateMapGraph(display);
+    
     return display;
 }
 

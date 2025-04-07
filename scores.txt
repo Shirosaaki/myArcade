@@ -5,10 +5,24 @@ Player1: 70
 shirosaaki: 2600
 
 -- SNAKE --
+[B: 0
 [Be: 10
 Player1: 50
+c: 0
+d: 0
+f: 0
+g: 0
+h: 0
+j: 0
+k: 0
+l: 0
+r: 0
+s: 0
 t: 100
 te: 10
+y: 0
+z: 0
 
 -- THE_SHOW --
 Player1: 1000000000
+h: 1000000000
