@@ -221,11 +221,6 @@ void arcade::LibSDL2::PlaySound(std::string sound)
     if (sound == this->currentSound)
         return;
     this->currentSound = sound;
-    //if (this->music) {
-    //    Mix_HaltMusic();
-    //    Mix_FreeMusic(this->music);
-    //    this->music = nullptr;
-    //}
     this->music = Mix_LoadMUS(sound.c_str());
     if (this->music == nullptr) {
         std::cerr << "Mix_LoadMUS Error: " << Mix_GetError() << std::endl;
@@ -260,8 +255,10 @@ void arcade::LibSDL2::Nuke()
         SDL_JoystickClose(this->joystick);
         this->joystick = nullptr;
     }
-    if (this->music)
-        Mix_HaltMusic();
+    if (this->music) {
+        Mix_FreeMusic(this->music);
+        this->music = nullptr;
+    }
     if (this->renderer) {
         SDL_DestroyRenderer(this->renderer);
         this->renderer = nullptr;

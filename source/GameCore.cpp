@@ -362,14 +362,14 @@ void GameCore::run()
         _currentGraphical->Display(entities);
         _currentGraphical->PlaySound(_currentGame->getSound(typeCurrentGraphical));
         auto key = _currentGraphical->getKey();
-        if (key != arcade::KeyBind::NONE) {
+        if (key != arcade::KeyBind::NONE && key != arcade::KeyBind::ESC) {
             _konamiCode.push_back(key);
             this->konamiCode();
         }
         if (key == arcade::KeyBind::ESC) {
-            _currentGraphical->Nuke();
             if (typeCurrentGame != arcade::TGames::MENU)
                 saveScore(_currentGame->getScore(), _currentPlayerName);
+            _currentGraphical->Nuke();
             break;
         } else if (key == arcade::KeyBind::Z_KEY)
             this->nextGraphical();

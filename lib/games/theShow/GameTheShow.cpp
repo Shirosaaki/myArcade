@@ -183,9 +183,10 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
                     actualLevel = 3;
                     isMoving = false;
                     isRight = true;
-                    pos.first = 630;
-                    pos.second = 360;
-                    canAttack = false;
+                    pos.first = 250;
+                    pos.second = ennemiPos.second;
+                    ennemiPos.second -= 50;
+                    canAttack = true;
                     ennemiLife = 3;
                     life = 3;
                 }
@@ -246,55 +247,26 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
             else if (moveIndex == 2)
                 entities.emplace_back("assets/theShow/EricWalk22.png", std::make_pair(pos, std::make_pair(105, 150)));
         }
-    } else if (isRight == true)
-        entities.emplace_back("assets/theShow/EricIdle.png", std::make_pair(pos, std::make_pair(90, 150)));
-    else
-        entities.emplace_back("assets/theShow/EricIdle2.png", std::make_pair(pos, std::make_pair(90, 150)));
-    if (isEnnemiAttack == true) {
-        elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastEnnemiMoveTime);
-        if (elapsed.count() > 200) {
-            ennemiMoveIndex = (ennemiMoveIndex + 1) % 4;
-            lastEnnemiMoveTime = now;
-            if (ennemiMoveIndex == 3) {
-                isEnnemiAttack = false;
-                ennemiMoveIndex = 0;
-                life--;
-                if (life == 0) {
-                    actualLevel = 3;
-                    isMoving = false;
-                    isRight = true;
-                    pos.first = 630;
-                    pos.second = 360;
-                    canAttack = false;
-                    ennemiLife = 3;
-                    life = 3;
-                }
-            }
-        }
-        if (isEnnemiRight == true) {
-            if (ennemiMoveIndex == 0)
-                entities.emplace_back("assets/theShow/SammyIdle.png", std::make_pair(ennemiPos, std::make_pair(90, 150)));
-            else if (ennemiMoveIndex == 1)
-                entities.emplace_back("assets/theShow/SammyAttack1.png", std::make_pair(ennemiPos, std::make_pair(100, 150)));
-            else if (ennemiMoveIndex == 2)
-                entities.emplace_back("assets/theShow/SammyAttack2.png", std::make_pair(ennemiPos, std::make_pair(105, 150)));
-        } else {
-            if (ennemiMoveIndex == 0)
-                entities.emplace_back("assets/theShow/SammyIdle2.png", std::make_pair(ennemiPos, std::make_pair(90, 150)));
-            else if (ennemiMoveIndex == 1)
-                entities.emplace_back("assets/theShow/SammyAttack12.png", std::make_pair(ennemiPos, std::make_pair(100, 150)));
-            else if (ennemiMoveIndex == 2)
-                entities.emplace_back("assets/theShow/SammyAttack22.png", std::make_pair(ennemiPos, std::make_pair(105, 150)));
-        }
-    } else if (isEnnemiRight == true)
-        entities.emplace_back("assets/theShow/SammyIdle.png", std::make_pair(ennemiPos, std::make_pair(90, 150)));
-    else
-        entities.emplace_back("assets/theShow/SammyIdle2.png", std::make_pair(ennemiPos, std::make_pair(90, 150)));
-    if (isAttack) {
+    } else if (isAttack) {
         elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMoveTime);
         if (elapsed.count() > 200) {
             moveIndex = (moveIndex + 1) % 5;
             lastMoveTime = now;
+            if (moveIndex == 4) {
+                isAttack = false;
+                moveIndex = 0;
+                ennemiLife--;
+                if (ennemiLife == 0) {
+                    actualLevel = 4;
+                    isMoving = false;
+                    isRight = true;
+                    pos.first = 630;
+                    pos.second = 360;
+                    canAttack = true;
+                    ennemiLife = 3;
+                    life = 3;
+                }
+            }
         }
         if (isRight) {
             if (moveIndex == 0)
@@ -315,7 +287,49 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
             else if (moveIndex == 3)
                 entities.emplace_back("assets/theShow/EricAttack32.png", std::make_pair(pos, std::make_pair(105, 150)));
         }
-    }
+    } else if (isRight == true)
+        entities.emplace_back("assets/theShow/EricIdle.png", std::make_pair(pos, std::make_pair(90, 150)));
+    else
+        entities.emplace_back("assets/theShow/EricIdle2.png", std::make_pair(pos, std::make_pair(90, 150)));
+    if (isEnnemiAttack == true) {
+        elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastEnnemiMoveTime);
+        if (elapsed.count() > 200) {
+            ennemiMoveIndex = (ennemiMoveIndex + 1) % 4;
+            lastEnnemiMoveTime = now;
+            if (ennemiMoveIndex == 3) {
+                isEnnemiAttack = false;
+                ennemiMoveIndex = 0;
+                life--;
+                if (life == 0) {
+                    actualLevel = 3;
+                    isMoving = false;
+                    isRight = true;
+                    pos.first = 250;
+                    pos.second = ennemiPos.second + 50;
+                    ennemiLife = 3;
+                    life = 3;
+                }
+            }
+        }
+        if (isEnnemiRight == true) {
+            if (ennemiMoveIndex == 0)
+                entities.emplace_back("assets/theShow/SammyIdle.png", std::make_pair(ennemiPos, std::make_pair(90, 200)));
+            else if (ennemiMoveIndex == 1)
+                entities.emplace_back("assets/theShow/SammyAttack1.png", std::make_pair(ennemiPos, std::make_pair(100, 200)));
+            else if (ennemiMoveIndex == 2)
+                entities.emplace_back("assets/theShow/SammyAttack2.png", std::make_pair(ennemiPos, std::make_pair(105, 200)));
+        } else {
+            if (ennemiMoveIndex == 0)
+                entities.emplace_back("assets/theShow/SammyIdle2.png", std::make_pair(ennemiPos, std::make_pair(90, 200)));
+            else if (ennemiMoveIndex == 1)
+                entities.emplace_back("assets/theShow/SammyAttack12.png", std::make_pair(ennemiPos, std::make_pair(100, 200)));
+            else if (ennemiMoveIndex == 2)
+                entities.emplace_back("assets/theShow/SammyAttack22.png", std::make_pair(ennemiPos, std::make_pair(105, 200)));
+        }
+    } else if (isEnnemiRight == true)
+        entities.emplace_back("assets/theShow/SammyIdle.png", std::make_pair(ennemiPos, std::make_pair(90, 200)));
+    else
+        entities.emplace_back("assets/theShow/SammyIdle2.png", std::make_pair(ennemiPos, std::make_pair(90, 200)));
     return entities;
 }
 
