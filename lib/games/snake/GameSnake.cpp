@@ -16,6 +16,7 @@ arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair
     int height_screen = 45;
     
     offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
+
     generateFruit();
 }
 
@@ -38,6 +39,7 @@ void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair
         entities.push_back(std::make_pair("#*wall_left", std::make_pair(std::make_pair(offset_pos.first + y, offset_pos.second), std::make_pair(4, 4))));
         entities.push_back(std::make_pair("#*wall_right", std::make_pair(std::make_pair(offset_pos.first + y, offset_pos.second + wall.first - 1), std::make_pair(4, 4))));
     }
+    std::cout << "Walls generated with offset position: (" << offset_pos.first << ", " << offset_pos.second << ")" << std::endl;
 }
 
 void arcade::GameSnake::generateMapGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
@@ -88,26 +90,24 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
     {
         if (!initialized && isGraphic == false) {
             snake.clear(); 
-            snake.push_back(std::make_pair(offset_pos.first + wall.second * 8 / 2, offset_pos.second + (wall.first * 8) / 2));
-            snake.push_back(std::make_pair(offset_pos.first + wall.second * 8 / 2, offset_pos.second + (wall.first * 8) / 2 - 1));
-            snake.push_back(std::make_pair(offset_pos.first + wall.second * 8 / 2, offset_pos.second + (wall.first * 8) / 2 - 2));
-            initialized = true;
+            snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + (wall.first) / 2));
+            snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + (wall.first) / 2 - 1));
+            snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + (wall.first) / 2 - 2));
         }
-        else {
+        if (!initialized && isGraphic == true) {
             snake.clear(); 
             snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2));
             snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2 - 10));
             snake.push_back(std::make_pair(offset_pos.first + (wall.second * 8) / 2, offset_pos.second + (wall.first * 8) / 2 - 20));
-            initialized = true;
         }
+        initialized = true;
+
     }
 
     void arcade::GameSnake::updateGameGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
         generateMapGraph(entities);
         
-        if (!initialized) {
-            initSnake();
-        }
+        initSnake();
 
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
@@ -140,6 +140,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             i++;
             std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
         }
+        entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(10, 10))));
     }
 
     void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
@@ -239,7 +240,6 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
     int y = 0;
     isGraphic = true;
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
-    //display.push_back(std::make_pair("assets/Snake/body.png", std::make_pair(std::make_pair(x*20, y*20), std::make_pair(10, 10))));
     updateGameGraph(display);    
     return display;
 }

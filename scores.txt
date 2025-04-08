@@ -3,6 +3,7 @@
 Player: 180
 Player1: 70
 shirosaaki: 2600
+t: 0
 
 -- SNAKE --
 [B: 0
@@ -21,7 +22,7 @@ h: 0
 j: 0
 k: 0
 l: 0
-r: 0
+r: 30
 s: 0
 t: 100
 te: 10
