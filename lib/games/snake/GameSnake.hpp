@@ -46,7 +46,8 @@ namespace arcade {
             void generateFruitGraph();
             void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
-            void checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
+            void checkCollision();
+            void checkCollisionGraph();
             bool isGameOver();
             void initSnake();
             void resetGame() override;

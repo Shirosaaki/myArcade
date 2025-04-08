@@ -100,7 +100,7 @@ void arcade::GameSnake::generateFruit() {
     }
 }
 
-void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities)
+void arcade::GameSnake::checkCollision()
 {
     if (snake[0].first <= offset_pos.first || snake[0].first >= offset_pos.first + wall.second ||
         snake[0].second <= offset_pos.second || snake[0].second >= offset_pos.second + wall.first) {
@@ -109,6 +109,21 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
     for (size_t i = 1; i < snake.size(); ++i) {
         if (snake[0] == snake[i]) {
             gameOver = true;
+        }
+    }
+}
+
+void arcade::GameSnake::checkCollisionGraph()
+{
+    if (isGraphic == true) {
+        if (snake[0].first <= offset_pos.first || snake[0].first >= offset_pos.first + wall.second * 8 ||
+            snake[0].second <= offset_pos.second || snake[0].second >= offset_pos.second + wall.first * 8) {
+            gameOver = true;
+        }
+        for (size_t i = 1; i < snake.size(); ++i) {
+            if (snake[0] == snake[i]) {
+                gameOver = true;
+            }
         }
     }
 }
@@ -171,6 +186,8 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             i++;
         }
         entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(appleGraph.first, appleGraph.second), std::make_pair(10, 10))));
+
+        checkCollisionGraph();
     }
     
     void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
@@ -215,7 +232,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         }
         entities.push_back(std::make_pair("A*fruit", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(3, 3))));
         
-        checkCollision(entities);
+        checkCollision();
     }
     
     void arcade::GameSnake::resetGame()
@@ -267,6 +284,11 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
 {
     isGraphic = true;
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+
+    if (isGameOver()) {
+        getActGame();
+    }
+
     display.push_back(std::make_pair("Score: " + std::to_string(score), std::make_pair(std::make_pair(100, 20), std::make_pair(200, 50))));
     updateGameGraph(display);    
     return display;
