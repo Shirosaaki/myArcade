@@ -24,3 +24,4 @@ sw.*
 docks/node_modules
 *.so
 arcade
+Makefile
