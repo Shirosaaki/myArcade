@@ -40,7 +40,7 @@ namespace arcade {
             bool isMoving = false;
             std::pair<int, int> pos;
             int moveIndex = 0;
-            bool isTheFirstTime = false;
+            bool isTheFirstTime = true;
             bool canAttack = false;
             bool isAttack = false;
             std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
