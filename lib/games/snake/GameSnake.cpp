@@ -15,11 +15,11 @@ arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair
     int width_screen = 184;
     int height_screen = 45;
     
-    //offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
+    offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
 
     offset_posGraph = std::make_pair((720 - wall.second * 8) / 2, (510 - wall.first * 8) / 2);
 
-    //generateFruit();
+    generateFruit();
     generateFruitGraph();
 
 }
@@ -72,38 +72,33 @@ void arcade::GameSnake::generateFruitGraph() {
     int minY = offset_pos.second + 10;
     int maxY = offset_pos.second + (wall.first * 8) - 20;
     
-    // Calculer le nombre de positions possibles pour le fruit (sur une grille de 10x10)
     int gridWidth = (maxX - minX) / 10;
     int gridHeight = (maxY - minY) / 10;
     
-    // Générer une position aléatoire sur la grille
     int gridPosX = rand() % gridWidth;
     int gridPosY = rand() % gridHeight;
     
-    // Convertir en coordonnées réelles
-    fruit.first = minX + gridPosX * 10 + 10;
-    fruit.second = minY + gridPosY * 10 + 10;
+    appleGraph.first = minX + gridPosX * 10 + 10;
+    appleGraph.second = minY + gridPosY * 10 + 10;
     
-    std::cout << "GRAPHIC Fruit generated at: (" << fruit.first << ", " << fruit.second << ")" << std::endl;
     for (const auto& segment : snake) {
-        if (segment.first == fruit.first && segment.second == fruit.second) {
+        if (segment.first == appleGraph.first && segment.second == appleGraph.second) {
             generateFruitGraph();
             return;
         }
     }
 }
 
-// void arcade::GameSnake::generateFruit() {
-//     fruit.first = offset_pos.first + 1 + rand() % (wall.second - 2);
-//     fruit.second = offset_pos.second + 1 + rand() % (wall.first - 2);
-//     std::cout << "NCURSES  Fruit generated at: (" << fruit.first << ", " << fruit.second << ")" << std::endl;
-//     for (const auto& segment : snake) {
-//         if (segment == fruit) {
-//             generateFruit();
-//             return;
-//         }
-//     }
-// }
+void arcade::GameSnake::generateFruit() {
+    fruit.first = offset_pos.first + 1 + rand() % (wall.second - 2);
+    fruit.second = offset_pos.second + 1 + rand() % (wall.first - 2);
+    for (const auto& segment : snake) {
+        if (segment == fruit) {
+            generateFruit();
+            return;
+        }
+    }
+}
 
 void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities)
 {
@@ -159,7 +154,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             break;
         }
         
-        if ((abs(snake[0].first - fruit.first) < 10 && abs(snake[0].second - fruit.second) < 10)) {
+        if ((abs(snake[0].first - appleGraph.first) < 10 && abs(snake[0].second - appleGraph.second) < 10)) {
             snake.push_back(snake.back());
             score += 10;
             generateFruitGraph();
@@ -169,14 +164,13 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         for (const auto& segment : snake) {
             if (i == 0) {
                 entities.push_back(std::make_pair("assets/Snake/head.png*", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
-                std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
                 i++;
                 continue;
             }
             entities.push_back(std::make_pair("assets/Snake/body.png*" + std::to_string(i), std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
             i++;
         }
-        entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(10, 10))));
+        entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(appleGraph.first, appleGraph.second), std::make_pair(10, 10))));
     }
     
     void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
@@ -205,7 +199,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         if (snake[0] == fruit) {
             snake.push_back(snake.back());
             score += 10;
-            //generateFruit();
+            generateFruit();
         }
         
         int i = 0;
@@ -236,7 +230,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 1));
         snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 2));
         
-        //generateFruit();
+        generateFruit();
     }
     
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
@@ -262,9 +256,9 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         }
         display.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
         display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
-    //updateGame(display);
-    usleep(129000);
-    return display;
+        updateGame(display);
+        usleep(129000);
+        return display;
 }
 
 
@@ -273,6 +267,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
 {
     isGraphic = true;
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+    display.push_back(std::make_pair("Score: " + std::to_string(score), std::make_pair(std::make_pair(100, 20), std::make_pair(200, 50))));
     updateGameGraph(display);    
     return display;
 }

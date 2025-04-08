@@ -23,7 +23,9 @@ namespace arcade {
                 RIGHT
             } direction;
             std::vector<std::pair<int, int>> snake;
+            std::vector<std::pair<int, int>> snakeGraph;
             std::pair<int, int> fruit;
+            std::pair<int, int> appleGraph;
             std::pair<int, int> wall;
             std::pair<int, int> offset_pos;
             std::pair<int, int> offset_posGraph;
@@ -40,7 +42,7 @@ namespace arcade {
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
             std::string getActGame() override;
-            //void generateFruit();
+            void generateFruit();
             void generateFruitGraph();
             void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
             void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
