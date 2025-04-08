@@ -15,9 +15,13 @@ arcade::GameSnake::GameSnake() : score(0), direction(RIGHT), wall(std::make_pair
     int width_screen = 184;
     int height_screen = 45;
     
-    offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
+    //offset_pos = std::make_pair((height_screen - wall.second) / 2, (width_screen - wall.first) / 2);
 
-    generateFruit();
+    offset_posGraph = std::make_pair((720 - wall.second * 8) / 2, (510 - wall.first * 8) / 2);
+
+    //generateFruit();
+    generateFruitGraph();
+
 }
 
 arcade::GameSnake::~GameSnake()
@@ -39,7 +43,6 @@ void arcade::GameSnake::generateMap(std::vector<std::pair<std::string, std::pair
         entities.push_back(std::make_pair("#*wall_left", std::make_pair(std::make_pair(offset_pos.first + y, offset_pos.second), std::make_pair(4, 4))));
         entities.push_back(std::make_pair("#*wall_right", std::make_pair(std::make_pair(offset_pos.first + y, offset_pos.second + wall.first - 1), std::make_pair(4, 4))));
     }
-    std::cout << "Walls generated with offset position: (" << offset_pos.first << ", " << offset_pos.second << ")" << std::endl;
 }
 
 void arcade::GameSnake::generateMapGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities)
@@ -63,16 +66,44 @@ bool arcade::GameSnake::isGameOver() {
     return gameOver;
 }
 
-void arcade::GameSnake::generateFruit() {
-    fruit.first = offset_pos.first + 1 + rand() % (wall.second - 2);
-    fruit.second = offset_pos.second + 1 + rand() % (wall.first - 2);
+void arcade::GameSnake::generateFruitGraph() {
+    int minX = offset_pos.first + 10;
+    int maxX = offset_pos.first + (wall.second * 8) - 20;
+    int minY = offset_pos.second + 10;
+    int maxY = offset_pos.second + (wall.first * 8) - 20;
+    
+    // Calculer le nombre de positions possibles pour le fruit (sur une grille de 10x10)
+    int gridWidth = (maxX - minX) / 10;
+    int gridHeight = (maxY - minY) / 10;
+    
+    // Générer une position aléatoire sur la grille
+    int gridPosX = rand() % gridWidth;
+    int gridPosY = rand() % gridHeight;
+    
+    // Convertir en coordonnées réelles
+    fruit.first = minX + gridPosX * 10 + 10;
+    fruit.second = minY + gridPosY * 10 + 10;
+    
+    std::cout << "GRAPHIC Fruit generated at: (" << fruit.first << ", " << fruit.second << ")" << std::endl;
     for (const auto& segment : snake) {
-        if (segment == fruit) {
-            generateFruit();
+        if (segment.first == fruit.first && segment.second == fruit.second) {
+            generateFruitGraph();
             return;
         }
     }
 }
+
+// void arcade::GameSnake::generateFruit() {
+//     fruit.first = offset_pos.first + 1 + rand() % (wall.second - 2);
+//     fruit.second = offset_pos.second + 1 + rand() % (wall.first - 2);
+//     std::cout << "NCURSES  Fruit generated at: (" << fruit.first << ", " << fruit.second << ")" << std::endl;
+//     for (const auto& segment : snake) {
+//         if (segment == fruit) {
+//             generateFruit();
+//             return;
+//         }
+//     }
+// }
 
 void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities)
 {
@@ -108,7 +139,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         generateMapGraph(entities);
         
         initSnake();
-
+        
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
@@ -127,7 +158,13 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             snake[0].first -= 10;
             break;
         }
-
+        
+        if ((abs(snake[0].first - fruit.first) < 10 && abs(snake[0].second - fruit.second) < 10)) {
+            snake.push_back(snake.back());
+            score += 10;
+            generateFruitGraph();
+        }
+        
         int i = 0;
         for (const auto& segment : snake) {
             if (i == 0) {
@@ -138,20 +175,18 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             }
             entities.push_back(std::make_pair("assets/Snake/body.png*" + std::to_string(i), std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
             i++;
-            std::cout << "Segment " << i << " - Position: (" << segment.first << ", " << segment.second << std::endl;
         }
         entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(10, 10))));
     }
-
+    
     void arcade::GameSnake::updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
         generateMap(entities);
-        
         initSnake();
         
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
-
+        
         switch (direction) {
             case UP:
             snake[0].first--;
@@ -170,9 +205,9 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         if (snake[0] == fruit) {
             snake.push_back(snake.back());
             score += 10;
-            generateFruit();
+            //generateFruit();
         }
-
+        
         int i = 0;
         for (const auto& segment : snake) {
             if (i == 0) {
@@ -185,7 +220,7 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
             i++;
         }
         entities.push_back(std::make_pair("A*fruit", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(3, 3))));
-
+        
         checkCollision(entities);
     }
     
@@ -196,38 +231,38 @@ void arcade::GameSnake::checkCollision(std::vector<std::pair<std::string, std::p
         gameOver = false;
         snake.clear();
         initialized = false;
-    
+        
         snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2));
         snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 1));
         snake.push_back(std::make_pair(offset_pos.first + wall.second / 2, offset_pos.second + wall.first / 2 - 2));
-    
-        generateFruit();
+        
+        //generateFruit();
     }
-
+    
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
     {
-    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+        std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+        
+        if (lib == arcade::TGraphics::NCURSES) {
+            return GetDisplayNcurses();
+        } else
+            return GetDisplayGraph();
+        return display;
+    }
     
-    if (lib == arcade::TGraphics::NCURSES) {
-        return GetDisplayNcurses();
-    } else
-        return GetDisplayGraph();
-    return display;
-}
-
-std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplayNcurses()
-{
-    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
-
-    if (isGameOver()) {
-        getActGame();
-    }
-    if (key != arcade::KeyBind::NONE) {
-        setKey(key);
-    }
-    display.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
-    display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
-    updateGame(display);
+    std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplayNcurses()
+    {
+        std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
+        
+        if (isGameOver()) {
+            getActGame();
+        }
+        if (key != arcade::KeyBind::NONE) {
+            setKey(key);
+        }
+        display.push_back(std::make_pair("*clear", std::make_pair(std::make_pair(0, 0), std::make_pair(0, 0))));
+        display.push_back(std::make_pair("Score:" + std::to_string(score), std::make_pair(std::make_pair(4, 57), std::make_pair(6, 6))));
+    //updateGame(display);
     usleep(129000);
     return display;
 }
@@ -236,8 +271,6 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
 
 std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplayGraph()
 {
-    int x = 0;
-    int y = 0;
     isGraphic = true;
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
     updateGameGraph(display);    
@@ -250,16 +283,16 @@ void arcade::GameSnake::setKey(enum arcade::KeyBind key)
         case arcade::KeyBind::UP_KEY:
             if (direction != Direction::DOWN) direction = Direction::UP;
             break;
-        case arcade::KeyBind::DOWN_KEY:
+            case arcade::KeyBind::DOWN_KEY:
             if (direction != Direction::UP) direction = Direction::DOWN;
             break;
-        case arcade::KeyBind::LEFT_KEY:
+            case arcade::KeyBind::LEFT_KEY:
             if (direction != Direction::RIGHT) direction = Direction::LEFT;
             break;
-        case arcade::KeyBind::RIGHT_KEY:
+            case arcade::KeyBind::RIGHT_KEY:
             if (direction != Direction::LEFT) direction = Direction::RIGHT;
             break;
-        default:
+            default:
             break;
     }
     this->key = key;

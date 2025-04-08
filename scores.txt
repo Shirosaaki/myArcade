@@ -6,17 +6,17 @@ shirosaaki: 2600
 t: 0
 
 -- SNAKE --
-[B: 0
+[B: 40
 [Bd: 0
 [Be: 10
 [Bf: 0
 [Bh: 0
 Player1: 50
 c: 0
-d: 0
+d: 120
 d[A: 0
 e: 0
-f: 0
+f: 10
 g: 0
 h: 0
 j: 0
