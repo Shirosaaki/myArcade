@@ -26,7 +26,7 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
         isTheFirstTime = false;
         return entities;
     }
-    if (elapsed.count() > 175) {
+    if (elapsed.count() > 180) {
         if (nbFrames == 0)
             nbFrames++;
         entities.emplace_back("assets/theShow/movies/intro/intro_frame_" + std::to_string(nbFrames) + ".jpg", std::make_pair(std::make_pair(0, 0), std::make_pair(1080, 720)));

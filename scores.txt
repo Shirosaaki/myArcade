@@ -1,22 +1,3 @@
--- PACMAN --
-Player: 180
-Player1: 70
-shirosaaki: 2600
-t: 320
-
--- SNAKE --
-Player1: 50
-f: 50
-t: 50
-
 -- THE_SHOW --
-Player1: 1000000000
-d: 1410065407
-f: 1410065407
-ff: 1410065407
-g: 1410065407
-j: 1410065407
-rt: 1410065407
-shirosaaki: 1410065407
+Shirosaaki: 1410065407
 t: 1410065407
-z: 1410065407
