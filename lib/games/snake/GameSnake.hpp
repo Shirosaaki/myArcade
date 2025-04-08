@@ -12,6 +12,7 @@
     #include <ctime>
     #include <cstdlib>
     #include <utility>
+    #include <chrono>
 
 namespace arcade {
     class GameSnake : public IGames {
@@ -34,6 +35,7 @@ namespace arcade {
             bool initialized;
             bool isGraphic;
             KeyBind key;
+            std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
         public:
             GameSnake();
             ~GameSnake();

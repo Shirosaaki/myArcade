@@ -147,13 +147,27 @@ void arcade::GameSnake::checkCollisionGraph()
 
     void arcade::GameSnake::updateGameGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities) {
         generateMapGraph(entities);
+        auto now = std::chrono::steady_clock::now();
+        auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - lastMoveTime).count();
         
         initSnake();
         
+        bool first = true;
+        for (const auto& segment : snake) {
+            if (first == true) {
+                entities.push_back(std::make_pair("assets/Snake/head.png", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
+                first = false;
+            } else
+            entities.push_back(std::make_pair("assets/Snake/body.png", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
+        }
+        entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(appleGraph.first, appleGraph.second), std::make_pair(10, 10))));
+        
+        if (elapsed < 100)
+            return;
+        lastMoveTime = now;
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
-        
         switch (direction) {
             case UP:
             snake[0].second -= 10;
@@ -168,25 +182,12 @@ void arcade::GameSnake::checkCollisionGraph()
             snake[0].first -= 10;
             break;
         }
-        
         if ((abs(snake[0].first - appleGraph.first) < 10 && abs(snake[0].second - appleGraph.second) < 10)) {
             snake.push_back(snake.back());
             score += 10;
             generateFruitGraph();
         }
         
-        int i = 0;
-        for (const auto& segment : snake) {
-            if (i == 0) {
-                entities.push_back(std::make_pair("assets/Snake/head.png*", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
-                i++;
-                continue;
-            }
-            entities.push_back(std::make_pair("assets/Snake/body.png*" + std::to_string(i), std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(10, 10))));
-            i++;
-        }
-        entities.push_back(std::make_pair("assets/Snake/apple.png", std::make_pair(std::make_pair(appleGraph.first, appleGraph.second), std::make_pair(10, 10))));
-
         checkCollisionGraph();
     }
     
@@ -197,7 +198,6 @@ void arcade::GameSnake::checkCollisionGraph()
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
-        
         switch (direction) {
             case UP:
             snake[0].first--;
@@ -284,13 +284,12 @@ std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int,
 {
     isGraphic = true;
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
-
     if (isGameOver()) {
         getActGame();
     }
 
     display.push_back(std::make_pair("Score: " + std::to_string(score), std::make_pair(std::make_pair(100, 20), std::make_pair(200, 50))));
-    updateGameGraph(display);    
+    updateGameGraph(display);
     return display;
 }
 
