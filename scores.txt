@@ -1,3 +1,9 @@
 -- THE_SHOW --
 Shirosaaki: 1410065407
 t: 1410065407
+
+-- SNAKE --
+t: 50
+
+-- PACMAN --
+t: 900

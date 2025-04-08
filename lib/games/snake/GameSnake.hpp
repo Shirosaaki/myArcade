@@ -29,7 +29,7 @@ namespace arcade {
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
-            std::string getActGame() override { return "Game Over"; }
+            std::string getActGame() override { return ""; }
             void resetGame() override;
     };
 }
