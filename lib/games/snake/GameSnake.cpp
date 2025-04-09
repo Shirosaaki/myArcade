@@ -195,6 +195,16 @@ void arcade::GameSnake::checkCollisionGraph()
         generateMap(entities);
         initSnake();
         
+        bool first = true;
+        for (const auto& segment : snake) {
+            if (first == true) {
+                entities.push_back(std::make_pair("$", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
+                first = false;
+            } else
+            entities.push_back(std::make_pair("O", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(2, 2))));
+        }
+        entities.push_back(std::make_pair("A", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(3, 3))));
+        
         for (size_t i = snake.size() - 1; i > 0; --i) {
             snake[i] = snake[i - 1];
         }
@@ -218,20 +228,7 @@ void arcade::GameSnake::checkCollisionGraph()
             score += 10;
             generateFruit();
         }
-        
-        int i = 0;
-        for (const auto& segment : snake) {
-            if (i == 0) {
-                entities.push_back(std::make_pair("$*head", std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(1, 1))));
-                i++;
-                continue;
-            }
-            auto key = std::to_string(i);
-            entities.push_back(std::make_pair("O*" + key, std::make_pair(std::make_pair(segment.first, segment.second), std::make_pair(2, 2))));
-            i++;
-        }
-        entities.push_back(std::make_pair("A*fruit", std::make_pair(std::make_pair(fruit.first, fruit.second), std::make_pair(3, 3))));
-        
+
         checkCollision();
     }
     
