@@ -36,6 +36,7 @@ namespace arcade {
             bool isGraphic;
             KeyBind key;
             std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
+            bool isFruitGenerated = false;
         public:
             GameSnake();
             ~GameSnake();

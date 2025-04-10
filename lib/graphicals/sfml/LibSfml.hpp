@@ -10,6 +10,7 @@
     #include <SFML/Graphics.hpp>
     #include <SFML/Audio.hpp>
     #include <SFML/Window.hpp>
+    #include <unordered_map>
 
 namespace arcade{
 
@@ -31,6 +32,7 @@ namespace arcade{
             sf::Font font;
             std::string currentSound;
             arcade::KeyBind lastKey = arcade::KeyBind::NONE;
+            std::unordered_map<std::string, sf::Texture> textureCache;
     };
 }
 

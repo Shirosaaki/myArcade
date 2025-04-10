@@ -16,8 +16,7 @@ arcade::LibSfml::~LibSfml()
 
 void arcade::LibSfml::Init()
 {
-    this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Arcade");
-    this->window->setFramerateLimit(60);
+    this->window = new sf::RenderWindow(sf::VideoMode(1080, 720), "Arcade SFML");
     this->font.loadFromFile("assets/fonts/TheShow.ttf");
     this->music.setVolume(50);
     if (!sf::Joystick::isConnected(0)) {
@@ -114,21 +113,22 @@ void arcade::LibSfml::Display(const std::vector<std::pair<std::string, std::pair
 {
     this->window->clear();
     for (auto &entity : entities) {
-        std::string cleanedKey = entity.first;
-        if (cleanedKey.find(".png*") != std::string::npos) {
-            cleanedKey.erase(cleanedKey.find(".png*") + 4);
-        }
-        if (cleanedKey.find("assets/") != std::string::npos) {
-            sf::Texture texture;
-            sf::Sprite sprite;
-            if (!texture.loadFromFile(cleanedKey)) {
-                std::cerr << "Error loading texture: " << cleanedKey << std::endl;
-                continue;
+        if (entity.first.find("assets/") != std::string::npos) {
+            if (textureCache.find(entity.first) == textureCache.end()) {
+                sf::Texture texture;
+                if (!texture.loadFromFile(entity.first)) {
+                    std::cerr << "Error loading texture: " << entity.first << std::endl;
+                    continue;
+                }
+                textureCache[entity.first] = texture;
             }
-            sprite.setTexture(texture);
+            sf::Sprite sprite;
+            sprite.setTexture(textureCache[entity.first]);
             sprite.setPosition(entity.second.first.first, entity.second.first.second);
-            sprite.setScale(entity.second.second.first / static_cast<float>(texture.getSize().x),
-                            entity.second.second.second / static_cast<float>(texture.getSize().y));
+            sprite.setScale(
+                entity.second.second.first / static_cast<float>(textureCache[entity.first].getSize().x),
+                entity.second.second.second / static_cast<float>(textureCache[entity.first].getSize().y)
+            );
             this->window->draw(sprite);
         }
     }
