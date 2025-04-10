@@ -6,22 +6,36 @@
 */
 #ifndef GAME_SNAKE_HPP_
     #define GAME_SNAKE_HPP_
-
-#include "../IGames.hpp"
-#include <ncurses.h>
-#include <vector>
-#include <utility>
-#include <cstdlib>
-#include <ctime>
+    #include "../IGames.hpp"
+    #include <map>
+    #include <vector>
+    #include <ctime>
+    #include <cstdlib>
+    #include <utility>
+    #include <chrono>
 
 namespace arcade {
     class GameSnake : public IGames {
         private:
+            enum Direction {
+                UP,
+                DOWN,
+                LEFT,
+                RIGHT
+            } direction;
             std::vector<std::pair<int, int>> snake;
+            std::vector<std::pair<int, int>> snakeGraph;
             std::pair<int, int> fruit;
+            std::pair<int, int> appleGraph;
+            std::pair<int, int> wall;
+            std::pair<int, int> offset_pos;
+            std::pair<int, int> offset_posGraph;
             int score;
-            int direction;
-
+            bool gameOver;
+            bool initialized;
+            bool isGraphic;
+            KeyBind key;
+            std::chrono::time_point<std::chrono::steady_clock> lastMoveTime = std::chrono::steady_clock::now();
         public:
             GameSnake();
             ~GameSnake();
@@ -29,10 +43,23 @@ namespace arcade {
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;
-            std::string getActGame() override { return ""; }
+            std::string getActGame() override;
+            void generateFruit();
+            void generateFruitGraph();
+            void updateGame(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
+            void generateMap(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
+            void checkCollision();
+            void checkCollisionGraph();
+            bool isGameOver();
+            void initSnake();
             void resetGame() override;
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayNcurses();
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplayGraph();
+            void generateMapGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> &entities);
+            void updateGameGraph(std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>>  &entities);
+
+
     };
 }
 
 #endif /* !GAME_SNAKE_HPP_ */
-
