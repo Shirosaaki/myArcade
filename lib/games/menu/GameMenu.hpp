@@ -16,7 +16,7 @@ namespace arcade {
         public:
             GameMenu();
             ~GameMenu();
-            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplay(enum TGraphics lib) override;
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> getDisplay(enum TGraphics lib) override;
             void setKey(enum arcade::KeyBind key) override;
             int getScore() override;
             std::string getSound(enum arcade::TGraphics lib) override;

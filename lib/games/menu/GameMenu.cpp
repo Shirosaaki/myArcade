@@ -72,7 +72,7 @@ arcade::TGames arcade::GameMenu::getGame(const std::string& lib)
     return (it != gameMap.end()) ? it->second : arcade::TGames::NONE;
 }
 
-std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameMenu::GetDisplay(enum TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameMenu::getDisplay(enum TGraphics lib)
 {
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> entities;
     this->gameMap = loadGamesLibs("lib/");

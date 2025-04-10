@@ -5,6 +5,10 @@ t: 1410065407
 -- SNAKE --
 h: 0
 t: 180
+ty: 40
 
 -- PACMAN --
 t: 2130
+
+-- NIBBLER --
+t: 60

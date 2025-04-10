@@ -163,6 +163,7 @@ void arcade::LibSfml::PlaySound(std::string sound)
         return;
     }
     this->music.play();
+    this->music.setLoop(true);
 }
 
 void arcade::LibSfml::Clear()

@@ -254,7 +254,7 @@ void arcade::GameSnake::resetGame()
         generateFruit();
 }
     
-std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::GetDisplay(enum arcade::TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameSnake::getDisplay(enum arcade::TGraphics lib)
 {
     if (isGraphic == true && lib == arcade::TGraphics::NCURSES) {
         isFruitGenerated = false;

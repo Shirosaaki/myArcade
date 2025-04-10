@@ -469,7 +469,7 @@ void arcade::GameTheShow::changeLevel()
     return;
 }
 
-std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameTheShow::GetDisplay(enum TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GameTheShow::getDisplay(enum TGraphics lib)
 {
     if (lib == TGraphics::NCURSES) {
         std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>> entity;

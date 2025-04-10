@@ -16,7 +16,7 @@ namespace arcade {
         public:
             GameTheShow();
             ~GameTheShow();
-            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> GetDisplay(enum TGraphics lib);
+            std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> getDisplay(enum TGraphics lib);
             void setKey(enum KeyBind key);
             int getScore();
             std::string getSound(enum TGraphics lib);

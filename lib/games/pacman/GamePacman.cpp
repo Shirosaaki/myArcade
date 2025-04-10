@@ -340,7 +340,7 @@ std::string arcade::GamePacman::getSound(enum arcade::TGraphics lib)
         return "assets/Pacman/pacman.wav";
 }
 
-std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GamePacman::GetDisplay(enum arcade::TGraphics lib)
+std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> arcade::GamePacman::getDisplay(enum arcade::TGraphics lib)
 {
     std::vector<std::pair<std::string, std::pair<std::pair<int, int>, std::pair<int, int>>>> display;
 
