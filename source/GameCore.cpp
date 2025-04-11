@@ -14,12 +14,12 @@ GameCore::GameCore()
 GameCore::~GameCore()
 {
     for (auto &graphLib: _graphicals)
-        if (graphLib.second.second) {
+        if (graphLib.second.second != nullptr) {
             delete graphLib.second.second;
             graphLib.second.second = nullptr;
         }
     for (auto &gameLib: _games)
-        if (gameLib.second.second) {
+        if (gameLib.second.second != nullptr) {
             delete gameLib.second.second;
             gameLib.second.second = nullptr;
         }
